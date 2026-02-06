@@ -421,7 +421,7 @@ const fetchKickStats = async () => {
                 console.log('   ✅ API Token Acquired');
                 
                 // Try Endpoints (Case sensitive might matter for some)
-                const channelSlug = 'ghost_gamingTV'; 
+                const channelSlug = 'ghost_gamingtv'; 
                 const endpoints = [
                     `https://api.kick.com/public/v1/channels/${channelSlug}`,
                     `https://api.kick.com/api/v1/channels/${channelSlug}`,
@@ -736,7 +736,7 @@ app.get('/api/stats', async (req, res) => {
     
     // Calculate Follower Growth (Change since weekly reset)
     const growth = totalFollowers - weeklyStart;
-    const growthStr = growth > 0 ? `+${growth}` : (isLive ? 'Live' : 'Offline');
+    const growthStr = growth >= 0 ? `+${growth}` : `${growth}`;
 
     res.json({
       success: true,

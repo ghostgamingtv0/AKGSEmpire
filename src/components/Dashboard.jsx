@@ -58,7 +58,7 @@ const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
 
         // 7. Client-Side Kick Stats Fetch (Crowdsourcing Real Data)
         try {
-            const kickRes = await fetch('https://kick.com/api/v1/channels/ghost_gamingTV');
+            const kickRes = await fetch('https://kick.com/api/v1/channels/ghost_gamingtv');
             if (kickRes.ok) {
                 const kickData = await kickRes.json();
                 if (kickData && (kickData.followers_count || kickData.followersCount)) {
