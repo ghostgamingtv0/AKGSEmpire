@@ -464,7 +464,7 @@ const fetchKickStats = async () => {
     if (followers === null) {
         try {
             console.log('   👉 Trying Scraper (StreamerStats)...');
-            const url = 'https://streamerstats.com/kick/ghost_gamingTV/streamer/profile';
+            const url = 'https://streamerstats.com/kick/ghost_gamingtv/streamer/profile';
             const response = await fetch(url, {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'

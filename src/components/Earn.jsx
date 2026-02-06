@@ -300,9 +300,8 @@ const Earn = () => {
     }
 
     // 2. G-Code Requirement
-    // Mandatory for Twitter and Instagram, or TikTok Watch tasks
-    const isMandatory = ['Instagram', 'Twitter (X)'].some(p => task.platform.includes(p)) || 
-                        (task.platform === 'TikTok' && task.type === 'watch');
+    // Mandatory only for Watch Tasks
+    const isMandatory = task.type === 'watch';
 
     // Check if we need to show the modal (only if not already in confirmation/verifying state)
     let platformKey = task.platform.toLowerCase();

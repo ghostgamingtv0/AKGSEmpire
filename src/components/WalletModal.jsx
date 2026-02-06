@@ -49,7 +49,7 @@ const WalletModal = ({ isOpen, onClose }) => {
                   className="w-full flex items-center justify-between p-4 bg-white/5 hover:bg-[#53FC18]/10 border border-white/5 hover:border-[#53FC18]/30 rounded-xl transition-all duration-200 group"
                   onClick={() => {
                     // Placeholder for actual connection logic
-                    alert(`Connecting to ${wallet.name}...`);
+                    // alert(`Connecting to ${wallet.name}...`);
                     onClose();
                   }}
                 >
