@@ -85,7 +85,8 @@ const Hero = () => {
       const exchangeToken = async () => {
         try {
           console.log('Processing Kick Auth Code...');
-          const response = await fetch('http://localhost:3001/api/kick/exchange-token', {
+          const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
+          const response = await fetch(`${API_BASE}/api/kick/exchange-token`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ code })

@@ -20,8 +20,10 @@ const Dashboard = () => {
         // 2. Check for Referral Code
         const refCode = localStorage.getItem('ref_code');
 
+const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
+
         // 3. Init/Load User
-        const res = await fetch('http://localhost:3001/api/init-user', {
+        const res = await fetch(`${API_BASE}/api/init-user`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ visitor_id: visitorId, ref_code: refCode })
@@ -34,21 +36,21 @@ const Dashboard = () => {
         }
 
         // 4. Fetch Leaderboard
-        const lbRes = await fetch('http://localhost:3001/api/leaderboard');
+        const lbRes = await fetch(`${API_BASE}/api/leaderboard`);
         const lbData = await lbRes.json();
         if (lbData.success) {
           setLeaderboard(lbData.leaderboard);
         }
 
         // 5. Fetch Global Stats
-        const statsRes = await fetch('http://localhost:3001/api/stats');
+        const statsRes = await fetch(`${API_BASE}/api/stats`);
         const statsData = await statsRes.json();
         if (statsData.success) {
           setGlobalStats(statsData);
         }
 
         // 6. Fetch Top Comments
-        const commentsRes = await fetch('http://localhost:3001/api/top-comments');
+        const commentsRes = await fetch(`${API_BASE}/api/top-comments`);
         const commentsData = await commentsRes.json();
         if (commentsData.success) {
           setTopComments(commentsData.topComments);
@@ -62,7 +64,7 @@ const Dashboard = () => {
                 if (kickData && (kickData.followers_count || kickData.followersCount)) {
                     const count = kickData.followers_count || kickData.followersCount;
                     // Send to backend
-                    await fetch('http://localhost:3001/api/update-kick-stats', {
+                    await fetch(`${API_BASE}/api/update-kick-stats`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 

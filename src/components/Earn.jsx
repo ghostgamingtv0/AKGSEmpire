@@ -43,7 +43,8 @@ const Earn = () => {
   useEffect(() => {
     const fetchFeeds = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/feed-status');
+            const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
+            const res = await fetch(`${API_BASE}/api/feed-status`);
             const data = await res.json();
             setFeedStatus(data);
         } catch (e) { console.error('Feed fetch error:', e); }
@@ -253,7 +254,8 @@ const Earn = () => {
 
   const claimTask = async (task) => {
       try {
-        const response = await fetch('http://localhost:3001/api/claim', {
+        const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
+        const response = await fetch(`${API_BASE}/api/claim`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
