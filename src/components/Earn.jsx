@@ -300,8 +300,9 @@ const Earn = () => {
     }
 
     // 2. G-Code Requirement
-    // Mandatory only for Watch Tasks
-    const isMandatory = task.type === 'watch';
+    // Mandatory ONLY for Social Instagram & All Watch Tasks (Instagram/TikTok)
+    const isMandatory = (task.type === 'watch') || 
+                       (task.type === 'social' && task.platform === 'Instagram');
 
     // Check if we need to show the modal (only if not already in confirmation/verifying state)
     let platformKey = task.platform.toLowerCase();
@@ -385,7 +386,6 @@ const Earn = () => {
       type: 'social', 
       platform: 'Twitter (X)', 
       action: 'Follow on Twitter', 
-      instruction: '🔴 MANDATORY: Comment your G-Code',
       reward: '10 Points', 
       status: 'pending', 
       link: 'https://x.com/tv_ghostgaming',
