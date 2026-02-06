@@ -300,9 +300,8 @@ const Earn = () => {
     }
 
     // 2. G-Code Requirement
-    // Mandatory ONLY for Social Instagram & All Watch Tasks (Instagram/TikTok)
-    const isMandatory = (task.type === 'watch') || 
-                       (task.type === 'social' && task.platform === 'Instagram');
+    // Mandatory ONLY for Watch Task (Twitter Only)
+    const isMandatory = (task.type === 'watch' && task.platform.includes('Twitter'));
 
     // Check if we need to show the modal (only if not already in confirmation/verifying state)
     let platformKey = task.platform.toLowerCase();
@@ -380,6 +379,35 @@ const Earn = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // --- Mining Robot: Auto-Ping when Live ---
+  useEffect(() => {
+    let interval;
+    if (isKickLive && visitorId) {
+       console.log('⛏️ Mining Active: Starting Ping Loop...');
+       
+       // Initial ping (optional, but better to wait 1 min)
+       
+       interval = setInterval(async () => {
+           try {
+               const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
+               const res = await fetch(`${API_BASE}/api/mining/ping`, {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ visitor_id: visitorId })
+               });
+               const data = await res.json();
+               if (data.success) {
+                   console.log('💰 Mining Reward:', data.points_added);
+                   setPoints(prev => prev + data.points_added);
+               } else {
+                   console.log('Mining Ping Failed:', data.message);
+               }
+           } catch (e) { console.error('Mining Error:', e); }
+       }, 60000); // 1 minute
+    }
+    return () => clearInterval(interval);
+  }, [isKickLive, visitorId]);
+
   const tasks = [
     { 
       id: 1, 
@@ -414,8 +442,7 @@ const Earn = () => {
       type: 'social', 
       platform: 'Instagram', 
       action: 'Follow on Instagram', 
-      instruction: '🔴 MANDATORY: Comment your G-Code',
-      reward: '10 Points', 
+      reward: '10 Points',  
       status: 'pending', 
       link: 'https://www.instagram.com/ghost.gamingtv/',
       icon: (
@@ -501,7 +528,7 @@ const Earn = () => {
       type: 'watch', 
       platform: 'Instagram', 
       action: 'Like & Share', 
-      instruction: '🔴 MANDATORY: Comment your G-Code',
+      instruction: 'Optional: Comment G-Code',
       reward: '100 Points', 
       status: 'new_content',
       contentType: 'Reel', 
@@ -548,8 +575,8 @@ const Earn = () => {
       id: 11, 
       type: 'mining', 
       platform: 'Kick', 
-      action: isKickLive ? 'Live Now' : 'Offline', 
-      reward: '250 Points/Hour', 
+      action: isKickLive ? 'Mining Active (+5 pts/min)' : 'Offline', 
+      reward: '300 Points/Hour', 
       status: isKickLive ? 'pending' : 'disabled', 
       link: 'https://kick.com/ghost_gamingtv',
       isLive: isKickLive,
@@ -755,46 +782,6 @@ const Earn = () => {
         </div>
       )}
 
-      {/* Kick Login Modal */}
-      {showCopyCodeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-[#0a0a0a] border border-[#53FC18]/30 rounded-2xl w-full max-w-sm p-6 relative shadow-[0_0_30px_rgba(83,252,24,0.1)]">
-             <button 
-              onClick={() => setShowCopyCodeModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-            
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-[#53FC18]/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-[#53FC18]/20">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#53FC18]"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Required Action</h3>
-              <p className="text-gray-300 text-sm mb-4">
-                You must comment your G-Code on the post to verify this task.
-              </p>
-              <div className="bg-[#53FC18]/10 border border-[#53FC18]/30 p-3 rounded-lg mb-4">
-                 <p className="text-[#53FC18] font-mono font-bold text-lg">{gCode}</p>
-              </div>
-              <p className="text-xs text-gray-400 mb-1">
-                 Copy this code and paste it in the comments.
-              </p>
-              <p className="text-xs text-[#53FC18]" dir="rtl">
-                 انسخ هذا الكود وضعه في التعليقات
-              </p>
-            </div>
-
-            <button
-              onClick={handleCopyAndStart}
-              className="w-full bg-[#53FC18] hover:bg-[#45d612] text-black font-bold py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(83,252,24,0.3)] hover:shadow-[0_0_30px_rgba(83,252,24,0.5)] flex items-center justify-center gap-2"
-            >
-              <span>Copy & Open Link</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Kick Login Modal */}
       {showKickModal && (

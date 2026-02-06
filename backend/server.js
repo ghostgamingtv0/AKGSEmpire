@@ -135,6 +135,10 @@ const testConnection = async () => {
     try {
         await pool.query('ALTER TABLE users ADD COLUMN weekly_comments INTEGER DEFAULT 0');
     } catch (e) { /* Ignore if exists */ }
+
+    try {
+        await pool.query('ALTER TABLE users ADD COLUMN last_mining_ping DATETIME');
+    } catch (e) { /* Ignore if exists */ }
     
   } catch (error) {
     console.error('❌ Migration check failed:', error.message);
@@ -264,7 +268,7 @@ app.post('/api/update-kick-stats', async (req, res) => {
 
 // --- Kick OAuth Flow ---
 app.post('/api/kick/exchange-token', async (req, res) => {
-    const { code } = req.body;
+    const { code, visitor_id, code_verifier } = req.body;
     if (!code) return res.status(400).json({ error: 'No code provided' });
 
     try {
@@ -276,6 +280,11 @@ app.post('/api/kick/exchange-token', async (req, res) => {
         params.append('client_secret', process.env.KICK_CLIENT_SECRET);
         params.append('redirect_uri', 'http://localhost:3000/');
         params.append('code', code);
+        
+        // Add PKCE verifier if provided (Required by Kick now)
+        if (code_verifier) {
+            params.append('code_verifier', code_verifier);
+        }
 
         // Try standard OAuth endpoints
         const tokenEndpoints = [
@@ -312,12 +321,41 @@ app.post('/api/kick/exchange-token', async (req, res) => {
         // Save this token for background updates
         await setSystemStat('kick_access_token', accessToken);
 
-        // Fetch User Data / Channel Data
+        // 1. Fetch Authenticated User Details (For Identity)
+        let username = null;
+        let profilePic = null;
+        try {
+            console.log('   👉 Fetching User Identity...');
+            const meRes = await fetch('https://api.kick.com/api/v1/users', {
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            if (meRes.ok) {
+                const meData = await meRes.json();
+                // Depending on structure, might be meData or meData.data
+                const user = meData.data || meData; 
+                if (user.username) {
+                    username = user.username;
+                    profilePic = user.profile_pic;
+                    console.log('   ✅ Identified User:', username);
+
+                    if (visitor_id) {
+                         try {
+                             await pool.query('UPDATE users SET kick_username = ? WHERE visitor_id = ?', [username, visitor_id]);
+                             console.log('   ✅ Linked Kick Username to Visitor:', visitor_id);
+                         } catch (e) { console.error('   ❌ DB Update Error:', e.message); }
+                    }
+                }
+            } else {
+                console.log('   ⚠️ Failed to fetch identity:', meRes.status);
+            }
+        } catch (e) { console.error('   ❌ Identity Fetch Error:', e.message); }
+
+        // 2. Fetch Channel Stats (ghost_gamingtv) using this token
         // Try multiple endpoints to get follower count
         const endpoints = [
-            'https://api.kick.com/public/v1/users/ghost_gamingtv',
-            'https://api.kick.com/api/v1/users/ghost_gamingtv',
-            'https://api.kick.com/public/v1/channels/ghost_gamingtv'
+            'https://api.kick.com/public/v1/channels/ghost_gamingtv',
+            'https://api.kick.com/api/v1/channels/ghost_gamingtv',
+            'https://api.kick.com/v1/channels/ghost_gamingtv'
         ];
         
         let followers = null;
@@ -329,16 +367,15 @@ app.post('/api/kick/exchange-token', async (req, res) => {
                 });
                 if (userRes.ok) {
                     const userData = await userRes.json();
-                    console.log('✅ Fetched Kick Data:', userData);
+                    console.log('✅ Fetched Kick Data:', userData.slug || 'success');
                     // Extract followers (structure depends on endpoint)
-                    followers = userData.followers_count || userData.followersCount || (userData.followers && userData.followers.length);
+                    followers = userData.followersCount || userData.followers_count || (userData.followers && userData.followers.length);
                     if (followers) break;
                 }
             } catch (e) { console.error('Fetch error:', e.message); }
         }
 
         // If automatic fetch fails, we still return success so frontend knows we are connected
-        // But we really want the followers.
         
         if (followers) {
             await setSystemStat('kick_followers', followers);
@@ -350,7 +387,7 @@ app.post('/api/kick/exchange-token', async (req, res) => {
             console.log('✅ Updated Kick Followers:', followers);
         }
 
-        res.json({ success: true, followers });
+        res.json({ success: true, username, profile_pic: profilePic, followers });
 
     } catch (error) {
         console.error('❌ OAuth Error:', error);
@@ -395,18 +432,18 @@ const fetchKickStats = async () => {
         }
     }
 
-    // 2. Try Kick API with Client Credentials (Backup)
+    // 2. Try Kick API with Client Credentials (Corrected)
     if (followers === null) {
         try {
-            console.log('   👉 Trying Client Credentials...');
+            console.log('   👉 Trying Kick API (id.kick.com)...');
             // Get Token
             const params = new URLSearchParams();
             params.append('grant_type', 'client_credentials');
             params.append('client_id', process.env.KICK_DEVELOPER_ID);
             params.append('client_secret', process.env.KICK_CLIENT_SECRET);
-            params.append('scope', ''); // Empty scope works for client_credentials
+            params.append('scope', ''); // Empty scope required
 
-            const tokenRes = await fetch('https://api.kick.com/oauth/token', {
+            const tokenRes = await fetch('https://id.kick.com/oauth/token', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -420,14 +457,12 @@ const fetchKickStats = async () => {
                 const accessToken = tokenData.access_token;
                 console.log('   ✅ API Token Acquired');
                 
-                // Try Endpoints (Case sensitive might matter for some)
                 const channelSlug = 'ghost_gamingtv'; 
+                // Try different endpoint variations
                 const endpoints = [
                     `https://api.kick.com/public/v1/channels/${channelSlug}`,
                     `https://api.kick.com/api/v1/channels/${channelSlug}`,
-                    `https://api.kick.com/api/v2/channels/${channelSlug}`,
-                    `https://kick.com/api/v1/channels/${channelSlug}`,
-                    `https://kick.com/api/v2/channels/${channelSlug}`
+                    `https://api.kick.com/v1/channels/${channelSlug}`
                 ];
 
                 for (const url of endpoints) {
@@ -440,19 +475,22 @@ const fetchKickStats = async () => {
                         });
                         if (res.ok) {
                             const data = await res.json();
+                            // Check for various response formats
                             if (data.followersCount || data.followers_count || data.followers) {
                                 followers = data.followersCount || data.followers_count || (data.followers?.length);
                                 isLive = data.livestream !== null;
                                 console.log('   ✅ API Success! Followers:', followers);
                                 break;
+                            } else if (data.slug) {
+                                // Sometimes data is just the channel object without direct follower count at root
+                                if (data.followers_count) followers = data.followers_count;
+                                console.log('   ✅ API Channel Data Found:', data.slug);
                             }
-                        } else {
-                            console.log(`   ⚠️ API Endpoint failed: ${url} (Status: ${res.status})`);
                         }
-                    } catch (e) { console.log('   ⚠️ API Endpoint Error:', url, e.message); }
+                    } catch (e) { }
                 }
             } else {
-                console.log('   ⚠️ API Token Failed:', tokenRes.status, await tokenRes.text());
+                console.log('   ⚠️ API Token Failed:', tokenRes.status);
             }
         } catch (e) {
             console.error('   ❌ API Error:', e.message);
@@ -668,6 +706,49 @@ app.post('/api/update-profile', async (req, res) => {
 });
 
 // 2. Claim Task Reward
+app.post('/api/mining/ping', async (req, res) => {
+    const { visitor_id } = req.body;
+    if (!visitor_id) return res.status(400).json({ error: 'Missing visitor_id' });
+
+    try {
+        // 1. Check if Stream is Live
+        const isLive = (await getSystemStat('kick_is_live')) === 'true';
+        
+        if (!isLive) {
+             return res.json({ success: false, message: 'Stream is offline', isLive: false });
+        }
+
+        // 2. Rate Limit (Check last ping)
+        const [rows] = await pool.query('SELECT last_mining_ping, total_points FROM users WHERE visitor_id = ?', [visitor_id]);
+        if (rows.length === 0) return res.status(404).json({ error: 'User not found' });
+
+        const lastPing = rows[0].last_mining_ping ? new Date(rows[0].last_mining_ping) : null;
+        const now = new Date();
+        
+        // Allow ping if last ping was > 55 seconds ago
+        if (lastPing && (now - lastPing) < 55000) {
+             return res.json({ success: false, message: 'Too soon', cooldown: true });
+        }
+
+        // 3. Award Points (5 Points)
+        const POINTS_PER_PING = 5;
+        await pool.query(`
+            UPDATE users 
+            SET total_points = total_points + ?, 
+                weekly_points = weekly_points + ?, 
+                last_mining_ping = CURRENT_TIMESTAMP,
+                last_active = CURRENT_TIMESTAMP
+            WHERE visitor_id = ?
+        `, [POINTS_PER_PING, POINTS_PER_PING, visitor_id]);
+
+        res.json({ success: true, points_added: POINTS_PER_PING, new_total: rows[0].total_points + POINTS_PER_PING });
+
+    } catch (error) {
+        console.error('Mining Ping Error:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
 app.post('/api/claim', async (req, res) => {
   const { visitor_id, task_id, points, platform } = req.body;
   

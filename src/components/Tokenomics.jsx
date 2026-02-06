@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Shield, Flame, Lock, Globe, ExternalLink } from 'lucide-react';
 
+import { CONTRACT_ADDRESS } from '../constants';
+
 const Tokenomics = () => {
   const data = [
     { name: 'Circulating Supply', value: 431.89, color: '#53FC18' },
@@ -31,7 +33,7 @@ const Tokenomics = () => {
               <span className="font-bold">Live Chart</span>
               <img src="https://i.ibb.co/TD4bgczv/geckoterminal-icon.png" alt="GeckoTerminal" className="h-6 w-6 ml-2" />
             </div>
-            <a href="https://www.geckoterminal.com/polygon_pos/pools/0x7c76303d59e2a776503dd41fdee4399264abd8077dc00e8211d8ebfdb214d7a3" target="_blank" rel="noopener noreferrer" className="text-sm text-[#53FC18] hover:underline flex items-center gap-1">
+            <a href={`https://www.geckoterminal.com/polygon_pos/pools/${CONTRACT_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="text-sm text-[#53FC18] hover:underline flex items-center gap-1">
               <img src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png" alt="GeckoTerminal" className="h-6 mr-2" />
               Open in GeckoTerminal <ExternalLink size={14} />
             </a>
@@ -41,7 +43,7 @@ const Tokenomics = () => {
             width="100%" 
             id="geckoterminal-embed" 
             title="GeckoTerminal Embed" 
-            src="https://www.geckoterminal.com/polygon_pos/pools/0x7c76303d59e2a776503dd41fdee4399264abd8077dc00e8211d8ebfdb214d7a3?embed=1&info=0&swaps=0" 
+            src={`https://www.geckoterminal.com/polygon_pos/pools/${CONTRACT_ADDRESS}?embed=1&info=0&swaps=0`}
             frameBorder="0" 
             allow="clipboard-write" 
             allowFullScreen

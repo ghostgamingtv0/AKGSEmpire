@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { PlayCircle, Share2, TrendingUp, ShieldCheck, Zap, Globe, Heart, Award, Target, Eye, ExternalLink, FileText } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import fp from '@fingerprintjs/fingerprintjs';
 
 const WatcherEyes = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -85,15 +86,38 @@ const Hero = () => {
       const exchangeToken = async () => {
         try {
           console.log('Processing Kick Auth Code...');
+          
+          const codeVerifier = localStorage.getItem('kick_code_verifier');
+          
+          // Get Visitor ID
+          const fpPromise = fp.load();
+          const { visitorId } = await (await fpPromise).get();
+
           const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
           const response = await fetch(`${API_BASE}/api/kick/exchange-token`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code })
+            body: JSON.stringify({ 
+              code, 
+              visitor_id: visitorId,
+              code_verifier: codeVerifier 
+            })
           });
 
           if (response.ok) {
-            console.log('Kick Auth Success');
+            const data = await response.json();
+            console.log('Kick Auth Success', data);
+            
+            // Clear PKCE verifier
+            localStorage.removeItem('kick_code_verifier');
+            localStorage.removeItem('kick_auth_state');
+
+            if (data.username) {
+                localStorage.setItem('kickUsername', data.username);
+                localStorage.setItem('isProfileSaved', 'true');
+                if (data.profile_pic) localStorage.setItem('kickProfilePic', data.profile_pic);
+            }
+            
             navigate('/dashboard', { replace: true });
           } else {
             console.error('Kick Auth Failed');

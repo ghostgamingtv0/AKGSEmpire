@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp } from 'lucide-react';
 import fp from '@fingerprintjs/fingerprintjs';
 
+import { generateRandomString, generateCodeChallenge } from '../pkce';
+
 const Dashboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [userData, setUserData] = useState(null);
@@ -29,8 +31,11 @@ const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
             body: JSON.stringify({ visitor_id: visitorId, ref_code: refCode })
         });
         const data = await res.json();
-        if (data.success) {
-            setUserData(data.user);
+        
+        // Handle direct user object return or success wrapper
+        if (data && (data.visitor_id || data.success)) {
+            const user = data.user || data;
+            setUserData(user);
             // Clear ref code after successful use to avoid re-sending
             if (refCode) localStorage.removeItem('ref_code');
         }
@@ -94,11 +99,21 @@ const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
     }
   };
 
-  const handleKickSync = () => {
+  const handleKickSync = async () => {
     const clientId = '01KGS5BYEFWHA2EQ51XZW8AK6B';
     const redirectUri = 'http://localhost:3000/';
-    const scope = 'user:read channel:read'; 
-    window.location.href = `https://id.kick.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+    const scope = 'user:read'; // Added user:read scope per documentation
+    
+    // PKCE Setup
+    const codeVerifier = generateRandomString(128);
+    const codeChallenge = await generateCodeChallenge(codeVerifier);
+    const state = generateRandomString(32);
+    
+    // Store verifier for the callback
+    localStorage.setItem('kick_code_verifier', codeVerifier);
+    localStorage.setItem('kick_auth_state', state);
+    
+    window.location.href = `https://id.kick.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
   };
 
   const stats = [
@@ -120,6 +135,57 @@ const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
             <p className="text-gray-400">Track your progress and ecosystem stats</p>
           </div>
         </motion.div>
+
+        {/* User Identity Section */}
+        {userData && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-panel p-6 mb-12 border border-[#53FC18]/30 relative overflow-hidden"
+          >
+             <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Users size={100} />
+             </div>
+             
+             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <Users className="text-[#53FC18]" />
+              User Identity
+            </h2>
+
+            <div className="flex items-center gap-6">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#53FC18] to-black p-1">
+                    <div className="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
+                        {userData.kick_username ? (
+                            <img 
+                                src={`https://ui-avatars.com/api/?name=${userData.kick_username}&background=53FC18&color=000`} 
+                                alt={userData.kick_username} 
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <Users className="text-[#53FC18]" size={24} />
+                        )}
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 className="text-2xl font-bold text-white">
+                        {userData.kick_username || 'Anonymous User'}
+                    </h3>
+                    <p className="text-gray-400 text-sm font-mono">
+                        ID: {userData.visitor_id?.substring(0, 12)}...
+                    </p>
+                    {userData.kick_username && (
+                        <div className="flex items-center gap-2 mt-2">
+                            <span className="px-2 py-0.5 rounded bg-[#53FC18]/20 text-[#53FC18] text-xs border border-[#53FC18]/30">
+                                Kick Verified
+                            </span>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+          </motion.div>
+        )}
 
         {/* Referral Section */}
         {userData && (
@@ -172,13 +238,13 @@ const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
             Live Analytics
           </h3>
           {/* Sync Button restored */}
-          {/* <button 
+          <button 
             onClick={handleKickSync} 
             className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-[#53FC18] transition-colors"
             title="Sync Kick Stats"
           >
             Sync
-          </button> */}
+          </button>
         </div>
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           {stats.map((stat, index) => (
