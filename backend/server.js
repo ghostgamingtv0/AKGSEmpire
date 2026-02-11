@@ -232,6 +232,173 @@ app.get('/api/tiktok/login', (req, res) => {
     res.redirect(`${url}?${params.toString()}`);
 });
 
+// --- Instagram OAuth Flow ---
+const INSTAGRAM_CLIENT_ID = (process.env.INSTAGRAM_CLIENT_ID || '').trim();
+const INSTAGRAM_CLIENT_SECRET = (process.env.INSTAGRAM_CLIENT_SECRET || '').trim();
+
+app.get('/api/instagram/login', (req, res) => {
+    const redirectUri = `${req.protocol}://${req.get('host')}/api/instagram/callback`;
+    const url = `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CLIENT_ID}&redirect_uri=${redirectUri}&scope=user_profile,user_media&response_type=code`;
+    res.redirect(url);
+});
+
+app.get('/api/instagram/callback', async (req, res) => {
+    const { code } = req.query;
+    if (!code) return res.status(400).send('No code provided');
+
+    const redirectUri = `${req.protocol}://${req.get('host')}/api/instagram/callback`;
+    
+    try {
+        // Exchange code for token
+        const formData = new URLSearchParams();
+        formData.append('client_id', INSTAGRAM_CLIENT_ID);
+        formData.append('client_secret', INSTAGRAM_CLIENT_SECRET);
+        formData.append('grant_type', 'authorization_code');
+        formData.append('redirect_uri', redirectUri);
+        formData.append('code', code);
+
+        const tokenRes = await fetch('https://api.instagram.com/oauth/access_token', {
+            method: 'POST',
+            body: formData
+        });
+
+        const tokenData = await tokenRes.json();
+        if (tokenData.error_type) throw new Error(JSON.stringify(tokenData));
+
+        const accessToken = tokenData.access_token;
+        const userId = tokenData.user_id;
+
+        // Get User Profile
+        const userRes = await fetch(`https://graph.instagram.com/${userId}?fields=id,username&access_token=${accessToken}`);
+        const userData = await userRes.json();
+        const username = userData.username || 'Instagram User';
+
+        res.send(`
+            <h1>✅ Instagram Connected!</h1>
+            <p>Hello ${username}</p>
+            <script>
+                if(window.opener) {
+                    window.opener.postMessage({ type: 'INSTAGRAM_CONNECTED', username: '${username}' }, '*');
+                    window.close();
+                } else {
+                    window.location.href = '/earn';
+                }
+            </script>
+        `);
+
+    } catch (e) {
+        console.error('Instagram Auth Error:', e);
+        res.status(500).send('Instagram Auth Failed');
+    }
+});
+
+// --- Facebook OAuth Flow ---
+const FACEBOOK_CLIENT_ID = (process.env.FACEBOOK_CLIENT_ID || '').trim();
+const FACEBOOK_CLIENT_SECRET = (process.env.FACEBOOK_CLIENT_SECRET || '').trim();
+
+app.get('/api/facebook/login', (req, res) => {
+    const redirectUri = `${req.protocol}://${req.get('host')}/api/facebook/callback`;
+    const url = `https://www.facebook.com/v12.0/dialog/oauth?client_id=${FACEBOOK_CLIENT_ID}&redirect_uri=${redirectUri}&state=facebook_auth`;
+    res.redirect(url);
+});
+
+app.get('/api/facebook/callback', async (req, res) => {
+    const { code } = req.query;
+    if (!code) return res.status(400).send('No code provided');
+
+    const redirectUri = `${req.protocol}://${req.get('host')}/api/facebook/callback`;
+
+    try {
+        const tokenRes = await fetch(`https://graph.facebook.com/v12.0/oauth/access_token?client_id=${FACEBOOK_CLIENT_ID}&redirect_uri=${redirectUri}&client_secret=${FACEBOOK_CLIENT_SECRET}&code=${code}`);
+        const tokenData = await tokenRes.json();
+        if (tokenData.error) throw new Error(JSON.stringify(tokenData));
+
+        const accessToken = tokenData.access_token;
+        
+        // Get User Name
+        const userRes = await fetch(`https://graph.facebook.com/me?fields=id,name&access_token=${accessToken}`);
+        const userData = await userRes.json();
+        const username = userData.name || 'Facebook User';
+
+        res.send(`
+            <h1>✅ Facebook Connected!</h1>
+            <p>Hello ${username}</p>
+            <script>
+                if(window.opener) {
+                    window.opener.postMessage({ type: 'FACEBOOK_CONNECTED', username: '${username}' }, '*');
+                    window.close();
+                } else {
+                    window.location.href = '/earn';
+                }
+            </script>
+        `);
+
+    } catch (e) {
+        console.error('Facebook Auth Error:', e);
+        res.status(500).send('Facebook Auth Failed');
+    }
+});
+
+// --- Threads OAuth Flow ---
+const THREADS_CLIENT_ID = (process.env.THREADS_CLIENT_ID || '').trim();
+const THREADS_CLIENT_SECRET = (process.env.THREADS_CLIENT_SECRET || '').trim();
+
+app.get('/api/threads/login', (req, res) => {
+    const redirectUri = `${req.protocol}://${req.get('host')}/api/threads/callback`;
+    const scope = 'threads_basic';
+    const url = `https://threads.net/oauth/authorize?client_id=${THREADS_CLIENT_ID}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`;
+    res.redirect(url);
+});
+
+app.get('/api/threads/callback', async (req, res) => {
+    const { code } = req.query;
+    if (!code) return res.status(400).send('No code provided');
+
+    const redirectUri = `${req.protocol}://${req.get('host')}/api/threads/callback`;
+
+    try {
+        const formData = new URLSearchParams();
+        formData.append('client_id', THREADS_CLIENT_ID);
+        formData.append('client_secret', THREADS_CLIENT_SECRET);
+        formData.append('grant_type', 'authorization_code');
+        formData.append('redirect_uri', redirectUri);
+        formData.append('code', code);
+
+        const tokenRes = await fetch('https://graph.threads.net/oauth/access_token', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const tokenData = await tokenRes.json();
+        if (tokenData.error) throw new Error(JSON.stringify(tokenData));
+
+        const accessToken = tokenData.access_token;
+        const userId = tokenData.user_id;
+
+        // Get Threads Username (Note: Threads API might behave differently for fields)
+        const userRes = await fetch(`https://graph.threads.net/v1.0/me?fields=id,username&access_token=${accessToken}`);
+        const userData = await userRes.json();
+        const username = userData.username || 'Threads User';
+
+        res.send(`
+            <h1>✅ Threads Connected!</h1>
+            <p>Hello ${username}</p>
+            <script>
+                if(window.opener) {
+                    window.opener.postMessage({ type: 'THREADS_CONNECTED', username: '${username}' }, '*');
+                    window.close();
+                } else {
+                    window.location.href = '/earn';
+                }
+            </script>
+        `);
+
+    } catch (e) {
+        console.error('Threads Auth Error:', e);
+        res.status(500).send('Threads Auth Failed');
+    }
+});
+
 // TikTok Webhook / Data Deletion Callback (POST)
 // Required for "Webhooks" and "Data Portability" compliance testing
 app.post(['/api/tiktok/callback', '/api/tiktok/webhook'], (req, res) => {
