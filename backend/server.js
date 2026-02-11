@@ -153,8 +153,8 @@ const setSystemStat = async (key, value) => {
 
 
 // --- TikTok OAuth Flow ---
-const TIKTOK_CLIENT_KEY = process.env.TIKTOK_CLIENT_KEY;
-const TIKTOK_CLIENT_SECRET = process.env.TIKTOK_CLIENT_SECRET;
+const TIKTOK_CLIENT_KEY = process.env.TIKTOK_CLIENT_KEY || 'awybmwoe72ngwrao';
+const TIKTOK_CLIENT_SECRET = process.env.TIKTOK_CLIENT_SECRET || 'z52hU47VSzTYUYWVANb7hLDX4L87NptJ';
 
 app.get('/api/tiktok/login', (req, res) => {
     const { visitor_id } = req.query;
@@ -164,7 +164,9 @@ app.get('/api/tiktok/login', (req, res) => {
     const stateObj = { csrf: csrfState, visitor_id };
     const state = JSON.stringify(stateObj);
 
-    const redirectUri = `${req.protocol}://${req.get('host')}/api/tiktok/callback`;
+    // Force HTTPS for production
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const redirectUri = `${protocol}://${req.get('host')}/api/tiktok/callback`;
     const url = 'https://www.tiktok.com/v2/auth/authorize/';
 
     const params = new URLSearchParams({
@@ -185,7 +187,9 @@ const INSTAGRAM_CLIENT_SECRET = (process.env.INSTAGRAM_CLIENT_SECRET || '90d640b
 app.get('/api/instagram/login', (req, res) => {
     const { visitor_id } = req.query;
     const state = visitor_id ? JSON.stringify({ visitor_id }) : '{}';
-    const redirectUri = `${req.protocol}://${req.get('host')}/api/instagram/callback/`;
+    // Force HTTPS for production
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const redirectUri = `${protocol}://${req.get('host')}/api/instagram/callback/`;
     const url = `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CLIENT_ID}&redirect_uri=${redirectUri}&scope=user_profile,user_media&response_type=code&state=${encodeURIComponent(state)}`;
     res.redirect(url);
 });
@@ -209,7 +213,9 @@ app.get('/api/instagram/callback', async (req, res) => {
     const { code, state } = req.query;
     if (!code) return res.status(400).send('No code provided');
 
-    const redirectUri = `${req.protocol}://${req.get('host')}/api/instagram/callback/`; // Match trailing slash
+    // Force HTTPS for production
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const redirectUri = `${protocol}://${req.get('host')}/api/instagram/callback/`; // Match trailing slash
     
     try {
         // Exchange code for token
@@ -357,8 +363,9 @@ app.get('/api/facebook/callback', async (req, res) => {
 // Threads API is still in beta/limited access for many.
 // We will reuse Instagram flow or simulate it for now.
 app.get('/api/threads/login', (req, res) => {
-    // For now, redirect to Instagram login as they are linked
-    res.redirect('/api/instagram/login');
+    // Forward to Instagram login with query params (to preserve visitor_id)
+    const queryString = new URLSearchParams(req.query).toString();
+    res.redirect(`/api/instagram/login?${queryString}`);
 });
 
 app.get('/api/tiktok/callback', async (req, res) => {
@@ -375,7 +382,9 @@ app.get('/api/tiktok/callback', async (req, res) => {
         console.error('Error parsing TikTok state:', e);
     }
     
-    const redirectUri = `${req.protocol}://${req.get('host')}/api/tiktok/callback`;
+    // Force HTTPS for production
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const redirectUri = `${protocol}://${req.get('host')}/api/tiktok/callback`;
 
     try {
         const params = new URLSearchParams();
