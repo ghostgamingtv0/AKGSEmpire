@@ -226,6 +226,14 @@ app.get('/api/tiktok/login', (req, res) => {
     res.redirect(`${url}?${params.toString()}`);
 });
 
+// TikTok Webhook / Data Deletion Callback (POST)
+// Required for "Webhooks" and "Data Portability" compliance testing
+app.post(['/api/tiktok/callback', '/api/tiktok/webhook'], (req, res) => {
+    console.log('📩 TikTok Webhook/Callback POST Received:', JSON.stringify(req.body));
+    // TikTok expects 200 OK
+    res.status(200).send();
+});
+
 app.get('/api/tiktok/callback', async (req, res) => {
     const { code, state } = req.query;
     if (!code) return res.status(400).send('No code provided');
