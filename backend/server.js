@@ -243,6 +243,21 @@ app.get('/api/instagram/login', (req, res) => {
 });
 
 app.get('/api/instagram/callback', async (req, res) => {
+    // Webhook Verification (GET request)
+    const mode = req.query['hub.mode'];
+    const token = req.query['hub.verify_token'];
+    const challenge = req.query['hub.challenge'];
+
+    if (mode && token) {
+        if (mode === 'subscribe' && token === 'akgs_verify_token') {
+            console.log('WEBHOOK_VERIFIED');
+            return res.status(200).send(challenge);
+        } else {
+            return res.sendStatus(403);
+        }
+    }
+
+    // Normal OAuth Callback Code Exchange
     const { code } = req.query;
     if (!code) return res.status(400).send('No code provided');
 
