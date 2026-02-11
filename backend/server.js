@@ -198,8 +198,8 @@ const testConnection = async () => {
 testConnection();
 
 
-const TIKTOK_CLIENT_KEY = process.env.TIKTOK_CLIENT_KEY || 'awybmwoe72ngwrao';
-const TIKTOK_CLIENT_SECRET = process.env.TIKTOK_CLIENT_SECRET || 'z52hU47VSzTYUYWVANb7hLDX4L87NptJ';
+const TIKTOK_CLIENT_KEY = (process.env.TIKTOK_CLIENT_KEY || 'awybmwoe72ngwrao').trim();
+const TIKTOK_CLIENT_SECRET = (process.env.TIKTOK_CLIENT_SECRET || 'z52hU47VSzTYUYWVANb7hLDX4L87NptJ').trim();
 
 // --- TikTok OAuth Flow ---
 app.get('/api/tiktok/login', (req, res) => {
@@ -213,7 +213,7 @@ app.get('/api/tiktok/login', (req, res) => {
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const redirectUri = `${protocol}://${host}/api/tiktok/callback`;
 
-    console.log(`🔗 TikTok Login: Redirecting to ${redirectUri}`);
+    console.log(`🔗 TikTok Login: Redirecting to ${redirectUri} with Client Key: ${TIKTOK_CLIENT_KEY}`);
 
     const params = new URLSearchParams({
         client_key: TIKTOK_CLIENT_KEY,
