@@ -136,6 +136,10 @@ const TimeBox = ({ value, label, labelAr }) => {
 };
 
 const ComingSoon = () => {
+  const handleTikTokLogin = () => {
+    window.location.href = 'https://akgsempire.org/api/tiktok/login';
+  };
+
   const badges = useMemo(() => ['Web3 Gaming', 'Metaverse', 'Social2Earn', 'Watch2Earn'].map(text => ({
       text,
       style: {
@@ -255,6 +259,30 @@ const ComingSoon = () => {
                 </span>
             ))}
         </div>
+
+        {/* TikTok Login Button */}
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-4 mb-10"
+        >
+            <button
+                onClick={handleTikTokLogin}
+                className="group relative inline-flex items-center gap-3 px-8 py-4 bg-[#000000] border border-[#53FC18]/30 rounded-xl hover:bg-[#53FC18]/10 transition-all duration-300 hover:scale-105 hover:border-[#53FC18]"
+            >
+                <div className="absolute inset-0 bg-[#53FC18]/5 blur-xl group-hover:bg-[#53FC18]/20 transition-all duration-500 rounded-xl" />
+                <svg className="w-6 h-6 text-white group-hover:text-[#53FC18] transition-colors" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
+                <span className="text-lg font-bold text-white group-hover:text-[#53FC18] transition-colors relative z-10">
+                    Login with TikTok
+                </span>
+            </button>
+            <p className="mt-4 text-xs text-gray-500 max-w-md mx-auto">
+                Connect your account to verify identity and start earning.
+            </p>
+        </motion.div>
         
         <div className="flex flex-col gap-4 mb-10 max-w-4xl mx-auto">
           <p className="text-xl md:text-4xl text-white font-bold tracking-wide leading-relaxed drop-shadow-lg" dir="rtl">
