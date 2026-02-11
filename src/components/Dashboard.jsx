@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap } from 'lucide-react';
-import { FaPlay, FaPowerOff } from 'react-icons/fa6';
+import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap, Share2 } from 'lucide-react';
+import { FaPlay, FaPowerOff, FaInstagram, FaTiktok, FaFacebook } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
 
 import { generateRandomString, generateCodeChallenge } from '../pkce';
@@ -257,6 +257,81 @@ const Dashboard = () => {
                 </div>
             </div>
 
+          </motion.div>
+        )}
+
+        {/* Social Connections Section */}
+        {userData && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-panel p-8 mb-12 border border-[#53FC18]/30"
+          >
+            <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
+              <Share2 className="text-[#53FC18]" size={32} />
+              Social Connections
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Kick */}
+                <div className={`p-4 rounded-xl border ${userData.kick_username ? 'border-[#53FC18]/50 bg-[#53FC18]/10' : 'border-white/10 bg-white/5'}`}>
+                    <div className="flex items-center gap-3 mb-2">
+                         <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-[#53FC18]">
+                             <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current"><path d="M3 0h18a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3zm5.7 6.6h2.7v3.6l3.3-3.6h3.6l-4.2 4.5 4.5 6.3h-3.6l-3-4.2v4.2H8.7V6.6z"/></svg>
+                         </div>
+                         <h3 className="font-bold">Kick</h3>
+                    </div>
+                    {userData.kick_username ? (
+                        <p className="text-[#53FC18] font-mono text-sm">@{userData.kick_username}</p>
+                    ) : (
+                        <button onClick={handleKickSync} className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded">Connect</button>
+                    )}
+                </div>
+
+                {/* TikTok */}
+                <div className={`p-4 rounded-xl border ${userData.tiktok_username ? 'border-[#ff0050]/50 bg-[#ff0050]/10' : 'border-white/10 bg-white/5'}`}>
+                    <div className="flex items-center gap-3 mb-2">
+                         <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white">
+                             <FaTiktok size={20} />
+                         </div>
+                         <h3 className="font-bold">TikTok</h3>
+                    </div>
+                    {userData.tiktok_username ? (
+                        <p className="text-[#ff0050] font-mono text-sm">@{userData.tiktok_username}</p>
+                    ) : (
+                        <p className="text-gray-500 text-xs">Link via Earn Page</p>
+                    )}
+                </div>
+
+                {/* Instagram */}
+                <div className={`p-4 rounded-xl border ${userData.instagram_username ? 'border-[#E1306C]/50 bg-[#E1306C]/10' : 'border-white/10 bg-white/5'}`}>
+                    <div className="flex items-center gap-3 mb-2">
+                         <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-[#E1306C]">
+                             <FaInstagram size={24} />
+                         </div>
+                         <h3 className="font-bold">Instagram</h3>
+                    </div>
+                    {userData.instagram_username ? (
+                        <p className="text-[#E1306C] font-mono text-sm">@{userData.instagram_username}</p>
+                    ) : (
+                        <p className="text-gray-500 text-xs">Link via Earn Page</p>
+                    )}
+                </div>
+
+                {/* Facebook */}
+                <div className={`p-4 rounded-xl border ${userData.facebook_username ? 'border-[#1877F2]/50 bg-[#1877F2]/10' : 'border-white/10 bg-white/5'}`}>
+                    <div className="flex items-center gap-3 mb-2">
+                         <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-[#1877F2]">
+                             <FaFacebook size={24} />
+                         </div>
+                         <h3 className="font-bold">Facebook</h3>
+                    </div>
+                    {userData.facebook_username ? (
+                        <p className="text-[#1877F2] font-mono text-sm">@{userData.facebook_username}</p>
+                    ) : (
+                        <p className="text-gray-500 text-xs">Link via Earn Page</p>
+                    )}
+                </div>
+            </div>
           </motion.div>
         )}
 

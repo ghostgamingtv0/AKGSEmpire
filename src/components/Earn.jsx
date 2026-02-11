@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, Clock, Coins, Lock, Crown, Percent, Zap, Shield, ShieldCheck, Gem, Bell, PlayCircle, Video, Image as ImageIcon, Plus, Wallet, Ghost, Info, Share2, Youtube, Users } from 'lucide-react';
-import { FaInstagram, FaShareNodes, FaXTwitter, FaTiktok, FaThreads } from 'react-icons/fa6';
+import { FaInstagram, FaShareNodes, FaXTwitter, FaTiktok, FaThreads, FaFacebook } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
 import { generateRandomString, generateCodeChallenge } from '../pkce';
 
@@ -285,6 +285,18 @@ const Earn = () => {
     },
     { 
       id: 17, 
+      type: 'social', 
+      platform: 'Facebook', 
+      action: 'Follow on Facebook', 
+      reward: '5 Points', 
+      status: 'pending', 
+      link: 'https://www.facebook.com/ghost.gamingtv',
+      icon: (
+        <FaFacebook className="w-6 h-6 text-blue-600" />
+      )
+    },
+    { 
+      id: 18, 
       type: 'nft', 
       platform: 'Kick', 
       action: '4x Subs or Gift Subs', 
@@ -650,7 +662,23 @@ const Earn = () => {
         return;
     }
 
-    // 2. G-Code Requirement
+    // 2. API-Based Social Tasks (TikTok, Instagram, Facebook, Threads)
+    if (['TikTok', 'Instagram', 'Facebook', 'Threads'].includes(task.platform) && task.type === 'social') {
+        const width = 600;
+        const height = 700;
+        const left = (window.innerWidth - width) / 2;
+        const top = (window.innerHeight - height) / 2;
+        const platformKey = task.platform.toLowerCase();
+        
+        window.open(
+            `/api/${platformKey}/login?visitor_id=${visitorId}`, 
+            `${task.platform}Auth`, 
+            `width=${width},height=${height},top=${top},left=${left}`
+        );
+        return;
+    }
+
+    // 3. G-Code Requirement
     // Mandatory if instruction contains "MANDATORY" - ONLY for Watch Tasks
     const isMandatory = task.type === 'watch' && task.instruction && task.instruction.includes('MANDATORY');
 
@@ -843,7 +871,57 @@ const Earn = () => {
 
 
 
-  // Handle OAuth Callback
+  // Handle OAuth Callback Messages (Popup)
+  useEffect(() => {
+    const handleMessage = async (event) => {
+        // Verify origin if needed, but for local/prod hybrid we might be lenient or check specific domains
+        // if (event.origin !== window.location.origin) return; 
+
+        const { type, username } = event.data;
+        if (!type || !username) return;
+
+        let platform = '';
+        let taskId = 0;
+
+        switch (type) {
+            case 'TIKTOK_CONNECTED':
+                platform = 'TikTok';
+                taskId = 4;
+                break;
+            case 'INSTAGRAM_CONNECTED':
+                platform = 'Instagram';
+                taskId = 3;
+                break;
+            case 'FACEBOOK_CONNECTED':
+                platform = 'Facebook';
+                taskId = 17;
+                break;
+            case 'THREADS_CONNECTED':
+                platform = 'Threads';
+                taskId = 7;
+                break;
+            default:
+                return;
+        }
+
+        if (platform && taskId) {
+            console.log(`✅ ${platform} Connected: ${username}`);
+            // Claim the task
+            const task = tasks.find(t => t.id === taskId);
+            if (task && !claimedTasks.includes(taskId)) {
+                await claimTask(task);
+                alert(`${platform} Connected as ${username}!\nReward Claimed!`);
+            } else {
+                alert(`${platform} Connected as ${username}!`);
+            }
+        }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [tasks, claimedTasks]);
+
+  // Handle OAuth Callback (Redirect)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');

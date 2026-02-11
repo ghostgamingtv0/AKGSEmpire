@@ -107,6 +107,13 @@ client.once('ready', async () => {
     setInterval(() => {
         // console.log('❤️ Heartbeat...');
     }, 30000);
+
+    // Periodic Member Count Update (Every 10 minutes)
+    setInterval(() => {
+        client.guilds.cache.forEach(async (guild) => {
+             await updateMemberCount(guild);
+        });
+    }, 600000);
 });
 
 async function populateAllChannels(guild) {
@@ -122,8 +129,25 @@ async function populateAllChannels(guild) {
     // Links (New)
     await sendLinksEmbed(guild);
 
+    // Update Member Count in DB
+    await updateMemberCount(guild);
+
     // Gaming
     await populateGamingChannels(guild);
+}
+
+// --- DB SYNC ---
+import sqlite3 from 'sqlite3';
+import { join } from 'path';
+const dbPath = join(__dirname, 'database.sqlite');
+const db = new sqlite3.Database(dbPath);
+
+async function updateMemberCount(guild) {
+    const count = guild.memberCount;
+    db.run('INSERT OR REPLACE INTO system_stats (key, value) VALUES (?, ?)', ['discord_members', count.toString()], (err) => {
+        if (err) console.error('Failed to update Discord stats:', err);
+        else console.log(`Updated Discord Member Count: ${count}`);
+    });
 }
 
 // --- CLEANUP FUNCTION ---
@@ -383,8 +407,12 @@ async function sendLinksEmbed(guild) {
                     .addFields(
                         { name: '🌐 Website', value: '[akgsempire.org](https://akgsempire.org)', inline: true },
                         { name: '🟢 Kick Stream', value: '[ghost_gamingtv](https://kick.com/ghost_gamingtv)', inline: true },
-                        { name: '🐦 Twitter (X)', value: '[@AKGS_Empire](https://twitter.com/AKGS_Empire)', inline: true },
+                        { name: '🐦 Twitter (X)', value: '[@tv_ghostgaming](https://x.com/tv_ghostgaming)', inline: true },
                         { name: '📸 Instagram', value: '[@ghost.gamingtv](https://instagram.com/ghost.gamingtv)', inline: true },
+                        { name: '🎵 TikTok', value: '[@ghost.gamingtv](https://tiktok.com/@ghost.gamingtv)', inline: true },
+                        { name: '📘 Facebook', value: '[@ghost.gamingtv](https://facebook.com/ghost.gamingtv)', inline: true },
+                        { name: '🧵 Threads', value: '[@ghost.gamingtv](https://threads.net/@ghost.gamingtv)', inline: true },
+                        { name: '✈️ Telegram', value: '[ghost_gamingtv](https://t.me/ghost_gamingtv)', inline: true },
                         { name: '📈 GeckoTerminal', value: '[AKGS/POL Chart](https://www.geckoterminal.com/polygon_pos/pools/0xd3bfe6273c8a2aecff5d1fdea6827c70478ccb4a7e25259b5f0e3933af3c573f)', inline: false }
                     )
                     .setFooter({ text: THEME.FOOTER });
