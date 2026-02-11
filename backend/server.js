@@ -20,11 +20,8 @@ app.use(cors());
 app.use(express.json());
 
 // Explicit Route for TikTok Verification
-app.get('/tiktokqfGXBGgUXkMcnQDdwq3B7hOdThOrskcI.html', (req, res) => {
-    res.send('tiktok-developers-site-verification=qfGXBGgUXkMcnQDdwq3B7hOdThOrskcI');
-});
-// Fallback if they check without extension
-app.get('/tiktokqfGXBGgUXkMcnQDdwq3B7hOdThOrskcI', (req, res) => {
+app.get(['/tiktokqfGXBGgUXkMcnQDdwq3B7hOdThOrskcI.html', '/tiktokqfGXBGgUXkMcnQDdwq3B7hOdThOrskcI'], (req, res) => {
+    res.set('Content-Type', 'text/html');
     res.send('tiktok-developers-site-verification=qfGXBGgUXkMcnQDdwq3B7hOdThOrskcI');
 });
 
