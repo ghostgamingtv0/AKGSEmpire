@@ -1,0 +1,10 @@
+{
+  "name": "akgs-automation",
+  "version": "1.0.0",
+  "description": "Automation scripts for AKGS Empire",
+  "main": "discord_setup.js",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.1"
+  }
+}

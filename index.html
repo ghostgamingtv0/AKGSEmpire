@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="tiktok-developers-site-verification" content="qfGXBGgUXkMcnQDdwq3B7hOdThOrskcI" />
+    
+    <!-- Google Fonts: Orbitron (Sci-Fi/Gaming) & Rajdhani (Tech/Futuristic) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    
+    <!-- Google Tag Manager (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
+    <!-- SEO & Social Meta Tags (Extracted & Adapted from Professional Standards) -->
+    <title>AKGS Empire | Coming Soon</title>
+    <meta name="description" content="AKGS Empire is Coming Soon. The ultimate Social2Earn & Watch2Earn platform. Get ready for the revolution." />
+    <meta name="keywords" content="AKGS, Coming Soon, Social2Earn, Watch2Earn, Kick Streaming, Crypto Rewards, Web3 Gaming" />
+    <meta name="token_contract" content="0xc291F63681Cd76383c3bDabE0B8E4bb072B4DF65" />
+    <meta name="author" content="AKGS Empire" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://akgsempire.org/" />
+    <meta property="og:title" content="AKGS Empire | Social2Earn & Watch2Earn Platform" />
+    <meta property="og:description" content="Join the empire. Watch streams, complete tasks, and earn rewards in the ultimate Social2Earn ecosystem." />
+    <meta property="og:image" content="/og-image.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://akgsempire.org/" />
+    <meta property="twitter:title" content="AKGS Empire | Social2Earn & Watch2Earn Platform" />
+    <meta property="twitter:description" content="Join the empire. Watch streams, complete tasks, and earn rewards in the ultimate Social2Earn ecosystem." />
+    <meta property="twitter:image" content="/og-image.png" />
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "AKGS Empire",
+      "applicationCategory": "FinanceApplication",
+      "description": "A comprehensive Social2Earn and Watch2Earn platform integrating Kick streaming and crypto rewards.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+  </head>
+  <body class="bg-[#050505] text-white">
+    <!-- Facebook SDK for JavaScript -->
+    <div id="fb-root"></div>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '789142730195424',
+          cookie     : true,
+          xfbml      : true,
+          version    : 'v18.0'
+        });
+        FB.AppEvents.logPageView();   
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "https://connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

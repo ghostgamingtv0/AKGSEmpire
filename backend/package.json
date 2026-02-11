@@ -1,0 +1,29 @@
+{
+  "name": "akgs-backend",
+  "version": "1.0.0",
+  "description": "Backend for AKGS Empire",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^5.0.1",
+    "axios": "^1.13.5",
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "mysql2": "^3.9.1",
+    "node-cron": "^4.2.1",
+    "rss-parser": "^3.13.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "localtunnel": "^2.0.2"
+  }
+}
