@@ -233,8 +233,8 @@ app.get('/api/tiktok/login', (req, res) => {
 });
 
 // --- Instagram OAuth Flow ---
-const INSTAGRAM_CLIENT_ID = (process.env.INSTAGRAM_CLIENT_ID || '').trim();
-const INSTAGRAM_CLIENT_SECRET = (process.env.INSTAGRAM_CLIENT_SECRET || '').trim();
+const INSTAGRAM_CLIENT_ID = (process.env.INSTAGRAM_CLIENT_ID || '949236510997168').trim();
+const INSTAGRAM_CLIENT_SECRET = (process.env.INSTAGRAM_CLIENT_SECRET || '90d640b8cc494fb02dc5334650db9550').trim();
 
 app.get('/api/instagram/login', (req, res) => {
     const redirectUri = `${req.protocol}://${req.get('host')}/api/instagram/callback`;
