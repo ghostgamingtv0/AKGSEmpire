@@ -44,7 +44,7 @@ app.get('/api/stats', async (req, res) => {
 
 // Explicit Route for TikTok Verification
 app.get('/tiktok_verifier.txt', (req, res) => {
-    res.send('tiktok-developers-site-verification=JlP1lAEYHsmCcVYlRkjkQGLGkECC6bxE');
+    res.send('tiktok-developers-site-verification=xJgu1ONkNFns9xGKdH1XGFvmxyj5M6lu');
 });
 
 // --- Database Setup ---
