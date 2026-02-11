@@ -308,8 +308,8 @@ app.get('/api/instagram/callback', async (req, res) => {
 });
 
 // --- Facebook OAuth Flow ---
-const FACEBOOK_CLIENT_ID = (process.env.FACEBOOK_CLIENT_ID || '').trim();
-const FACEBOOK_CLIENT_SECRET = (process.env.FACEBOOK_CLIENT_SECRET || '').trim();
+const FACEBOOK_CLIENT_ID = (process.env.FACEBOOK_CLIENT_ID || '1205101025030951').trim();
+const FACEBOOK_CLIENT_SECRET = (process.env.FACEBOOK_CLIENT_SECRET || '6d3de743361d7f8e367394c4e6edfa24').trim();
 
 app.get('/api/facebook/login', (req, res) => {
     const redirectUri = `${req.protocol}://${req.get('host')}/api/facebook/callback`;
@@ -355,8 +355,8 @@ app.get('/api/facebook/callback', async (req, res) => {
 });
 
 // --- Threads OAuth Flow ---
-const THREADS_CLIENT_ID = (process.env.THREADS_CLIENT_ID || '').trim();
-const THREADS_CLIENT_SECRET = (process.env.THREADS_CLIENT_SECRET || '').trim();
+const THREADS_CLIENT_ID = (process.env.THREADS_CLIENT_ID || '2596288067438204').trim();
+const THREADS_CLIENT_SECRET = (process.env.THREADS_CLIENT_SECRET || '05da85269e25a259fc738e16c619fc84').trim();
 
 app.get('/api/threads/login', (req, res) => {
     const redirectUri = `${req.protocol}://${req.get('host')}/api/threads/callback`;
