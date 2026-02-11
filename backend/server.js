@@ -203,6 +203,11 @@ const TIKTOK_CLIENT_SECRET = (process.env.TIKTOK_CLIENT_SECRET || 'NB968WIQM0wXv
 
 // --- TikTok OAuth Flow ---
 // Serve TikTok verification file explicitly
+app.get(['/tiktokJlP1lAEYHsmCcVYlRkjkQGLGkECC6bxE.html', '/tiktokJlP1lAEYHsmCcVYlRkjkQGLGkECC6bxE'], (req, res) => {
+    res.set('Content-Type', 'text/html');
+    res.send('tiktok-developers-site-verification=JlP1lAEYHsmCcVYlRkjkQGLGkECC6bxE');
+});
+
 app.get(['/tiktokOsbbaMIa84FaBVlSXk5yijKiexW8J6Pn.html', '/tiktokOsbbaMIa84FaBVlSXk5yijKiexW8J6Pn'], (req, res) => {
     res.set('Content-Type', 'text/html');
     res.send('tiktok-developers-site-verification=OsbbaMIa84FaBVlSXk5yijKiexW8J6Pn');
