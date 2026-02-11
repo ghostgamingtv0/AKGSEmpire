@@ -198,19 +198,14 @@ const testConnection = async () => {
 testConnection();
 
 
-const TIKTOK_CLIENT_KEY = (process.env.TIKTOK_CLIENT_KEY || 'sbawjlnbjn9awgt1y6').trim();
-const TIKTOK_CLIENT_SECRET = (process.env.TIKTOK_CLIENT_SECRET || 'NB968WIQM0wXvpenhSRoQEmvT1qda0ja').trim();
+const TIKTOK_CLIENT_KEY = (process.env.TIKTOK_CLIENT_KEY || 'awbfkhcubppx8o8o').trim();
+const TIKTOK_CLIENT_SECRET = (process.env.TIKTOK_CLIENT_SECRET || 'MUSWr5HzuSnOQ8LFjHaHdJGJGrB1MQUK').trim();
 
 // --- TikTok OAuth Flow ---
 // Serve TikTok verification file explicitly
 app.get(['/tiktokJlP1lAEYHsmCcVYlRkjkQGLGkECC6bxE.html', '/tiktokJlP1lAEYHsmCcVYlRkjkQGLGkECC6bxE'], (req, res) => {
     res.set('Content-Type', 'text/html');
     res.send('tiktok-developers-site-verification=JlP1lAEYHsmCcVYlRkjkQGLGkECC6bxE');
-});
-
-app.get(['/tiktokOsbbaMIa84FaBVlSXk5yijKiexW8J6Pn.html', '/tiktokOsbbaMIa84FaBVlSXk5yijKiexW8J6Pn'], (req, res) => {
-    res.set('Content-Type', 'text/html');
-    res.send('tiktok-developers-site-verification=OsbbaMIa84FaBVlSXk5yijKiexW8J6Pn');
 });
 
 app.get('/api/tiktok/login', (req, res) => {
