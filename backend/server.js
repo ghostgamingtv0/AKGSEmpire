@@ -198,6 +198,9 @@ const testConnection = async () => {
 testConnection();
 
 
+const TIKTOK_CLIENT_KEY = process.env.TIKTOK_CLIENT_KEY || 'awybmwoe72ngwrao';
+const TIKTOK_CLIENT_SECRET = process.env.TIKTOK_CLIENT_SECRET || 'z52hU47VSzTYUYWVANb7hLDX4L87NptJ';
+
 // --- TikTok OAuth Flow ---
 app.get('/api/tiktok/login', (req, res) => {
     const csrfState = Math.random().toString(36).substring(7);
@@ -213,7 +216,7 @@ app.get('/api/tiktok/login', (req, res) => {
     console.log(`🔗 TikTok Login: Redirecting to ${redirectUri}`);
 
     const params = new URLSearchParams({
-        client_key: process.env.TIKTOK_CLIENT_KEY,
+        client_key: TIKTOK_CLIENT_KEY,
         scope: 'user.info.basic', // Basic scope to get OpenID/Username
         response_type: 'code',
         redirect_uri: redirectUri, // Dynamic
@@ -246,12 +249,12 @@ app.get('/api/tiktok/callback', async (req, res) => {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
-                client_key: process.env.TIKTOK_CLIENT_KEY,
-                client_secret: process.env.TIKTOK_CLIENT_SECRET,
-                code: code,
+                client_key: TIKTOK_CLIENT_KEY,
+                client_secret: TIKTOK_CLIENT_SECRET,
+                code,
                 grant_type: 'authorization_code',
-                redirect_uri: redirectUri // Dynamic
-            })
+                redirect_uri: redirectUri,
+            }),
         });
 
         const tokenData = await tokenRes.json();
