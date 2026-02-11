@@ -198,10 +198,16 @@ const testConnection = async () => {
 testConnection();
 
 
-const TIKTOK_CLIENT_KEY = (process.env.TIKTOK_CLIENT_KEY || 'awybmwoe72ngwrao').trim();
-const TIKTOK_CLIENT_SECRET = (process.env.TIKTOK_CLIENT_SECRET || 'z52hU47VSzTYUYWVANb7hLDX4L87NptJ').trim();
+const TIKTOK_CLIENT_KEY = (process.env.TIKTOK_CLIENT_KEY || 'awbfkhcubppx8o8o').trim();
+const TIKTOK_CLIENT_SECRET = (process.env.TIKTOK_CLIENT_SECRET || 'MUSWr5HzuSnOQ8LFjHaHdJGJGrB1MQUK').trim();
 
 // --- TikTok OAuth Flow ---
+// Serve TikTok verification file explicitly
+app.get(['/tiktokxJgu1ONkNFns9xGKdH1XGFvmxyj5M6lu.html', '/tiktokxJgu1ONkNFns9xGKdH1XGFvmxyj5M6lu'], (req, res) => {
+    res.set('Content-Type', 'text/html');
+    res.send('tiktok-developers-site-verification=xJgu1ONkNFns9xGKdH1XGFvmxyj5M6lu');
+});
+
 app.get('/api/tiktok/login', (req, res) => {
     const csrfState = Math.random().toString(36).substring(7);
     res.cookie('csrfState', csrfState, { maxAge: 60000 });
