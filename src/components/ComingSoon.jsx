@@ -179,14 +179,41 @@ const ComingSoon = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const handleMessage = (event) => {
+      // Basic security check - in production you might want to be more specific
+      // if (event.origin !== window.location.origin) return; 
+      
+      const { type, username } = event.data;
+      if (type === 'TIKTOK_CONNECTED') {
+          alert(`TikTok Connected Successfully: ${username}`);
+      } else if (type === 'INSTAGRAM_CONNECTED') {
+          alert(`Instagram Connected Successfully: ${username}`);
+      } else if (type === 'FACEBOOK_CONNECTED') {
+           alert(`Facebook Connected Successfully: ${username}`);
+      }
+    };
+    
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  const openLoginPopup = (url, title) => {
+      const width = 600;
+      const height = 700;
+      const left = (window.innerWidth - width) / 2;
+      const top = (window.innerHeight - height) / 2;
+      window.open(url, title, `width=${width},height=${height},left=${left},top=${top}`);
+  };
+
   const handleTikTokLogin = () => {
     if (!visitorId) return;
-    window.location.href = `https://akgsempire.org/api/tiktok/login?visitor_id=${visitorId}`;
+    openLoginPopup(`https://akgsempire.org/api/tiktok/login?visitor_id=${visitorId}`, 'TikTok Login');
   };
 
   const handleInstagramLogin = () => {
     if (!visitorId) return;
-    window.location.href = `https://akgsempire.org/api/instagram/login?visitor_id=${visitorId}`;
+    openLoginPopup(`https://akgsempire.org/api/instagram/login?visitor_id=${visitorId}`, 'Instagram Login');
   };
 
   const handleFacebookLogin = () => {
@@ -197,34 +224,21 @@ const ComingSoon = () => {
                 console.log('Welcome!  Fetching your information.... ');
                 window.FB.api('/me', function(response) {
                     console.log('Good to see you, ' + response.name + '.');
-                    // We can verify token on server if needed, or just rely on the SDK callback
-                    // But for consistency with server-side linking, we might want to use the server flow or send the token.
-                    // For now, let's keep the SDK flow as "Display Only" or if user wants linking, maybe prefer Server Flow?
-                    // User said "Like TikTok", which is server flow.
-                    // Let's fallback to server flow for linking if SDK is just for client-side.
-                    // But wait, the previous code had a fallback.
-                    // Let's force Server Flow for consistency if that's what "Like TikTok" means.
-                    // Or keep SDK if it works.
-                    // Given the "Data Collection" requirement, Server Flow is better to update DB.
-                    // SDK only gives token to client unless we send it to backend.
-                    // The fallback below goes to /api/facebook/login.
-                    // Let's prioritize the Server Flow for data consistency?
-                    // Actually, let's keep the hybrid approach but ensure visitor_id is passed in fallback.
                     alert('Facebook Connected: ' + response.name);
                 });
             } else {
                 console.log('User cancelled login or did not fully authorize.');
-                window.location.href = `https://akgsempire.org/api/facebook/login?visitor_id=${visitorId}`;
+                openLoginPopup(`https://akgsempire.org/api/facebook/login?visitor_id=${visitorId}`, 'Facebook Login');
             }
         }, {scope: 'public_profile,email'});
     } else {
-        window.location.href = `https://akgsempire.org/api/facebook/login?visitor_id=${visitorId}`;
+        openLoginPopup(`https://akgsempire.org/api/facebook/login?visitor_id=${visitorId}`, 'Facebook Login');
     }
   };
 
   const handleThreadsLogin = () => {
     if (!visitorId) return;
-    window.location.href = `https://akgsempire.org/api/threads/login?visitor_id=${visitorId}`;
+    openLoginPopup(`https://akgsempire.org/api/threads/login?visitor_id=${visitorId}`, 'Threads Login');
   };
 
   const badges = useMemo(() => ['Web3 Gaming', 'Metaverse', 'Social2Earn', 'Watch2Earn'].map(text => ({
