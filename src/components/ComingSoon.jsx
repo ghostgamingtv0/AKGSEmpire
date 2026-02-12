@@ -179,66 +179,20 @@ const ComingSoon = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const handleMessage = (event) => {
-      // Basic security check - in production you might want to be more specific
-      // if (event.origin !== window.location.origin) return; 
-      
-      const { type, username } = event.data;
-      if (type === 'TIKTOK_CONNECTED') {
-          alert(`TikTok Connected Successfully: ${username}`);
-      } else if (type === 'INSTAGRAM_CONNECTED') {
-          alert(`Instagram Connected Successfully: ${username}`);
-      } else if (type === 'FACEBOOK_CONNECTED') {
-           alert(`Facebook Connected Successfully: ${username}`);
-      }
-    };
-    
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
-
-  const openLoginPopup = (url, title) => {
-      const width = 600;
-      const height = 700;
-      const left = (window.innerWidth - width) / 2;
-      const top = (window.innerHeight - height) / 2;
-      window.open(url, title, `width=${width},height=${height},left=${left},top=${top}`);
-  };
-
   const handleTikTokLogin = () => {
-    if (!visitorId) return;
-    openLoginPopup(`https://akgsempire.org/api/tiktok/login?visitor_id=${visitorId}`, 'TikTok Login');
+    window.open('https://www.tiktok.com/@ghost.gamingtv', '_blank');
   };
 
   const handleInstagramLogin = () => {
-    if (!visitorId) return;
-    openLoginPopup(`https://akgsempire.org/api/instagram/login?visitor_id=${visitorId}`, 'Instagram Login');
+    window.open('https://www.instagram.com/ghost.gamingtv/', '_blank');
   };
 
   const handleFacebookLogin = () => {
-    if (!visitorId) return;
-    if (window.FB) {
-        window.FB.login(function(response) {
-            if (response.authResponse) {
-                console.log('Welcome!  Fetching your information.... ');
-                window.FB.api('/me', function(response) {
-                    console.log('Good to see you, ' + response.name + '.');
-                    alert('Facebook Connected: ' + response.name);
-                });
-            } else {
-                console.log('User cancelled login or did not fully authorize.');
-                openLoginPopup(`https://akgsempire.org/api/facebook/login?visitor_id=${visitorId}`, 'Facebook Login');
-            }
-        }, {scope: 'public_profile,email'});
-    } else {
-        openLoginPopup(`https://akgsempire.org/api/facebook/login?visitor_id=${visitorId}`, 'Facebook Login');
-    }
+    window.open('https://www.facebook.com/ghost.gamingtv', '_blank');
   };
 
   const handleThreadsLogin = () => {
-    if (!visitorId) return;
-    openLoginPopup(`https://akgsempire.org/api/threads/login?visitor_id=${visitorId}`, 'Threads Login');
+    window.open('https://www.threads.net/@ghost.gamingtv', '_blank');
   };
 
   const badges = useMemo(() => ['Web3 Gaming', 'Metaverse', 'Social2Earn', 'Watch2Earn'].map(text => ({
