@@ -15,6 +15,23 @@ export default {
     const KICK_CLIENT_ID = '01KH3T8WNDZ269403HKC17JN7X';
     const KICK_CLIENT_SECRET = 'f29e0dc42671605b87263eb46264595c4b0530cacb6b5ee9e57a10e02e8faf35';
 
+    // --- Static Verification Files (Bypass SPA Routing) ---
+    if (url.pathname === "/czuudtyh60e6l29pldx1s2htix8oxz") {
+        return new Response("czuudtyh60e6l29pldx1s2htix8oxz", {
+            headers: { "Content-Type": "text/plain" }
+        });
+    }
+    if (url.pathname === "/czuudtyh60e6l29pldx1s2htix8oxz.html") {
+        return new Response("czuudtyh60e6l29pldx1s2htix8oxz", {
+            headers: { "Content-Type": "text/html" }
+        });
+    }
+    if (url.pathname === "/tiktokB2349wnKUX0GZx3d5AiH74FwPtj2x28d.txt") {
+        return new Response("tiktok-developers-site-verification=B2349wnKUX0GZx3d5AiH74FwPtj2x28d", {
+            headers: { "Content-Type": "text/plain" }
+        });
+    }
+
     // --- TikTok Routes ---
     
     // 1. TikTok Login Redirect
