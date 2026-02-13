@@ -15,7 +15,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, '../.env') });
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 const dbPath = join(__dirname, 'database.sqlite');
 
 // --- Database Setup ---
@@ -365,33 +365,6 @@ const updateGenesisSpots = (decrement = 1) => {
 app.get('/api/genesis/stats', (req, res) => {
     const stats = getGenesisStats();
     res.json(stats);
-});
-
-app.post('/api/genesis/login', (req, res) => {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-        return res.status(400).json({ success: false, error: 'Username and password required' });
-    }
-
-    try {
-        const GENESIS_USERS_FILE = join(__dirname, '../data/genesis_users.json');
-        if (!fs.existsSync(GENESIS_USERS_FILE)) {
-            return res.status(400).json({ success: false, error: 'No registered users found' });
-        }
-
-        const users = JSON.parse(fs.readFileSync(GENESIS_USERS_FILE));
-        const user = users.find(u => u.websiteNickname === username && u.password === password);
-
-        if (user) {
-            res.json({ success: true, user });
-        } else {
-            res.status(401).json({ success: false, error: 'Invalid credentials' });
-        }
-    } catch (e) {
-        console.error('Genesis Login Error:', e);
-        res.status(500).json({ success: false, error: 'Login failed' });
-    }
 });
 
 app.post('/api/genesis/test-register', async (req, res) => {

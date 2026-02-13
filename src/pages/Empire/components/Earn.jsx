@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle, Clock, Coins, Lock, Crown, Percent, Zap, Shield, ShieldCheck, Gem, Bell, PlayCircle, Video, Image as ImageIcon, Plus, Wallet, Ghost, Info, Share2, Youtube, Users } from 'lucide-react';
 import { FaInstagram, FaShareNodes, FaXTwitter, FaTiktok, FaThreads, FaFacebook } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
-import { generateRandomString, generateCodeChallenge } from '../pkce';
+import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 
 // Custom Project NFT Icon Component
 const ProjectNFTIcon = ({ color = "#53FC18", tier = "1" }) => (
@@ -35,8 +35,17 @@ const Earn = () => {
   const [isKickLive, setIsKickLive] = useState(false); // State for stream status
   const [timeLeft, setTimeLeft] = useState('');
   const [visitorId, setVisitorId] = useState(null);
-  const [kickUsername, setKickUsername] = useState(() => localStorage.getItem('kickUsername') || '');
-  const [walletAddress, setWalletAddress] = useState(() => localStorage.getItem('walletAddress') || '');
+  const [kickUsername, setKickUsername] = useState(() => {
+        const session = JSON.parse(localStorage.getItem('user_session') || '{}');
+        return session.username || localStorage.getItem('kickUsername') || '';
+    });
+  // Alias kickUsername to username for compatibility with existing code
+  const username = kickUsername;
+
+  const [walletAddress, setWalletAddress] = useState(() => {
+      const session = JSON.parse(localStorage.getItem('user_session') || '{}');
+      return session.wallet_address || localStorage.getItem('walletAddress') || '';
+  });
   const [isProfileSaved, setIsProfileSaved] = useState(() => localStorage.getItem('isProfileSaved') === 'true');
   const [gCode, setGCode] = useState(() => localStorage.getItem('gCode') || '');
   const [points, setPoints] = useState(0); // User's Total Points
@@ -45,6 +54,156 @@ const Earn = () => {
   
   const [showCopyCodeModal, setShowCopyCodeModal] = useState(false);
   const [currentTaskForModal, setCurrentTaskForModal] = useState(null);
+  const [generatedCode, setGeneratedCode] = useState('');
+
+  // Generate G-Code
+  const generateGCode = (platform) => {
+      if (!username || !walletAddress) return '👻LOGIN-FIRST👻';
+      
+      const prefixes = {
+          'Discord': 'KGDS',
+          'Instagram': 'KGI',
+          'Twitter (X)': 'KGT',
+          'Facebook': 'KGF',
+          'TikTok': 'KGTK',
+          'Telegram': 'KGTM',
+          'Kick': 'KGKICK',
+          'Threads': 'KGTH'
+      };
+      
+      const prefix = prefixes[platform] || 'KG';
+      // User requested: Prefix of wallet (e.g. 0x123abc)
+      const walletPart = (typeof walletAddress === 'string' ? walletAddress : '').substring(0, 8); 
+      const random = Math.floor(100000 + Math.random() * 900000); // 6 digits
+      
+      return `👻${prefix}-${username}-${walletPart}-${random}👻`;
+  };
+
+  const handleOpenTaskModal = (task) => {
+      // STRICT SYNC: Use existing G-Code from registration if available
+      const existingCode = localStorage.getItem('gCode');
+      const code = existingCode || generateGCode(task.platform);
+      
+      setGeneratedCode(code);
+      setCurrentTaskForModal(task);
+      setShowCopyCodeModal(true);
+  };
+
+  const handleCopyAndOpen = () => {
+      const codeToCopy = gCode || generatedCode;
+      if (codeToCopy) {
+          navigator.clipboard.writeText(codeToCopy).then(() => {
+              window.open(currentTaskForModal.link, '_blank');
+          });
+      }
+  };
+
+  const handleConfirmTask = async () => {
+      setShowCopyCodeModal(false);
+
+      // Start Verification Process
+      try {
+          // Register verification attempt in backend
+          const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:5000';
+          await fetch(`${API_BASE}/api/verify-task`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  username,
+                  task_id: currentTaskForModal.id,
+                  platform: currentTaskForModal.platform,
+                  g_code: generatedCode
+              })
+          });
+      } catch (e) {
+          console.error('Verification request failed', e);
+      }
+      
+      // Start 60s countdown for "Verifying..."
+      setConfirmationTasks(prev => ({
+          ...prev,
+          [currentTaskForModal.id]: { 
+              timeLeft: 60, 
+              status: 'verifying',
+              gCode: generatedCode // Store G-Code for this specific verification
+          }
+      }));
+  };
+
+  // Countdown Timer & Auto-Verification
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setConfirmationTasks(prev => {
+        const next = { ...prev };
+        let changed = false;
+        
+        Object.keys(next).forEach(taskId => {
+            const taskState = next[taskId];
+            if (taskState.status === 'verifying') {
+                if (taskState.timeLeft > 0) {
+                    taskState.timeLeft -= 1;
+                    changed = true;
+                } else {
+                    // Time is up, trigger verification
+                    taskState.status = 'completing'; 
+                    changed = true;
+                    
+                    // Trigger API Call with stored G-Code
+                    verifyTaskAfterCountdown(taskId, taskState.gCode);
+                }
+            }
+        });
+        
+        return changed ? next : prev;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [username]); // Removed generatedCode dependency
+
+  const verifyTaskAfterCountdown = async (taskId, storedGCode) => {
+      // Find task details
+      const task = tasks.find(t => t.id === parseInt(taskId));
+      if (!task) return;
+
+      try {
+          const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:5000';
+          const res = await fetch(`${API_BASE}/api/verify-task`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  username,
+                  task_id: taskId,
+                  platform: task.platform,
+                  g_code: storedGCode || generatedCode // Fallback if missing
+              })
+          });
+          
+          const data = await res.json();
+          
+          if (data.success) {
+               // Update UI to success
+               setConfirmationTasks(prev => ({
+                   ...prev,
+                   [taskId]: { timeLeft: 0, status: 'verified', points: data.points_added }
+               }));
+               // Update global points if needed
+               // setPoints(prev => prev + data.points_added);
+          } else {
+               setConfirmationTasks(prev => ({
+                   ...prev,
+                   [taskId]: { timeLeft: 0, status: 'failed', error: data.error }
+               }));
+          }
+      } catch (e) {
+          console.error('Verification failed', e);
+          setConfirmationTasks(prev => ({
+               ...prev,
+               [taskId]: { timeLeft: 0, status: 'failed', error: 'Connection Error' }
+          }));
+      }
+  };
+
+
 
   const [claimedTasks, setClaimedTasks] = useState(() => {
     const saved = localStorage.getItem('claimedTasks');
@@ -574,13 +733,15 @@ const Earn = () => {
   };
 
   const handleCopyAndStart = () => {
-     if (gCode) {
-         navigator.clipboard.writeText(gCode);
-         setShowCopyCodeModal(false);
-         if (currentTaskForModal) {
-             proceedWithTask(currentTaskForModal);
-             setCurrentTaskForModal(null);
-         }
+     const codeToCopy = gCode || generatedCode;
+     if (codeToCopy) {
+         navigator.clipboard.writeText(codeToCopy).then(() => {
+             setShowCopyCodeModal(false);
+             if (currentTaskForModal) {
+                 proceedWithTask(currentTaskForModal);
+                 setCurrentTaskForModal(null);
+             }
+         });
      }
   };
   
@@ -688,12 +849,7 @@ const Earn = () => {
     const isTimerRunning = confirmationTasks[task.id];
     
     if (isMandatory && !isTimerRunning && !verifyingTasks.includes(task.id)) {
-         if (!gCode) {
-             alert('Complete Social Tasks first to generate your G-Code!');
-             return;
-         }
-         setCurrentTaskForModal(task);
-         setShowCopyCodeModal(true);
+         handleOpenTaskModal(task);
          return; 
     }
 
@@ -1054,24 +1210,38 @@ const Earn = () => {
                 You must comment your G-Code on the post to verify this task.
               </p>
               <div className="bg-[#53FC18]/10 border border-[#53FC18]/30 p-3 rounded-lg mb-4">
-                 <p className="text-[#53FC18] font-mono font-bold text-lg">{gCode}</p>
-              </div>
-              <p className="text-xs text-gray-400 mb-1">
-                 Copy this code and paste it in the comments.
-              </p>
-              <p className="text-xs text-[#53FC18]" dir="rtl">
-                 انسخ هذا الكود وضعه في التعليقات
-              </p>
+                 <span className="text-2xl md:text-3xl font-mono font-bold text-[#53FC18] tracking-widest relative z-10 select-all">{gCode || generatedCode}</span>
             </div>
+            <p className="text-xs text-gray-400 mb-1">
+               Copy this code and paste it in the comments.
+            </p>
+            <p className="text-xs text-[#53FC18]" dir="rtl">
+               انسخ هذا الكود وضعه في التعليقات
+            </p>
+            <div className="mt-4 pt-4 border-t border-white/10 text-center">
+                <p className="text-[10px] text-gray-400">Code is valid for 15 minutes only</p>
+                <p className="text-[10px] text-gray-400" dir="rtl">الكود صالح لمدة 15 دقيقة فقط</p>
+            </div>
+          </div>
 
+          <div className="flex gap-3">
             <button
               type="button"
-              onClick={handleCopyAndStart}
-              className="w-full bg-[#53FC18] hover:bg-[#45d612] text-black font-bold py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(83,252,24,0.3)] hover:shadow-[0_0_30px_rgba(83,252,24,0.5)] flex items-center justify-center gap-2"
+              onClick={handleCopyAndOpen}
+              className="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-xl transition-all border border-white/10 flex items-center justify-center gap-2"
             >
-              <span>Copy & Open Link</span>
+              <span>Copy & Open</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             </button>
+            <button
+              type="button"
+              onClick={handleConfirmTask}
+              className="flex-1 bg-[#53FC18] hover:bg-[#45d612] text-black font-bold py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(83,252,24,0.3)] hover:shadow-[0_0_30px_rgba(83,252,24,0.5)] flex items-center justify-center gap-2"
+            >
+              <span>Confirm</span>
+              <CheckCircle size={18} />
+            </button>
+          </div>
           </div>
         </div>
       )}

@@ -1,0 +1,74 @@
+
+--- 2026-02-13T11:13:38.747Z debug
+🪵  Writing logs to "C:\Users\under\OneDrive\Desktop\SITE AKGS\.config\.wrangler\logs\wrangler-2026-02-13_11-13-38_579.log"
+---
+
+--- 2026-02-13T11:13:38.746Z debug
+.env file not found at "C:\Users\under\OneDrive\Desktop\SITE AKGS\.env.local". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-02-13T11:13:38.756Z log
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+---
+
+--- 2026-02-13T11:13:38.759Z debug
+Metrics dispatcher: Posting data {"deviceId":"672dd324-7ddc-4102-8d1e-2dabcfd6b5db","event":"wrangler command started","timestamp":1770981218759,"properties":{"amplitude_session_id":1770981218757,"amplitude_event_id":0,"wranglerVersion":"4.65.0","wranglerMajorVersion":4,"wranglerMinorVersion":65,"wranglerPatchVersion":0,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":null,"argsUsed":["productionBranch"],"argsCombination":"productionBranch","sanitizedCommand":"pages project create","sanitizedArgs":{}}}
+---
+
+--- 2026-02-13T11:13:38.788Z debug
+-- START CF API REQUEST: POST https://api.cloudflare.com/client/v4/accounts/f139034ef7924a1d387c88f394b535a2/pages/projects
+---
+
+--- 2026-02-13T11:13:38.788Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T11:13:38.789Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T11:13:38.789Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T11:13:38.789Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-13T11:13:41.999Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-13T11:13:42.000Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T11:13:42.000Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T11:13:42.000Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-13T11:13:42.001Z debug
+Saving to cache: {"account_id":"f139034ef7924a1d387c88f394b535a2","project_name":"akgsempire"}
+---
+
+--- 2026-02-13T11:13:42.003Z log
+✨ Successfully created the 'akgsempire' project. It will be available at https://akgsempire.pages.dev/ once you create your first deployment.
+---
+
+--- 2026-02-13T11:13:42.003Z log
+To deploy a folder of assets, run 'wrangler pages deploy [directory]'.
+---
+
+--- 2026-02-13T11:13:42.006Z debug
+Metrics dispatcher: Posting data {"deviceId":"672dd324-7ddc-4102-8d1e-2dabcfd6b5db","event":"create pages project","timestamp":1770981222006,"properties":{"amplitude_session_id":1770981222004,"amplitude_event_id":0,"wranglerVersion":"4.65.0","wranglerMajorVersion":4,"wranglerMinorVersion":65,"wranglerPatchVersion":0,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":null,"category":"Workers","os":"win32:x64"}}
+---
+
+--- 2026-02-13T11:13:42.008Z debug
+Metrics dispatcher: Posting data {"deviceId":"672dd324-7ddc-4102-8d1e-2dabcfd6b5db","event":"wrangler command completed","timestamp":1770981222008,"properties":{"amplitude_session_id":1770981218757,"amplitude_event_id":1,"wranglerVersion":"4.65.0","wranglerMajorVersion":4,"wranglerMinorVersion":65,"wranglerPatchVersion":0,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":null,"argsUsed":["productionBranch"],"argsCombination":"productionBranch","sanitizedCommand":"pages project create","sanitizedArgs":{},"durationMs":3255}}
+---

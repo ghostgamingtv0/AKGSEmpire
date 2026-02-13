@@ -1,12 +1,81 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap, Share2 } from 'lucide-react';
-import { FaPlay, FaPowerOff, FaInstagram, FaTiktok, FaFacebook } from 'react-icons/fa6';
+import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap, Clock } from 'lucide-react';
+import { FaPlay, FaPowerOff } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
 
-import { generateRandomString, generateCodeChallenge } from '../pkce';
-import MatrixBackground from './MatrixBackground';
+import { generateRandomString, generateCodeChallenge } from '../../../pkce';
+import MatrixBackground from '../../../components/MatrixBackground';
 import LeaderboardTabs from './LeaderboardTabs';
+
+// Countdown Helper Component
+const Countdown = ({ targetDate }) => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        return {
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60)
+        };
+      }
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    };
+
+    setTimeLeft(calculateTimeLeft());
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [targetDate]);
+
+  const TimeBox = ({ value, label }) => (
+    <div className="flex flex-col items-center bg-black/40 border border-[#53FC18]/30 px-2 py-1 rounded min-w-[40px]">
+      <span className="font-mono font-bold text-[#53FC18] text-lg leading-none">
+        {String(value).padStart(2, '0')}
+      </span>
+      <span className="text-[8px] text-gray-500 uppercase tracking-wider">{label}</span>
+    </div>
+  );
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <TimeBox value={timeLeft.days} label="D" />
+      <span className="text-[#53FC18]/50 font-bold">:</span>
+      <TimeBox value={timeLeft.hours} label="H" />
+      <span className="text-[#53FC18]/50 font-bold">:</span>
+      <TimeBox value={timeLeft.minutes} label="M" />
+      <span className="text-[#53FC18]/50 font-bold">:</span>
+      <TimeBox value={timeLeft.seconds} label="S" />
+    </div>
+  );
+};
+
+const getNextMonthlyReset = () => {
+  const now = new Date();
+  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  nextMonth.setHours(0, 0, 0, 0);
+  return nextMonth;
+};
+
+const getNextWeeklyReset = () => {
+  const now = new Date();
+  const nextFriday = new Date();
+  nextFriday.setDate(now.getDate() + ((7 - now.getDay() + 5) % 7)); // 5 is Friday
+  nextFriday.setHours(13, 0, 0, 0);
+  
+  if (now > nextFriday) {
+    nextFriday.setDate(nextFriday.getDate() + 7);
+  }
+  return nextFriday;
+};
 
 const Dashboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -134,14 +203,13 @@ const Dashboard = () => {
     window.location.href = KICK_AUTH_URL;
   };
 
-  const isStreamLive = globalStats.kick_stats?.is_live;
+  const isStreamLive = globalStats.kick_is_live;
 
   const stats = [
-    { label: 'Total Users (Followers)', value: globalStats.total_users.toLocaleString(), icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
-    { label: 'Weekly Growth', value: globalStats.followers_growth || '+0', icon: <TrendingUp className="text-[#53FC18]" />, change: 'This Week' },
-    { label: 'Total Comments', value: globalStats.active_tasks ? globalStats.active_tasks.toLocaleString() : '0', icon: <ExternalLink className="text-blue-400" />, change: 'Weekly' },
-    { label: 'Live Viewers', value: globalStats.kick_stats?.viewers?.toLocaleString() || '0', icon: <Activity className="text-red-500" />, change: isStreamLive ? 'LIVE' : 'Offline' },
-    { label: 'Category', value: globalStats.kick_stats?.category || 'None', icon: <Flame className="text-orange-500" />, change: 'Stream' },
+    { label: 'Total Users (Followers)', value: (globalStats.kick_followers || globalStats.total_users || 0).toLocaleString(), icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
+    { label: 'Weekly Growth', value: globalStats.weekly_growth || '+0', icon: <TrendingUp className="text-[#53FC18]" />, change: 'This Week' },
+    { label: 'Live Viewers', value: globalStats.kick_viewers?.toLocaleString() || '0', icon: <Activity className="text-red-500" />, change: isStreamLive ? 'LIVE' : 'Offline' },
+    { label: 'Category', value: globalStats.kick_category || 'None', icon: <Flame className="text-orange-500" />, change: 'Stream' },
   ];
 
   const renderLeaderboardList = (data, metricLabel, icon) => {
@@ -260,81 +328,6 @@ const Dashboard = () => {
           </motion.div>
         )}
 
-        {/* Social Connections Section */}
-        {userData && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-panel p-8 mb-12 border border-[#53FC18]/30"
-          >
-            <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
-              <Share2 className="text-[#53FC18]" size={32} />
-              Social Connections
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Kick */}
-                <div className={`p-4 rounded-xl border ${userData.kick_username ? 'border-[#53FC18]/50 bg-[#53FC18]/10' : 'border-white/10 bg-white/5'}`}>
-                    <div className="flex items-center gap-3 mb-2">
-                         <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-[#53FC18]">
-                             <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current"><path d="M3 0h18a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3zm5.7 6.6h2.7v3.6l3.3-3.6h3.6l-4.2 4.5 4.5 6.3h-3.6l-3-4.2v4.2H8.7V6.6z"/></svg>
-                         </div>
-                         <h3 className="font-bold">Kick</h3>
-                    </div>
-                    {userData.kick_username ? (
-                        <p className="text-[#53FC18] font-mono text-sm">@{userData.kick_username}</p>
-                    ) : (
-                        <button onClick={handleKickSync} className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded">Connect</button>
-                    )}
-                </div>
-
-                {/* TikTok */}
-                <div className={`p-4 rounded-xl border ${userData.tiktok_username ? 'border-[#ff0050]/50 bg-[#ff0050]/10' : 'border-white/10 bg-white/5'}`}>
-                    <div className="flex items-center gap-3 mb-2">
-                         <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white">
-                             <FaTiktok size={20} />
-                         </div>
-                         <h3 className="font-bold">TikTok</h3>
-                    </div>
-                    {userData.tiktok_username ? (
-                        <p className="text-[#ff0050] font-mono text-sm">@{userData.tiktok_username}</p>
-                    ) : (
-                        <p className="text-gray-500 text-xs">Link via Earn Page</p>
-                    )}
-                </div>
-
-                {/* Instagram */}
-                <div className={`p-4 rounded-xl border ${userData.instagram_username ? 'border-[#E1306C]/50 bg-[#E1306C]/10' : 'border-white/10 bg-white/5'}`}>
-                    <div className="flex items-center gap-3 mb-2">
-                         <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-[#E1306C]">
-                             <FaInstagram size={24} />
-                         </div>
-                         <h3 className="font-bold">Instagram</h3>
-                    </div>
-                    {userData.instagram_username ? (
-                        <p className="text-[#E1306C] font-mono text-sm">@{userData.instagram_username}</p>
-                    ) : (
-                        <p className="text-gray-500 text-xs">Link via Earn Page</p>
-                    )}
-                </div>
-
-                {/* Facebook */}
-                <div className={`p-4 rounded-xl border ${userData.facebook_username ? 'border-[#1877F2]/50 bg-[#1877F2]/10' : 'border-white/10 bg-white/5'}`}>
-                    <div className="flex items-center gap-3 mb-2">
-                         <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-[#1877F2]">
-                             <FaFacebook size={24} />
-                         </div>
-                         <h3 className="font-bold">Facebook</h3>
-                    </div>
-                    {userData.facebook_username ? (
-                        <p className="text-[#1877F2] font-mono text-sm">@{userData.facebook_username}</p>
-                    ) : (
-                        <p className="text-gray-500 text-xs">Link via Earn Page</p>
-                    )}
-                </div>
-            </div>
-          </motion.div>
-        )}
-
         {/* Referral Section */}
         {userData && (
           <motion.div
@@ -382,32 +375,85 @@ const Dashboard = () => {
           </motion.div>
         )}
 
-        {/* --- 1. KICK STREAM STATUS (RESTORED) --- */}
-        <div className="relative group bg-[#0A0A0A] border border-white/5 rounded-2xl p-6 flex items-center justify-between shadow-[0_0_30px_rgba(83,252,24,0.05)] hover:shadow-[0_0_40px_rgba(83,252,24,0.1)] transition-shadow mb-8">
-             <div className="flex items-center gap-4">
-                <div className={`w-3 h-3 rounded-full ${isStreamLive ? 'bg-red-600 animate-pulse shadow-[0_0_10px_red]' : 'bg-gray-500'}`}></div>
-                <div>
-                   <h3 className="text-xl font-bold text-white">GHOST GAMING TV</h3>
-                   <p className={`text-xs font-bold tracking-wider uppercase ${isStreamLive ? 'text-red-500' : 'text-gray-500'}`}>
-                      {isStreamLive ? 'LIVE ON AIR' : 'OFFLINE'}
-                   </p>
+        {/* --- 1. KICK STREAM STATUS OR USER INFO --- */}
+        {isStreamLive ? (
+            <div className="relative group bg-[#0A0A0A] border border-white/5 rounded-2xl p-6 flex items-center justify-between shadow-[0_0_30px_rgba(83,252,24,0.05)] hover:shadow-[0_0_40px_rgba(83,252,24,0.1)] transition-shadow mb-8">
+                 <div className="flex items-center gap-4">
+                    <div className="w-3 h-3 rounded-full bg-red-600 animate-pulse shadow-[0_0_10px_red]"></div>
+                    <div>
+                       <h3 className="text-xl font-bold text-white">GHOST GAMING TV</h3>
+                       <p className="text-xs font-bold tracking-wider uppercase text-red-500">LIVE ON AIR</p>
+                    </div>
+                 </div>
+                 
+                 <a 
+                   href="https://kick.com/ghost_gamingtv" 
+                   target="_blank" 
+                   rel="noreferrer"
+                   className="flex items-center gap-3 px-6 py-3 rounded-full font-bold bg-[#53FC18] text-black hover:bg-white hover:scale-105 shadow-[0_0_20px_rgba(83,252,24,0.4)] transition-all"
+                 >
+                    <FaPlay /> WATCH STREAM
+                 </a>
+            </div>
+        ) : (
+            <div className="relative bg-[#0A0A0A] border border-white/5 rounded-2xl p-6 mb-8 shadow-2xl overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#53FC18]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                
+                <div className="flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+                    {/* 1. User Identity */}
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#53FC18] to-black p-0.5 shadow-[0_0_15px_rgba(83,252,24,0.2)]">
+                            <div className="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
+                                {userData?.kick_username ? (
+                                    <img 
+                                        src={`https://ui-avatars.com/api/?name=${userData.kick_username}&background=53FC18&color=000`} 
+                                        alt={userData.kick_username} 
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <Users className="text-[#53FC18]" size={24} />
+                                )}
+                            </div>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                {userData?.kick_username || 'Guest User'}
+                                {userData?.kick_username && <CheckCircle size={16} className="text-[#53FC18]" />}
+                            </h3>
+                            <div className="flex items-center gap-2 text-xs text-gray-500 font-mono mt-1">
+                                <span className="bg-white/5 px-2 py-0.5 rounded border border-white/5">
+                                    ID: {userData?.visitor_id?.substring(0, 8)}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 2. Wallet & Code */}
+                    <div className="flex flex-col gap-2 w-full md:w-auto">
+                         <div className="flex items-center justify-between gap-4 bg-white/5 px-4 py-2 rounded-lg border border-white/5 min-w-[200px]">
+                            <span className="text-xs text-gray-400">Wallet</span>
+                            <span className="font-mono text-[#53FC18] text-sm">
+                                {userData?.wallet_address ? `${userData.wallet_address.substring(0, 4)}...${userData.wallet_address.substring(38)}` : 'Not Linked'}
+                            </span>
+                         </div>
+                         <div className="flex items-center justify-between gap-4 bg-white/5 px-4 py-2 rounded-lg border border-white/5 min-w-[200px]">
+                            <span className="text-xs text-gray-400">My Code</span>
+                            <span className="font-bold text-white tracking-wider text-sm">
+                                {userData?.referral_code || '---'}
+                            </span>
+                         </div>
+                    </div>
+
+                    {/* 3. Total Earned */}
+                    <div className="text-right bg-gradient-to-r from-transparent to-[#53FC18]/10 p-4 rounded-xl border-r-2 border-[#53FC18] w-full md:w-auto">
+                        <p className="text-xs text-gray-400 mb-1 uppercase tracking-widest">Total Earned</p>
+                        <p className="text-3xl font-black text-[#53FC18] drop-shadow-[0_0_15px_rgba(83,252,24,0.4)]">
+                            {((userData?.referral_count || 0) * 100).toLocaleString()} <span className="text-sm text-white/50 font-medium">PTS</span>
+                        </p>
+                    </div>
                 </div>
-             </div>
-             
-             <a 
-               href="https://kick.com/ghost_gamingtv" 
-               target="_blank" 
-               rel="noreferrer"
-               className={`flex items-center gap-3 px-6 py-3 rounded-full font-bold transition-all ${
-                 isStreamLive 
-                 ? 'bg-[#53FC18] text-black hover:bg-white hover:scale-105 shadow-[0_0_20px_rgba(83,252,24,0.4)]' 
-                 : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/5'
-               }`}
-             >
-                {isStreamLive ? <FaPlay /> : <FaPowerOff />}
-                {isStreamLive ? 'WATCH STREAM' : 'VISIT CHANNEL'}
-             </a>
-        </div>
+            </div>
+        )}
 
         {/* Stats Grid */}
         <div className="flex justify-between items-center mb-8">
@@ -449,87 +495,99 @@ const Dashboard = () => {
 
 
 
-        {/* Global Weekly Leaderboard (Points) */}
+        {/* Global Monthly Leaderboard (Points) */}
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-panel p-6 mb-12"
+            className="glass-panel p-6 mb-12 relative overflow-hidden"
         >
-            <div className="flex items-center gap-3 mb-6">
-              <Trophy className="text-yellow-400" />
-              <h2 className="text-xl font-bold">Weekly Global Rankings (Points)</h2>
+            {/* Rewards Banner */}
+            <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                <Trophy size={150} />
             </div>
             
-            <div className="grid md:grid-cols-2 gap-4">
-              {leaderboard.length > 0 ? (
-                leaderboard.slice(0, 6).map((user, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+            <div className="flex flex-col gap-6 mb-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 relative z-10">
+                        <Trophy className="text-yellow-400" size={28} />
+                        <div>
+                            <h2 className="text-2xl font-bold tracking-tight">Monthly Global Elite | نخبة التصنيف الشهري</h2>
+                            <p className="text-xs text-gray-400 uppercase tracking-widest">Ascend the Ranks & Claim Glory | اصعد في التصنيف وسيطر على القمة</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Monthly Rewards Info & Countdown */}
+                <div className="bg-gradient-to-r from-[#53FC18]/10 via-black/40 to-transparent border-l-4 border-[#53FC18] p-5 rounded-r-xl relative z-10 flex flex-col md:flex-row justify-between items-center gap-6 shadow-[0_0_20px_rgba(83,252,24,0.05)]">
+                    <div className="flex-1 space-y-2">
+                        <h3 className="font-black text-white text-lg flex items-center gap-2 uppercase tracking-wide">
+                            <Flame className="text-[#53FC18] fill-[#53FC18]/20" size={20} />
+                            Monthly Treasure Vault | خزانة الجوائز الشهرية
+                        </h3>
+                        <p className="text-sm text-gray-300 leading-relaxed">
+                            Top 10 Commanders secure <span className="text-[#53FC18] font-bold glow-text">Exclusive AKGS NFTs</span> & <span className="text-[#53FC18] font-bold glow-text">$AKGS Airdrops</span>. 
+                            Dominance pays off.
+                        </p>
+                        <p className="text-sm text-gray-400 font-arabic leading-relaxed" dir="rtl">
+                            القادة العشرة الأوائل يضمنون <span className="text-[#53FC18] font-bold">AKGS NFTs حصرية</span> و <span className="text-[#53FC18] font-bold">توزيعات $AKGS</span>. 
+                            الهيمنة لها ثمنها.
+                        </p>
+                    </div>
+                    
+                    <div className="flex flex-col items-center gap-2 bg-black/60 px-5 py-3 rounded-xl border border-white/10 shadow-inner backdrop-blur-sm">
+                        <div className="flex items-center gap-2 text-[#53FC18] text-xs font-bold uppercase tracking-widest mb-1">
+                            <Clock size={12} />
+                            <span>Season Reset | تجديد الموسم</span>
+                        </div>
+                        <Countdown targetDate={getNextMonthlyReset()} />
+                    </div>
+                </div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4 relative z-10">
+              {(() => {
+                const sorted = [...leaderboard].sort((a, b) => (b.weekly_points || 0) - (a.weekly_points || 0)).slice(0, 10);
+                const display = [...sorted];
+                while (display.length < 10) {
+                    display.push({ isPlaceholder: true });
+                }
+                return display.map((user, idx) => (
+                  <div key={idx} className={`flex items-center justify-between p-4 rounded-xl border ${user.isPlaceholder ? 'bg-white/5 border-dashed border-white/5' : 'bg-white/5 border-white/5'}`}>
                     <div className="flex items-center gap-4">
-                      <span className={`font-bold w-6 text-center ${idx < 3 ? 'text-[#53FC18]' : 'text-gray-500'}`}>
+                      <span className={`font-bold w-6 text-center ${!user.isPlaceholder && idx < 3 ? 'text-[#53FC18]' : 'text-gray-600'}`}>
                         #{idx + 1}
                       </span>
                       <div>
-                        <p className="font-bold text-sm text-white">
-                          {user.kick_username ? user.kick_username : (user.wallet_address ? `${user.wallet_address.substring(0, 6)}...${user.wallet_address.substring(user.wallet_address.length - 4)}` : user.visitor_id)}
+                        <p className={`font-bold text-sm ${user.isPlaceholder ? 'text-gray-600 italic' : 'text-white'}`}>
+                          {!user.isPlaceholder 
+                            ? (user.kick_username ? user.kick_username : (user.wallet_address ? `${user.wallet_address.substring(0, 6)}...${user.wallet_address.substring(user.wallet_address.length - 4)}` : user.visitor_id))
+                            : 'Loyal Follower'}
                         </p>
-                        <p className="text-xs text-gray-500">Total Score</p>
+                        <p className="text-xs text-gray-600">{!user.isPlaceholder ? 'Total Score | مجموع النقاط' : 'Waiting for hero...'}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="block font-bold text-[#53FC18]">{user.weekly_points} pts</span>
+                      <span className={`block font-bold ${!user.isPlaceholder ? 'text-[#53FC18]' : 'text-gray-700'}`}>
+                        {!user.isPlaceholder ? `${user.weekly_points} pts` : '--'}
+                      </span>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-500 col-span-2">
-                  {isLoading ? 'Loading global rankings...' : 'No data yet'}
-                </div>
-              )}
+                ));
+              })()}
             </div>
         </motion.div>
 
-        {/* Engagement Leaderboards Grid */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-12">
-            {/* Top Comments */}
-            <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="glass-panel p-6"
-            >
-                <div className="flex items-center gap-3 mb-6">
-                    <MessageCircle className="text-blue-400" />
-                    <h2 className="text-lg font-bold">Top Comments</h2>
-                </div>
-                {renderLeaderboardList(topComments, 'Comments', <MessageCircle />)}
-            </motion.div>
-
-            {/* Most Interactive */}
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="glass-panel p-6"
-            >
-                <div className="flex items-center gap-3 mb-6">
-                    <Zap className="text-yellow-400" />
-                    <h2 className="text-lg font-bold">Most Interactive</h2>
-                </div>
-                {renderLeaderboardList(interactiveLeaderboard, 'Tasks Done', <Zap />)}
-            </motion.div>
-
-            {/* Top Referrers */}
-            <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="glass-panel p-6"
-            >
-                <div className="flex items-center gap-3 mb-6">
-                    <Users className="text-[#53FC18]" />
-                    <h2 className="text-lg font-bold">Top Referrers</h2>
-                </div>
-                {renderLeaderboardList(referralLeaderboard, 'Invites', <Users />)}
-            </motion.div>
+        {/* Weekly Leaderboard Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <Activity className="text-red-500" size={24} />
+              <h2 className="text-xl font-bold">Weekly Leaderboard (Activity) | لوحة الصدارة الأسبوعية</h2>
+            </div>
+            <div className="flex items-center gap-2 text-xs font-mono text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                <Clock size={14} className="text-[#53FC18]" />
+                <span className="text-gray-500 mr-1">Resets in | يتجدد في:</span>
+                <Countdown targetDate={getNextWeeklyReset()} />
+            </div>
         </div>
 
         <LeaderboardTabs />

@@ -4,76 +4,6 @@ import { PlayCircle, Share2, TrendingUp, ShieldCheck, Zap, Globe, Heart, Award, 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { load } from '@fingerprintjs/fingerprintjs';
 
-const WatcherEyes = () => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      // Calculate normalized position (-1 to 1)
-      const x = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
-      const y = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
-      setMousePos({ x, y });
-    };
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  return (
-    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none z-0 opacity-100">
-      <div className="flex gap-8 md:gap-16 scale-75 md:scale-100 transition-all duration-500 hover:scale-105">
-        {/* Left Eye Container */}
-        <div className="relative w-40 h-40 bg-black rounded-full border-2 border-[#53FC18]/30 shadow-[0_0_50px_rgba(83,252,24,0.2)] overflow-hidden flex items-center justify-center group">
-          {/* Scanning Line Effect */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#53FC18]/10 to-transparent w-full h-full animate-scan z-30 pointer-events-none"></div>
-          
-          {/* Eyelids for Angry Look */}
-          <div className="absolute top-0 w-full h-[35%] bg-[#050505] z-20 translate-y-2 rotate-12 scale-110 transition-transform duration-300 group-hover:translate-y-1"></div>
-          <div className="absolute bottom-0 w-full h-[15%] bg-[#050505] z-20 -translate-y-1 -rotate-6 scale-110 transition-transform duration-300 group-hover:-translate-y-0"></div>
-          
-          {/* Iris & Pupil Group */}
-          <div 
-            className="w-24 h-24 rounded-full bg-[#53FC18] shadow-[inset_0_0_20px_rgba(0,0,0,0.5),0_0_30px_#53FC18] flex items-center justify-center relative z-10"
-            style={{ 
-              transform: `translate(${mousePos.x * 25}px, ${mousePos.y * 15}px)`,
-              transition: 'transform 0.1s ease-out'
-            }}
-          >
-            {/* Pupil */}
-            <div className="w-4 h-16 bg-black rounded-full shadow-[0_0_10px_rgba(0,0,0,0.8)] animate-pulse-slow"></div>
-            {/* Reflection */}
-            <div className="absolute top-4 left-4 w-3 h-3 bg-white rounded-full opacity-60"></div>
-          </div>
-        </div>
-
-        {/* Right Eye Container */}
-        <div className="relative w-40 h-40 bg-black rounded-full border-2 border-[#53FC18]/30 shadow-[0_0_50px_rgba(83,252,24,0.2)] overflow-hidden flex items-center justify-center group">
-           {/* Scanning Line Effect */}
-           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#53FC18]/10 to-transparent w-full h-full animate-scan z-30 pointer-events-none" style={{ animationDelay: '0.5s' }}></div>
-
-          {/* Eyelids for Angry Look */}
-          <div className="absolute top-0 w-full h-[35%] bg-[#050505] z-20 translate-y-2 -rotate-12 scale-110 transition-transform duration-300 group-hover:translate-y-1"></div>
-          <div className="absolute bottom-0 w-full h-[15%] bg-[#050505] z-20 -translate-y-1 rotate-6 scale-110 transition-transform duration-300 group-hover:-translate-y-0"></div>
-          
-          {/* Iris & Pupil Group */}
-          <div 
-            className="w-24 h-24 rounded-full bg-[#53FC18] shadow-[inset_0_0_20px_rgba(0,0,0,0.5),0_0_30px_#53FC18] flex items-center justify-center relative z-10"
-            style={{ 
-              transform: `translate(${mousePos.x * 25}px, ${mousePos.y * 15}px)`,
-              transition: 'transform 0.1s ease-out'
-            }}
-          >
-            {/* Pupil */}
-            <div className="w-4 h-16 bg-black rounded-full shadow-[0_0_10px_rgba(0,0,0,0.8)] animate-pulse-slow"></div>
-            {/* Reflection */}
-            <div className="absolute top-4 left-4 w-3 h-3 bg-white rounded-full opacity-60"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const Hero = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -198,9 +128,6 @@ const Hero = () => {
         {/* Grid Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(83,252,24,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(83,252,24,0.03)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
         
-        {/* The Watcher Eyes */}
-        <WatcherEyes />
-        
         {/* Ambient Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_30%,rgba(83,252,24,0.05),transparent_60%)] pointer-events-none"></div>
       </div>
@@ -301,11 +228,6 @@ const Hero = () => {
 
           {/* Investment Options */}
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 relative z-20">
-             <a href="https://kyberswap.com/swap/polygon/pol-to-0xc291f63681cd76383c3bdabe0b8e4bb072b4df65" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-6 py-3 bg-[#53FC18]/10 border border-[#53FC18] rounded-xl text-[#53FC18] font-bold hover:bg-[#53FC18] hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group">
-                <img src="https://kyberswap.com/favicon.ico" alt="" className="w-5 h-5 rounded-full opacity-80" onError={(e) => e.target.style.display = 'none'} />
-                Buy on KyberSwap
-                <ExternalLink size={16} />
-             </a>
              <a href="https://app.uniswap.org/explore/tokens/polygon/0xc291f63681cd76383c3bdabe0b8e4bb072b4df65" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-6 py-3 bg-[#FF007A]/10 border border-[#FF007A] rounded-xl text-[#FF007A] font-bold hover:bg-[#FF007A] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group">
                 <img src="https://uniswap.org/favicon.ico" alt="" className="w-5 h-5 rounded-full opacity-80" onError={(e) => e.target.style.display = 'none'} />
                 Buy on Uniswap

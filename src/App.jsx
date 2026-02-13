@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import ComingSoon from './components/ComingSoon';
-import AKGS from './AKGS';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ComingSoon from './pages/ComingSoon/ComingSoon';
+import GhostGate from './pages/GhostGate/GhostGate';
+import Empire from './pages/Empire/Empire';
 
 function App() {
-  const [isPreLaunch, setIsPreLaunch] = useState(true);
-
-  useEffect(() => {
-    const checkLaunchStatus = () => {
-      // Force unlock for testing - Change to true to show Coming Soon
-      setIsPreLaunch(true);
-    };
-    
-    checkLaunchStatus();
-  }, []);
-
-  if (isPreLaunch) {
-    return <ComingSoon />;
-  }
-
-  return <AKGS />;
+  return (
+    <Router>
+      <Routes>
+        {/* 1. Genesis Gate - Main Landing Page (Home) */}
+        <Route path="/" element={<GhostGate />} />
+        
+        {/* 2. Coming Soon - Independent Page */}
+        <Route path="/coming-soon" element={<ComingSoon />} />
+        
+        {/* 3. Main Site (AKGS Empire) - Isolated Module */}
+        <Route path="/empire/*" element={<Empire />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

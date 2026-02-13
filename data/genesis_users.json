@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1,
+    "platform": "Kick",
+    "platformUsername": "gh",
+    "websiteNickname": "gh",
+    "wallet": "0xffeaa9b1a57e7f9aca2bceb86d2d3d5eaff1c1cc",
+    "gCode": "👻ghost-0xffeaa9-GSK-153077👻",
+    "timestamp": "2026-02-13T04:14:44.345Z"
+  },
+  {
+    "id": 2,
+    "platform": "Instagram",
+    "platformUsername": "gg",
+    "websiteNickname": "gg",
+    "wallet": "0xffeaa9b1a57e7f9aca2bceb86d2d3d5eaff1c1cc",
+    "gCode": "👻ghost-0xffeaa9-GSI-525030👻",
+    "timestamp": "2026-02-13T04:19:41.694Z"
+  },
+  {
+    "id": 3,
+    "platform": "Discord",
+    "platformUsername": "gg",
+    "websiteNickname": "gg",
+    "wallet": "0xffeaa9b1a57e7f9aca2bceb86d2d3d5eaff1c1cc",
+    "gCode": "👻ghost-0xffeaa9-GSD-420054👻",
+    "timestamp": "2026-02-13T04:30:37.508Z"
+  },
+  {
+    "id": 4,
+    "platform": "Kick",
+    "platformUsername": "حححح",
+    "websiteNickname": "ححح",
+    "wallet": "0xffeaa9b1a57e7f9aca2bceb86d2d3d5eaff1c1cc",
+    "gCode": "👻ghost-0xffeaa9-GSK-308260👻",
+    "timestamp": "2026-02-13T04:34:51.525Z"
+  },
+  {
+    "id": 5,
+    "platform": "Kick",
+    "platformUsername": "testuser_ps",
+    "websiteNickname": "testnick_ps",
+    "wallet": "0x1234567890abcdef",
+    "gCode": "👻ghost-0x123456-GSK-416262👻",
+    "password": "password123",
+    "rank": 12,
+    "ip": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; fr-FR) WindowsPowerShell/5.1.26100.7705",
+    "timestamp": "2026-02-13T06:32:25.166Z"
+  },
+  {
+    "id": 6,
+    "platform": "Kick",
+    "platformUsername": "testuser_ps",
+    "websiteNickname": "testnick_ps",
+    "wallet": "0x1234567890abcdef",
+    "gCode": "👻ghost-0x123456-GSK-825701👻",
+    "password": "password123",
+    "rank": 13,
+    "ip": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; fr-FR) WindowsPowerShell/5.1.26100.7705",
+    "timestamp": "2026-02-13T06:32:46.618Z"
+  },
+  {
+    "id": 7,
+    "platform": "TikTok",
+    "platformUsername": "dd",
+    "websiteNickname": "dd",
+    "wallet": "0xffeaa9b1a57e7f9aca2bceb86d2d3d5eaff1c1cc",
+    "gCode": "👻ghost-0xffeaa9-GST-800182👻",
+    "password": "dd123",
+    "rank": 14,
+    "ip": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36 Avast/144.0.0.0",
+    "timestamp": "2026-02-13T06:42:03.887Z"
+  },
+  {
+    "id": 8,
+    "platform": "Discord",
+    "platformUsername": "حح",
+    "websiteNickname": "حح",
+    "wallet": "0xffeaa9b1a57e7f9aca2bceb86d2d3d5eaff1c1cc",
+    "gCode": "👻ghost-0xffeaa9-GSD-138833👻",
+    "password": "حح123456",
+    "rank": 15,
+    "ip": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36 Avast/144.0.0.0",
+    "timestamp": "2026-02-13T06:53:19.041Z"
+  },
+  {
+    "id": 9,
+    "platform": "Facebook",
+    "platformUsername": "نن",
+    "websiteNickname": "نن",
+    "wallet": "0xffeaa9b1a57e7f9aca2bceb86d2d3d5eaff1c1cc",
+    "gCode": "👻ghost-0xffeaa9-GSF-888213👻",
+    "password": "123456",
+    "rank": 16,
+    "ip": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36 Avast/144.0.0.0",
+    "timestamp": "2026-02-13T07:01:07.475Z"
+  },
+  {
+    "id": 10,
+    "platform": "Kick",
+    "platformUsername": "ghost_gamingtv",
+    "websiteNickname": "ghost_gamingtv",
+    "wallet": "0xdbbac0ea0668326b32420168bdaaed729f1299b5",
+    "gCode": "👻ghost-0xdbbac0-GSK-143786👻",
+    "password": "123456",
+    "rank": 17,
+    "timestamp": "2026-02-13T09:35:45.001Z"
+  }
+]

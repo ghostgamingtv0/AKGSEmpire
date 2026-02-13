@@ -8,17 +8,19 @@ import Earn from './components/Earn';
 import Tokenomics from './components/Tokenomics';
 import WalletModal from './components/WalletModal';
 import Login from './components/Login';
+import BackgroundEffects from './components/UnifiedBackground';
+import { ASSETS } from '../../config/constants';
 
 const Navbar = ({ onConnect, walletAddress }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
   const navItems = [
-    { name: 'Home', path: '/', icon: <LayoutDashboard size={18} /> },
-    { name: 'Earn', path: '/earn', icon: <Zap size={18} /> },
-    { name: 'Dashboard', path: '/dashboard', icon: <Users size={18} /> },
-    { name: 'Tokenomics', path: '/tokenomics', icon: <Coins size={18} /> },
-    { name: 'Login', path: '/login', icon: <User size={18} /> },
+    { name: 'Home', path: '/empire', icon: <LayoutDashboard size={18} /> },
+    { name: 'Earn', path: '/empire/earn', icon: <Zap size={18} /> },
+    { name: 'Dashboard', path: '/empire/dashboard', icon: <Users size={18} /> },
+    { name: 'Tokenomics', path: '/empire/tokenomics', icon: <Coins size={18} /> },
+    { name: 'Login', path: '/empire/login', icon: <User size={18} /> },
   ];
 
   const formatAddress = (addr) => {
@@ -29,9 +31,9 @@ const Navbar = ({ onConnect, walletAddress }) => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/empire" className="flex items-center gap-3 group">
             <img 
-              src="https://i.ibb.co/Jjdm6v0J/fe58cfb14a674ec977bf157cdc091cfd.jpg" 
+              src={ASSETS.LOGO_URL} 
               alt="AKGS Empire Logo" 
               className="w-20 h-20 rounded-lg object-cover border border-[#53FC18]/50 group-hover:shadow-[0_0_20px_rgba(83,252,24,0.5)] transition-all duration-300"
             />
@@ -128,7 +130,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
 };
 
 const Footer = () => (
-  <footer className="bg-[#050505] border-t border-white/10 py-12 mt-20">
+  <footer className="bg-[#050505] border-t border-white/10 py-12 mt-20 relative z-10">
     <div className="max-w-7xl mx-auto px-4 text-center">
       <div className="mb-8 flex justify-center">
         <span className="text-2xl font-bold text-white">AKGS<span className="text-[#53FC18]">EMPIRE</span></span>
@@ -141,6 +143,7 @@ const Footer = () => (
           { name: 'Twitter', url: 'https://x.com/tv_ghostgaming' },
           { name: 'Telegram', url: 'https://t.me/ghost_gamingtv' },
           { name: 'Discord', url: 'https://discord.gg/wMVJTrppXh' },
+          { name: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61587413956110' },
           { name: 'Instagram', url: 'https://www.instagram.com/ghost.gamingtv/' },
           { name: 'TikTok', url: 'https://www.tiktok.com/@ghost.gamingtv' },
           { name: 'Threads', url: 'https://www.threads.com/@ghost.gamingtv' },
@@ -176,7 +179,8 @@ const Footer = () => (
   </footer>
 );
 
-function AKGS() {
+function Empire() {
+  const location = useLocation();
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
 
@@ -235,29 +239,30 @@ function AKGS() {
     };
   }, []);
 
+  const isHome = location.pathname === '/empire' || location.pathname === '/empire/';
+
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col font-sans selection:bg-[#53FC18] selection:text-black">
-        <Navbar 
-          onConnect={() => setIsWalletModalOpen(true)} 
-          walletAddress={walletAddress}
-        />
-        <main className="flex-grow pt-20">
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Hero />} />
-              <Route path="/earn" element={<Earn />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/tokenomics" element={<Tokenomics />} />
-              <Route path="/login" element={<Login />} />
-            </Routes>
-          </AnimatePresence>
-        </main>
-        <Footer />
-        <WalletModal isOpen={isWalletModalOpen} onClose={() => setIsWalletModalOpen(false)} />
-      </div>
-    </Router>
+    <div className="min-h-screen flex flex-col font-sans selection:bg-[#53FC18] selection:text-black relative">
+      {!isHome && <BackgroundEffects />}
+      <Navbar 
+        onConnect={() => setIsWalletModalOpen(true)} 
+        walletAddress={walletAddress}
+      />
+      <main className="flex-grow pt-20 relative z-10">
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route index element={<Hero />} />
+            <Route path="earn" element={<Earn />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="tokenomics" element={<Tokenomics />} />
+            <Route path="login" element={<Login />} />
+          </Routes>
+        </AnimatePresence>
+      </main>
+      <Footer />
+      <WalletModal isOpen={isWalletModalOpen} onClose={() => setIsWalletModalOpen(false)} />
+    </div>
   )
 }
 
-export default AKGS;
+export default Empire;

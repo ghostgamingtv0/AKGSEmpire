@@ -1,0 +1,20 @@
+INSTAGRAM INTEGRATION DETAILS
+=============================
+
+Provided Integration URL:
+https://www.instagram.com/oauth/authorize?force_reauth=true&client_id=780330031777441&redirect_uri=https://akgsempire.org/&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights
+
+Configuration:
+- Client ID: 780330031777441
+- Redirect URI: https://akgsempire.org/
+- Scopes:
+  - instagram_business_basic
+  - instagram_business_manage_messages
+  - instagram_business_manage_comments
+  - instagram_business_content_publish
+  - instagram_business_manage_insights
+
+Implementation Status:
+- The backend/services/instagramService.js file has been updated to use these exact scopes and the 'www.instagram.com' endpoint.
+- The Redirect URI in the code is currently dynamic (based on where the server runs, e.g., localhost or production).
+- If deploying to akgsempire.org, ensure the server is accessible at that domain for the callback to work.

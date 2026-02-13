@@ -1,0 +1,22 @@
+
+--- 2026-02-13T11:17:48.866Z debug
+🪵  Writing logs to "C:\Users\under\OneDrive\Desktop\SITE AKGS\.config\.wrangler\logs\wrangler-2026-02-13_11-17-48_685.log"
+---
+
+--- 2026-02-13T11:17:48.866Z debug
+Metrics dispatcher: Posting data {"deviceId":"672dd324-7ddc-4102-8d1e-2dabcfd6b5db","event":"wrangler command started","timestamp":1770981468866,"properties":{"amplitude_session_id":1770981468863,"amplitude_event_id":0,"wranglerVersion":"4.65.0","wranglerMajorVersion":4,"wranglerMinorVersion":65,"wranglerPatchVersion":0,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":null,"argsUsed":[],"argsCombination":"","sanitizedCommand":"","sanitizedArgs":{}}}
+---
+
+--- 2026-02-13T11:17:48.874Z debug
+Metrics dispatcher: Posting data {"deviceId":"672dd324-7ddc-4102-8d1e-2dabcfd6b5db","event":"wrangler command errored","timestamp":1770981468874,"properties":{"amplitude_session_id":1770981468863,"amplitude_event_id":1,"wranglerVersion":"4.65.0","wranglerMajorVersion":4,"wranglerMinorVersion":65,"wranglerPatchVersion":0,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":null,"argsUsed":[],"argsCombination":"","sanitizedCommand":"","sanitizedArgs":{},"durationMs":9,"errorType":"CommandLineArgsError","errorMessage":"yargs validation error"}}
+---
+
+--- 2026-02-13T11:17:48.875Z log
+
+---
+
+--- 2026-02-13T11:17:48.987Z error
+X [ERROR] Unknown arguments: domain, add, akgsempire, akgsempire.org
+
+
+---

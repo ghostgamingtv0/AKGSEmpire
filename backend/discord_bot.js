@@ -380,7 +380,7 @@ To access the **AKGS EMPIRE**, you must verify your identity using your unique *
 1️⃣ Go to **[akgsempire.org](https://akgsempire.org)** and link your Kick account.
 2️⃣ Copy your **G-Code** from the dashboard.
 3️⃣ Type your code below in this chat.
-*(Example: \`!verify G-123456\`)*
+*(Example: \`👻KGDS-Ahmed-0x123-998877👻\`)*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `)
                 .setImage('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z5Z3Z5Z3Z5Z3Z5Z3Z5Z3Z5Z3Z5Z3Z5Z3Z5Z3Z5/xT9IgzoKnwFNmISR8I/giphy.gif') 
@@ -452,4 +452,6 @@ Squad up, share clips, and discuss strategies.
     }
 }
 
-client.login(TOKEN);
+client.login(TOKEN).catch(err => {
+    console.error('❌ Discord Login Failed (Bot will be offline):', err.message);
+});

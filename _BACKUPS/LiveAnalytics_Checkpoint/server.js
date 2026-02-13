@@ -15,7 +15,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, '../.env') });
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 const dbPath = join(__dirname, 'database.sqlite');
 
 // --- Database Setup ---
@@ -367,35 +367,8 @@ app.get('/api/genesis/stats', (req, res) => {
     res.json(stats);
 });
 
-app.post('/api/genesis/login', (req, res) => {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-        return res.status(400).json({ success: false, error: 'Username and password required' });
-    }
-
-    try {
-        const GENESIS_USERS_FILE = join(__dirname, '../data/genesis_users.json');
-        if (!fs.existsSync(GENESIS_USERS_FILE)) {
-            return res.status(400).json({ success: false, error: 'No registered users found' });
-        }
-
-        const users = JSON.parse(fs.readFileSync(GENESIS_USERS_FILE));
-        const user = users.find(u => u.websiteNickname === username && u.password === password);
-
-        if (user) {
-            res.json({ success: true, user });
-        } else {
-            res.status(401).json({ success: false, error: 'Invalid credentials' });
-        }
-    } catch (e) {
-        console.error('Genesis Login Error:', e);
-        res.status(500).json({ success: false, error: 'Login failed' });
-    }
-});
-
 app.post('/api/genesis/test-register', async (req, res) => {
-    const { platformUsername, nickname, password, wallet, platform } = req.body;
+    const { platformUsername, nickname, password, wallet } = req.body;
     
     // Strict Validation: Platform User, Nickname, Password, Wallet
     if (!platformUsername || !nickname || !password || !wallet) {
@@ -409,60 +382,28 @@ app.post('/api/genesis/test-register', async (req, res) => {
             return res.status(400).json({ success: false, error: 'No spots remaining' });
         }
 
-        console.log(`[GENESIS] Register Request: Platform=${platform}, Nickname=${nickname}`);
-
-        // Generate G-Code (Server Side)
-        // Format: 👻ghost-WALLET-GS{PlatformInitial}-RANDOM👻
-        const staticPrefix = "ghost";
-        const walletPart = wallet.substring(0, 8);
-        const platformName = platform || 'Kick'; // Default to Kick if missing
-        const platformInitial = platformName.charAt(0).toUpperCase();
-        const thirdPart = `GS${platformInitial}`; // GSK, GSI, GSD
-        const random = Math.floor(100000 + Math.random() * 900000);
-        const gCode = `👻${staticPrefix}-${walletPart}-${thirdPart}-${random}👻`;
-
-        // Save to File (Platform Username + Website Username + Code)
-        const GENESIS_USERS_FILE = join(__dirname, '../data/genesis_users.json');
-        const dataDir = dirname(GENESIS_USERS_FILE);
-        if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-
-        let users = [];
-        if (fs.existsSync(GENESIS_USERS_FILE)) {
-            try {
-                users = JSON.parse(fs.readFileSync(GENESIS_USERS_FILE));
-            } catch (e) {
-                console.error('Error reading users file:', e);
-            }
-        }
-
         // Decrement Spot
         const newSpots = updateGenesisSpots(1);
+
+        // Calculate Rank (Inverse of spots left: 50 spots left = Rank 1? No. 
+        // 50 spots total. First user -> 49 left -> Rank 1.
+        // 49 spots left -> Rank 1?
+        // Let's say Rank = 51 - newSpots.
+        // If 49 left, Rank = 51 - 49 = 2.
+        // If 50 left (before update), update -> 49. Rank 1? 
+        // Logic: 50 -> 49. User is #1.
+        // Rank = 50 - newSpots. 
+        // If 49 left, rank is 1. 
+        // If 0 left, rank is 50.
         const rank = 50 - newSpots;
 
-        const newUser = {
-            id: users.length + 1,
-            platform: platformName,
-            platformUsername,
-            websiteNickname: nickname,
-            wallet,
-            gCode,
-            password: password, // Storing as requested for full local record
-            rank: rank,
-            ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-            userAgent: req.headers['user-agent'],
-            timestamp: new Date().toISOString()
-        };
-
-        users.push(newUser);
-        fs.writeFileSync(GENESIS_USERS_FILE, JSON.stringify(users, null, 2));
-
-        console.log(`[GENESIS] New Citizen: ${nickname} (Platform: ${platformName}) - Code: ${gCode}`);
+        // Log Registration (Mock DB)
+        console.log(`[GENESIS] New Citizen: ${nickname} (Platform: ${platformUsername}) - Rank #${rank}`);
 
         res.json({ 
             success: true, 
             rank: rank, 
             spotsLeft: newSpots,
-            gCode: gCode,
             message: 'Welcome to the Genesis Gate' 
         });
 
