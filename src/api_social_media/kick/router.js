@@ -49,9 +49,11 @@ export async function handleKickRequest(request, url) {
         }
 
         try {
-            const redirectUri = `${url.protocol}//${url.host}/api/kick/callback`;
+            // 2. Dynamic Redirect URI (Match Login)
+            const origin = url.origin.replace('http:', 'https:');
+            const redirectUri = `${origin}/api/kick/callback`;
             
-            // Exchange code for token
+            // 3. Exchange code for token
             const tokenResponse = await fetch(KICK_CONFIG.TOKEN_URL, {
                 method: 'POST',
                 headers: {
@@ -66,17 +68,33 @@ export async function handleKickRequest(request, url) {
                 })
             });
 
-            const data = await tokenResponse.json();
+            const tokenData = await tokenResponse.json();
 
             if (!tokenResponse.ok) {
-                return new Response(`Token Exchange Failed: ${JSON.stringify(data)}`, { status: tokenResponse.status });
+                return new Response(`Token Exchange Failed: ${JSON.stringify(tokenData)}`, { status: tokenResponse.status });
             }
 
-            // Success! In a real app, you'd save the token/user info to your DB here.
-            // For now, we'll return a success message.
+            // 4. Fetch Channel Information (GET /public/v1/channels)
+            // As per docs: Provide no parameters (returns information for the currently authenticated user)
+            const channelResponse = await fetch('https://api.kick.com/public/v1/channels', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${tokenData.access_token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            const channelData = await channelResponse.json();
+
+            if (!channelResponse.ok) {
+                return new Response(`Channel Fetch Failed: ${JSON.stringify(channelData)}`, { status: channelResponse.status });
+            }
+
+            // Success! Return Token + Channel Info
             return new Response(JSON.stringify({
-                message: "Kick Authentication Successful",
-                user_data: data, // Be careful exposing this in production
+                message: "Kick Authentication & Channel Fetch Successful",
+                token_data: tokenData,
+                channel_info: channelData, 
                 state_received: state
             }, null, 2), {
                 headers: { "Content-Type": "application/json" }
