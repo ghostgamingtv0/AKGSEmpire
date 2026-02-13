@@ -124,5 +124,58 @@ export async function handleKickRequest(request, url) {
         return new Response("Method Not Allowed", { status: 405 });
     }
 
+    // 4. Update Channel Metadata (PATCH Proxy)
+    if (url.pathname === "/api/kick/update-channel" && request.method === "POST") {
+        try {
+            const body = await request.json();
+            const { access_token, category_id, custom_tags, stream_title } = body;
+
+            if (!access_token) {
+                return new Response(JSON.stringify({ error: "Missing access_token" }), { 
+                    status: 401,
+                    headers: { "Content-Type": "application/json" }
+                });
+            }
+
+            const updatePayload = {};
+            if (category_id) updatePayload.category_id = parseInt(category_id);
+            if (custom_tags) updatePayload.custom_tags = Array.isArray(custom_tags) ? custom_tags : [custom_tags];
+            if (stream_title) updatePayload.stream_title = stream_title;
+
+            const response = await fetch('https://api.kick.com/public/v1/channels', {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${access_token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(updatePayload)
+            });
+
+            if (response.status === 204) {
+                return new Response(JSON.stringify({ message: "Channel updated successfully" }), { 
+                    status: 200, // Returning 200 to frontend even if upstream is 204
+                    headers: { "Content-Type": "application/json" }
+                });
+            }
+            
+            const errorText = await response.text();
+            return new Response(JSON.stringify({ 
+                error: "Update failed", 
+                upstream_status: response.status, 
+                details: errorText 
+            }), { 
+                status: response.status,
+                headers: { "Content-Type": "application/json" }
+            });
+
+        } catch (err) {
+            return new Response(JSON.stringify({ error: `Server Error: ${err.message}` }), { 
+                status: 500,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+    }
+
     return null; // Not handled
 }
