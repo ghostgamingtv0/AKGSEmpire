@@ -513,3 +513,343 @@ Uploading... (17/17)
 🌎 Deploying...
 ✨ Deployment complete! Take a peek over at https://c6b737a3.akgsempire.pages.dev
 Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (17/17)
+✨ Success! Uploaded 0 files (17 already uploaded) (0.19 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://e82938d8.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (17/17)
+✨ Success! Uploaded 0 files (17 already uploaded) (0.26 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://a16943d1.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (17/17)
+✨ Success! Uploaded 0 files (17 already uploaded) (0.23 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://11516d4e.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (17/17)
+✨ Success! Uploaded 0 files (17 already uploaded) (0.21 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://b959cb58.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (17/17)
+✨ Success! Uploaded 0 files (17 already uploaded) (0.21 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://7c9e5990.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (17/19)
+Uploading... (18/19)
+Uploading... (19/19)
+✨ Success! Uploaded 2 files (17 already uploaded) (0.89 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://00944e8d.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (18/19)
+Uploading... (19/19)
+✨ Success! Uploaded 1 files (18 already uploaded) (0.83 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://411f7d17.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (18/19)
+Uploading... (19/19)
+✨ Success! Uploaded 1 files (18 already uploaded) (0.56 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://abab233e.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (19/19)
+✨ Success! Uploaded 0 files (19 already uploaded) (0.22 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://4a6956de.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (15/17)
+Uploading... (16/17)
+Uploading... (17/17)
+✨ Success! Uploaded 2 files (15 already uploaded) (1.76 sec)
+
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://6d840e38.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (20/20)
+✨ Success! Uploaded 0 files (20 already uploaded) (0.21 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://fcfa05ec.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (20/20)
+✨ Success! Uploaded 0 files (20 already uploaded) (0.20 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://02034a58.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (13/13)
+✨ Success! Uploaded 0 files (13 already uploaded) (0.18 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://f47b7a32.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (13/13)
+✨ Success! Uploaded 0 files (13 already uploaded) (0.22 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://c15745c1.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (13/13)
+✨ Success! Uploaded 0 files (13 already uploaded) (0.18 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://1657db19.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (13/13)
+✨ Success! Uploaded 0 files (13 already uploaded) (0.25 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://e0b1373c.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (13/13)
+✨ Success! Uploaded 0 files (13 already uploaded) (0.20 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://af65e8dc.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (13/13)
+✨ Success! Uploaded 0 files (13 already uploaded) (0.25 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://b785db2c.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (13/13)
+✨ Success! Uploaded 0 files (13 already uploaded) (0.20 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://4c87aeb8.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (13/13)
+✨ Success! Uploaded 0 files (13 already uploaded) (0.17 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://2a00a8e5.akgsempire.pages.dev
+Deployment process exited with code 0
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (13/13)
+✨ Success! Uploaded 0 files (13 already uploaded) (0.21 sec)
+
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://213613ae.akgsempire.pages.dev
+Deployment process exited with code 0

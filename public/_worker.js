@@ -27,7 +27,7 @@ export default {
     // 4. KICK CONFIGURATION (INDEPENDENT)
     // =================================================================================
     const KICK_CLIENT_ID = '01KH3T8WNDZ269403HKC17JN7X';
-    const KICK_CLIENT_SECRET = 'f29e0dc42671605b87263eb46264595c4b0530cacb6b5ee9e57a10e02e8faf35';
+    const KICK_CLIENT_SECRET = 'f32b79e79e8d4cf696cfc4a265a780f7c4559592e20474e9c2d34973ccbf969f';
 
     // =================================================================================
     // STATIC VERIFICATION FILES (Bypass SPA Routing)

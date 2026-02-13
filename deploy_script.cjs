@@ -1,4 +1,4 @@
-const { spawn } = require('child_process');
+const { spawn, execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
@@ -6,6 +6,23 @@ const fs = require('fs');
 const configDir = path.resolve('.config');
 if (!fs.existsSync(configDir)) {
     fs.mkdirSync(configDir, { recursive: true });
+}
+
+// Build Step: Run Vite and Esbuild
+console.log('Building project...');
+try {
+    // 1. Build Frontend (Vite)
+    console.log('Running Vite Build...');
+    execSync(`"${process.execPath}" "node_modules/vite/bin/vite.js" build`, { stdio: 'inherit' });
+
+    // 2. Build Worker (Esbuild)
+    console.log('Running Worker Build...');
+    execSync(`"${process.execPath}" "node_modules/esbuild/bin/esbuild" src/worker.js --bundle --outfile=dist/_worker.js --format=esm`, { stdio: 'inherit' });
+    
+    console.log('Build completed successfully.');
+} catch (error) {
+    console.error('Build failed:', error);
+    process.exit(1);
 }
 
 // Configuration for API Token
