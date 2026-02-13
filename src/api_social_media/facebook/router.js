@@ -1,7 +1,7 @@
 // Facebook Router Logic
 export const FACEBOOK_CONFIG = {
-    CLIENT_ID: '780330031777441',
-    CLIENT_SECRET: '24f2dc9cd5903a234c9ae31eb6672794',
+    CLIENT_ID: '1814321289299227',
+    CLIENT_SECRET: '361a227c3a2cf499e5a4aa77281a5769',
     ACCESS_TOKEN: 'EAAZAx3rqz4asBQjlkKDaQdGZACHd9JpXf2PG5BPetWIGqbYQaxtCDMxIbQmeXIJJiXrszNC3o9ybM7dO7FcFjz3q7yAZApnisXu7SsNenjRcbZC3LdZANljbpM03IqszZCZBy70fX0HBa1j2OuFMpVKP0M4Nsh9bcchImDUzk7uDkOTfl7zKFxpmaSX7Sll5fYVHmpiMCTpa0a22nLSpl3BHZA2wSUTFUnaKDKZCQBpwzwuuZBaiD3Vvlq0rA3mAZDZD'
 };
 
@@ -38,6 +38,26 @@ export async function handleFacebookRequest(request, url) {
             `;
             return new Response(html, { headers: { "Content-Type": "text/html" } });
          }
+    }
+
+    // 3. Facebook Webhook (Verification)
+    if (url.pathname === "/api/facebook/webhook" || url.pathname === "/api/facebook/webhook/") {
+        // GET: Verification
+        if (request.method === "GET") {
+            const mode = url.searchParams.get("hub.mode");
+            const token = url.searchParams.get("hub.verify_token");
+            const challenge = url.searchParams.get("hub.challenge");
+            
+            if (mode === "subscribe" && token === "akgs_empire_verify_2025") {
+                return new Response(challenge, { status: 200 });
+            }
+            return new Response("Forbidden", { status: 403 });
+        }
+        
+        // POST: Event Notification
+        if (request.method === "POST") {
+            return new Response("EVENT_RECEIVED", { status: 200 });
+        }
     }
     
     return null; // Not handled

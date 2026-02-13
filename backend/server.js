@@ -637,8 +637,8 @@ app.get('/api/instagram/delete/status', (req, res) => {
 });
 
 // --- Facebook OAuth Flow ---
-const FACEBOOK_APP_ID = (process.env.FACEBOOK_APP_ID || '1814051289293227').trim();
-const FACEBOOK_APP_SECRET = (process.env.FACEBOOK_APP_SECRET || '861a257c043c1499e5e9aa77081a5769').trim();
+const FACEBOOK_APP_ID = (process.env.FACEBOOK_APP_ID || '1814321289299227').trim();
+const FACEBOOK_APP_SECRET = (process.env.FACEBOOK_APP_SECRET || '361a227c3a2cf499e5a4aa77281a5769').trim();
 
 app.get('/api/facebook/login', (req, res) => {
     const { visitor_id } = req.query;
