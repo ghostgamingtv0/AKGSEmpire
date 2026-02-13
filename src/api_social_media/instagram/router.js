@@ -1,14 +1,16 @@
 // Instagram Router Logic
 export const INSTAGRAM_CONFIG = {
     CLIENT_ID: '780330031777441',
-    CLIENT_SECRET: '24f2dc9cd5903a234c9ae31eb6672794'
-};    ACCESS_TOKEN: 'IGAALFtL5aBqFBZAGI4Y214dlE5ZAXZApQlljVzluQ1VDZAzV4ZAGhUckE2b2FKZA2U5clhrRUxuRDNVa2M3aVNtRGpoeGthMWRaSmFwak1TMzNIbTdIT0Q5bUNMVkI2SktBSmR2SXgyZAkhSckhUaFg1R3U2TTVEN01Ubm5GRW9oS2JhbwZDZD'
+    CLIENT_SECRET: '24f2dc9cd5903a234c9ae31eb6672794',
+    ACCESS_TOKEN: 'IGAALFtL5aBqFBZAGI4Y214dlE5ZAXZApQlljVzluQ1VDZAzV4ZAGhUckE2b2FKZA2U5clhrRUxuRDNVa2M3aVNtRGpoeGthMWRaSmFwak1TMzNIbTdIT0Q5bUNMVkI2SktBSmR2SXgyZAkhSckhUaFg1R3U2TTVEN01Ubm5GRW9oS2JhbwZDZD'
 };
 
 export async function handleInstagramRequest(request, url) {
     // 1. Instagram Login Redirect
     if (url.pathname === "/api/instagram/login") {
-        const redirectUri = `${url.origin}/api/instagram/callback/`; // Note: Trailing slash matches common setups
+        // Force HTTPS
+        const origin = url.origin.replace('http:', 'https:');
+        const redirectUri = `${origin}/api/instagram/callback/`; // Note: Trailing slash matches common setups
         const scope = 'user_profile,user_media';
         const state = Math.random().toString(36).substring(7);
         
