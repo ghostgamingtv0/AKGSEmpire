@@ -27,32 +27,32 @@ export default {
     }
 
     // =================================================================================
-    // 1. TIKTOK LOGIC
+    // 5. FALLBACK TO ASSETS & SECURITY HEADERS
     // =================================================================================
-    const tiktokResponse = await handleTikTokRequest(request, url);
-    if (tiktokResponse) return tiktokResponse;
+    let response = null;
 
-    // =================================================================================
-    // 2. FACEBOOK LOGIC
-    // =================================================================================
-    const facebookResponse = await handleFacebookRequest(request, url);
-    if (facebookResponse) return facebookResponse;
+    if (!response) response = await handleTikTokRequest(request, url);
+    if (!response) response = await handleFacebookRequest(request, url);
+    if (!response) response = await handleInstagramRequest(request, url);
+    if (!response) response = await handleKickRequest(request, url);
+    
+    // If no API handled it, fetch assets
+    if (!response) {
+      response = await env.ASSETS.fetch(request);
+    }
 
-    // =================================================================================
-    // 3. INSTAGRAM LOGIC
-    // =================================================================================
-    const instagramResponse = await handleInstagramRequest(request, url);
-    if (instagramResponse) return instagramResponse;
+    // Apply Security Headers to EVERY response
+    const newHeaders = new Headers(response.headers);
+    newHeaders.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+    newHeaders.set("X-Content-Type-Options", "nosniff");
+    newHeaders.set("X-Frame-Options", "SAMEORIGIN");
+    newHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    newHeaders.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
-    // =================================================================================
-    // 4. KICK LOGIC
-    // =================================================================================
-    const kickResponse = await handleKickRequest(request, url);
-    if (kickResponse) return kickResponse;
-
-    // =================================================================================
-    // 5. FALLBACK TO ASSETS
-    // =================================================================================
-    return env.ASSETS.fetch(request);
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: newHeaders
+    });
   }
 }
