@@ -947,3 +947,5 @@ Uploading... (13/13)
 ✨ Compiled Worker successfully
 ✨ Uploading Worker bundle
 🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://6c31bfff.akgsempire.pages.dev
+Deployment process exited with code 0
