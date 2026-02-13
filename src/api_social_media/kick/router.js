@@ -1,4 +1,3 @@
-
 export const KICK_CONFIG = {
     CLIENT_ID: '01KH3T8WNDZ269403HKC17JN7X',
     CLIENT_SECRET: 'f03323199a30a58e4dc5809aaee22a360d125d77e249d45b709e1246d64158d8',
@@ -7,6 +6,26 @@ export const KICK_CONFIG = {
     // Added channel:write for channel updates
     SCOPES: 'user:read channel:read channel:write' 
 };
+
+// PKCE Helpers
+function generateCodeVerifier() {
+    const array = new Uint8Array(32);
+    crypto.getRandomValues(array);
+    return btoa(String.fromCharCode(...array))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+}
+
+async function generateCodeChallenge(verifier) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(verifier);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return btoa(String.fromCharCode(...new Uint8Array(hash)))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+}
 
 export async function handleKickRequest(request, url) {
     // 1. Kick Login Redirect
@@ -20,6 +39,10 @@ export async function handleKickRequest(request, url) {
             const origin = url.origin.replace('http:', 'https:');
             const redirectUri = `${origin}/api/kick/callback`;
             
+            // PKCE Generation
+            const codeVerifier = generateCodeVerifier();
+            const codeChallenge = await generateCodeChallenge(codeVerifier);
+            
             // Workaround for NextJS 127.0.0.1 bug: Add sacrificial param BEFORE redirect_uri if needed
             const params = new URLSearchParams();
             params.append('response_type', 'code');
@@ -32,8 +55,17 @@ export async function handleKickRequest(request, url) {
             params.append('redirect_uri', redirectUri);
             params.append('scope', KICK_CONFIG.SCOPES);
             params.append('state', encodeURIComponent(state));
+            
+            // PKCE Params
+            params.append('code_challenge', codeChallenge);
+            params.append('code_challenge_method', 'S256');
 
-            return Response.redirect(`${KICK_CONFIG.AUTH_URL}?${params.toString()}`, 302);
+            // Set Cookie for Code Verifier
+            const headers = new Headers();
+            headers.append('Location', `${KICK_CONFIG.AUTH_URL}?${params.toString()}`);
+            headers.append('Set-Cookie', `kick_code_verifier=${codeVerifier}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=600`);
+
+            return new Response(null, { status: 302, headers });
         } catch (err) {
             return new Response(`Kick Login Error: ${err.message}`, { status: 500 });
         }
@@ -54,6 +86,21 @@ export async function handleKickRequest(request, url) {
         }
 
         try {
+            // Retrieve Code Verifier from Cookie
+            const cookieHeader = request.headers.get('Cookie');
+            let codeVerifier = null;
+            if (cookieHeader) {
+                const cookies = cookieHeader.split(';').map(c => c.trim());
+                const verifierCookie = cookies.find(c => c.startsWith('kick_code_verifier='));
+                if (verifierCookie) {
+                    codeVerifier = verifierCookie.split('=')[1];
+                }
+            }
+
+            if (!codeVerifier) {
+                return new Response("Missing PKCE code_verifier cookie. Please try logging in again.", { status: 400 });
+            }
+
             // 2. Dynamic Redirect URI (Match Login)
             const origin = url.origin.replace('http:', 'https:');
             const redirectUri = `${origin}/api/kick/callback`;
@@ -69,7 +116,8 @@ export async function handleKickRequest(request, url) {
                     client_id: KICK_CONFIG.CLIENT_ID,
                     client_secret: KICK_CONFIG.CLIENT_SECRET,
                     redirect_uri: redirectUri,
-                    code: code
+                    code: code,
+                    code_verifier: codeVerifier // PKCE Required
                 })
             });
 
@@ -79,7 +127,26 @@ export async function handleKickRequest(request, url) {
                 return new Response(`Token Exchange Failed: ${JSON.stringify(tokenData)}`, { status: tokenResponse.status });
             }
 
-            // 4. Fetch Channel Information (GET /public/v1/channels)
+            // 4. Fetch User Information (GET /public/v1/users)
+            let userInfo = null;
+            try {
+                const userResponse = await fetch('https://api.kick.com/public/v1/users', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${tokenData.access_token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (userResponse.ok) {
+                    userInfo = await userResponse.json();
+                } else {
+                     console.log('User fetch failed:', userResponse.status);
+                }
+            } catch (e) {
+                console.log('User fetch error:', e);
+            }
+
+            // 5. Fetch Channel Information (GET /public/v1/channels)
             // As per docs: Provide no parameters (returns information for the currently authenticated user)
             const channelResponse = await fetch('https://api.kick.com/public/v1/channels', {
                 method: 'GET',
@@ -91,22 +158,25 @@ export async function handleKickRequest(request, url) {
 
             const channelData = await channelResponse.json();
 
-            if (!channelResponse.ok) {
-                return new Response(`Channel Fetch Failed: ${JSON.stringify(channelData)}`, { status: channelResponse.status });
-            }
+            // Success! Return Token + User + Channel Info
+            const successHeaders = new Headers();
+            successHeaders.append("Content-Type", "application/json");
+            // Clear the cookie
+            successHeaders.append("Set-Cookie", "kick_code_verifier=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0");
 
-            // Success! Return Token + Channel Info
             return new Response(JSON.stringify({
-                message: "Kick Authentication & Channel Fetch Successful",
+                message: "Kick Authentication Successful",
                 token_data: tokenData,
+                user_info: userInfo,
                 channel_info: channelData, 
                 state_received: state
             }, null, 2), {
-                headers: { "Content-Type": "application/json" }
+                status: 200,
+                headers: successHeaders
             });
 
         } catch (err) {
-            return new Response(`Server Error: ${err.message}`, { status: 500 });
+            return new Response(`Kick Auth Error: ${err.message}`, { status: 500 });
         }
     }
     
