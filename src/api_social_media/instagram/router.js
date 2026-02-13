@@ -10,7 +10,8 @@ export async function handleInstagramRequest(request, url) {
     if (url.pathname === "/api/instagram/login") {
         // Force HTTPS
         const origin = url.origin.replace('http:', 'https:');
-        const redirectUri = `${origin}/api/instagram/callback/`; // Note: Trailing slash matches common setups
+        // REMOVED trailing slash to match standard OAuth configuration
+        const redirectUri = `${origin}/api/instagram/callback`; 
         const scope = 'user_profile,user_media';
         const state = Math.random().toString(36).substring(7);
         

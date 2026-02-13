@@ -4,8 +4,8 @@ export const KICK_CONFIG = {
     CLIENT_SECRET: 'f03323199a30a58e4dc5809aaee22a360d125d77e249d45b709e1246d64158d8',
     AUTH_URL: 'https://id.kick.com/oauth/authorize',
     TOKEN_URL: 'https://id.kick.com/oauth/token',
-    // Default scopes, can be adjusted
-    SCOPES: 'user:read channel:read' 
+    // Added channel:write for channel updates
+    SCOPES: 'user:read channel:read channel:write' 
 };
 
 export async function handleKickRequest(request, url) {
