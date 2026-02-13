@@ -1,0 +1,427 @@
+
+--- 2026-02-13T14:13:16.677Z debug
+🪵  Writing logs to "C:\Users\under\OneDrive\Desktop\SITE AKGS\.config\.wrangler\logs\wrangler-2026-02-13_14-13-16_511.log"
+---
+
+--- 2026-02-13T14:13:16.676Z debug
+.env file not found at "C:\Users\under\OneDrive\Desktop\SITE AKGS\.env.local". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-02-13T14:13:18.457Z log
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+---
+
+--- 2026-02-13T14:13:18.460Z debug
+Metrics dispatcher: Posting data {"deviceId":"672dd324-7ddc-4102-8d1e-2dabcfd6b5db","event":"wrangler command started","timestamp":1770991998460,"properties":{"amplitude_session_id":1770991998458,"amplitude_event_id":0,"wranglerVersion":"4.65.0","wranglerMajorVersion":4,"wranglerMinorVersion":65,"wranglerPatchVersion":0,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"argsUsed":["projectName"],"argsCombination":"projectName","sanitizedCommand":"pages deploy","sanitizedArgs":{}}}
+---
+
+--- 2026-02-13T14:13:18.482Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/f139034ef7924a1d387c88f394b535a2/pages/projects/akgsempire
+---
+
+--- 2026-02-13T14:13:18.482Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:18.483Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:18.483Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:18.483Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-13T14:13:19.721Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-13T14:13:19.721Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:19.721Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:19.721Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-13T14:13:19.724Z debug
+pages deploy: Detecting git repository information...
+---
+
+--- 2026-02-13T14:13:19.827Z debug
+pages deploy: Git repository detected
+---
+
+--- 2026-02-13T14:13:20.058Z debug
+pages deploy: Working directory dirty status: true
+---
+
+--- 2026-02-13T14:13:20.169Z debug
+pages deploy: Detected branch: "main"
+---
+
+--- 2026-02-13T14:13:20.274Z debug
+pages deploy: Detected commit hash: "0d46a04ccc67ba01ceae5c1009b40f0216cd5b4c"
+---
+
+--- 2026-02-13T14:13:20.389Z debug
+pages deploy: Detected commit message: "update"
+---
+
+--- 2026-02-13T14:13:20.507Z warn
+▲ [WARNING] Warning: Your working directory is a git repo and has uncommitted changes
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+---
+
+--- 2026-02-13T14:13:20.507Z debug
+pages deploy: Git information summary - branch: main, commitHash: 0d46a04ccc67ba01ceae5c1009b40f0216cd5b4c, commitDirty: true
+---
+
+--- 2026-02-13T14:13:20.509Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/f139034ef7924a1d387c88f394b535a2/pages/projects/akgsempire
+---
+
+--- 2026-02-13T14:13:20.509Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:20.509Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:20.509Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:20.509Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-13T14:13:21.279Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-13T14:13:21.279Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:21.279Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:21.279Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-13T14:13:21.283Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/f139034ef7924a1d387c88f394b535a2/pages/projects/akgsempire/upload-token
+---
+
+--- 2026-02-13T14:13:21.283Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:21.283Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:21.283Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:21.283Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-13T14:13:22.185Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-13T14:13:22.186Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:22.186Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:22.186Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-13T14:13:22.204Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/f139034ef7924a1d387c88f394b535a2/pages/projects/akgsempire/upload-token
+---
+
+--- 2026-02-13T14:13:22.204Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:22.204Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:22.204Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:22.204Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-13T14:13:22.938Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-13T14:13:22.938Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:22.938Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:22.938Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-13T14:13:22.938Z debug
+-- START CF API REQUEST: POST https://api.cloudflare.com/client/v4/pages/assets/check-missing
+---
+
+--- 2026-02-13T14:13:22.938Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:22.938Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:22.938Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:22.938Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-13T14:13:23.152Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-13T14:13:23.152Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.153Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.153Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-13T14:13:23.153Z log
+Uploading... (19/19)
+---
+
+--- 2026-02-13T14:13:23.154Z log
+✨ Success! Uploaded 0 files (19 already uploaded) (0.21 sec)
+
+---
+
+--- 2026-02-13T14:13:23.154Z debug
+-- START CF API REQUEST: POST https://api.cloudflare.com/client/v4/pages/assets/upsert-hashes
+---
+
+--- 2026-02-13T14:13:23.154Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.154Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.154Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.154Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-13T14:13:23.362Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-13T14:13:23.362Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.362Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.362Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-13T14:13:23.401Z log
+✨ Compiled Worker successfully
+---
+
+--- 2026-02-13T14:13:23.404Z log
+✨ Uploading Worker bundle
+---
+
+--- 2026-02-13T14:13:23.404Z debug
+-- START CF API REQUEST: POST https://api.cloudflare.com/client/v4/accounts/f139034ef7924a1d387c88f394b535a2/pages/projects/akgsempire/deployments
+---
+
+--- 2026-02-13T14:13:23.404Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.404Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.404Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.405Z debug
+BODY: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:23.405Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-13T14:13:25.123Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-13T14:13:25.123Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:25.123Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:25.123Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-13T14:13:25.123Z debug
+Saving to cache: {"account_id":"f139034ef7924a1d387c88f394b535a2","project_name":"akgsempire"}
+---
+
+--- 2026-02-13T14:13:25.125Z log
+🌎 Deploying...
+---
+
+--- 2026-02-13T14:13:26.140Z debug
+attempt #1: Attempting to fetch status for deployment with id "779a891c-81ad-40ad-ae7e-b00ddf122852" ...
+---
+
+--- 2026-02-13T14:13:26.140Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/f139034ef7924a1d387c88f394b535a2/pages/projects/akgsempire/deployments/779a891c-81ad-40ad-ae7e-b00ddf122852
+---
+
+--- 2026-02-13T14:13:26.140Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:26.140Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:26.140Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:26.140Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-13T14:13:27.107Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-13T14:13:27.108Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:27.108Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:27.108Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-13T14:13:29.117Z debug
+attempt #2: Attempting to fetch status for deployment with id "779a891c-81ad-40ad-ae7e-b00ddf122852" ...
+---
+
+--- 2026-02-13T14:13:29.117Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/f139034ef7924a1d387c88f394b535a2/pages/projects/akgsempire/deployments/779a891c-81ad-40ad-ae7e-b00ddf122852
+---
+
+--- 2026-02-13T14:13:29.117Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:29.117Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:29.117Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:29.117Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-13T14:13:30.200Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-13T14:13:30.200Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:30.200Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-13T14:13:30.200Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-13T14:13:30.201Z log
+✨ Deployment complete! Take a peek over at https://779a891c.akgsempire.pages.dev
+---
+
+--- 2026-02-13T14:13:30.203Z debug
+Metrics dispatcher: Posting data {"deviceId":"672dd324-7ddc-4102-8d1e-2dabcfd6b5db","event":"create pages deployment","timestamp":1770992010203,"properties":{"amplitude_session_id":1770992010201,"amplitude_event_id":0,"wranglerVersion":"4.65.0","wranglerMajorVersion":4,"wranglerMinorVersion":65,"wranglerPatchVersion":0,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"category":"Workers","os":"win32:x64"}}
+---
+
+--- 2026-02-13T14:13:30.206Z debug
+Metrics dispatcher: Posting data {"deviceId":"672dd324-7ddc-4102-8d1e-2dabcfd6b5db","event":"wrangler command completed","timestamp":1770992010206,"properties":{"amplitude_session_id":1770991998458,"amplitude_event_id":1,"wranglerVersion":"4.65.0","wranglerMajorVersion":4,"wranglerMinorVersion":65,"wranglerPatchVersion":0,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"argsUsed":["projectName"],"argsCombination":"projectName","sanitizedCommand":"pages deploy","sanitizedArgs":{},"durationMs":13524}}
+---
