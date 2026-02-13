@@ -1,7 +1,7 @@
 // TikTok Router Logic
 export const TIKTOK_CONFIG = {
-    CLIENT_KEY: 'sbaw5d5260t82p1ppy',
-    CLIENT_SECRET: 'ErnjN9rguPdQByYZCWJpATljQUGogwh5'
+    CLIENT_KEY: 'awcqzuswlwpus7hs',
+    CLIENT_SECRET: 'Zqw7gHHHj0UZfr27qyJ1S4CY8eXExoiv'
 };
 
 export async function handleTikTokRequest(request, url) {

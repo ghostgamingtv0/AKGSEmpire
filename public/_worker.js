@@ -5,8 +5,8 @@ export default {
     // =================================================================================
     // 1. TIKTOK CONFIGURATION (INDEPENDENT)
     // =================================================================================
-    const TIKTOK_CLIENT_KEY = 'sbaw5d5260t82p1ppy';
-    const TIKTOK_CLIENT_SECRET = 'ErnjN9rguPdQByYZCWJpATljQUGogwh5';
+    const TIKTOK_CLIENT_KEY = 'awcqzuswlwpus7hs';
+    const TIKTOK_CLIENT_SECRET = 'Zqw7gHHHj0UZfr27qyJ1S4CY8eXExoiv';
 
     // =================================================================================
     // 2. INSTAGRAM CONFIGURATION (INDEPENDENT)
