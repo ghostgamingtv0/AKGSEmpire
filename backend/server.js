@@ -637,8 +637,8 @@ app.get('/api/instagram/delete/status', (req, res) => {
 });
 
 // --- Facebook OAuth Flow ---
-const FACEBOOK_APP_ID = (process.env.FACEBOOK_APP_ID || '896822603210829').trim();
-const FACEBOOK_APP_SECRET = (process.env.FACEBOOK_APP_SECRET || 'eafccb8ca70061462b1077e014a7a08a').trim();
+const FACEBOOK_APP_ID = (process.env.FACEBOOK_APP_ID || '1814051289293227').trim();
+const FACEBOOK_APP_SECRET = (process.env.FACEBOOK_APP_SECRET || '861a257c043c1499e5e9aa77081a5769').trim();
 
 app.get('/api/facebook/login', (req, res) => {
     const { visitor_id } = req.query;
@@ -1594,6 +1594,16 @@ app.get('/api/users/platform/:platform', async (req, res) => {
 
 // Serve static files from the React app
 app.use(express.static(join(__dirname, '../dist')));
+
+// TikTok Verification Endpoint (Explicit)
+app.get('/tiktok_callback.html', (req, res) => {
+    res.send('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>TikTok Callback Verification</title></head><body><h1>TikTok Callback Verification</h1><p>Status: Active</p></body></html>');
+});
+
+app.get('/tiktok-developers-site-verification.txt', (req, res) => {
+    res.type('text/plain');
+    res.send('tiktok-developers-site-verification=OsbbaMIa84FaBVlSXk5yijKiexW8J6Pn');
+});
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
