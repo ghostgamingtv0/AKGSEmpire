@@ -1,7 +1,7 @@
 
 export const KICK_CONFIG = {
     CLIENT_ID: '01KH3T8WNDZ269403HKC17JN7X',
-    CLIENT_SECRET: 'f32b79e79e8d4cf696cfc4a265a780f7c4559592e20474e9c2d34973ccbf969f',
+    CLIENT_SECRET: 'f03323199a30a58e4dc5809aaee22a360d125d77e249d45b709e1246d64158d8',
     AUTH_URL: 'https://id.kick.com/oauth/authorize',
     TOKEN_URL: 'https://id.kick.com/oauth/token',
     // Default scopes, can be adjusted
