@@ -2,7 +2,7 @@ export const SOCIAL_LINKS = {
   TELEGRAM: 'https://t.me/ghost_gamingtv',
   TIKTOK: 'https://www.tiktok.com/@ghost.gamingtv',
   THREADS: 'https://www.threads.net/@ghost.gamingtv',
-  FACEBOOK: 'https://www.facebook.com/profile.php?id=61587413956110',
+  FACEBOOK: 'https://www.facebook.com/profile.php?id=61587465162803',
   INSTAGRAM: 'https://www.instagram.com/ghost.gamingtv/',
   DISCORD: 'https://discord.gg/wMVJTrppXh',
   KICK: 'https://kick.com/ghost_gamingtv',
