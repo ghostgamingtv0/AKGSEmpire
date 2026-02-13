@@ -2,20 +2,36 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     
-    // TikTok Credentials
+    // =================================================================================
+    // 1. TIKTOK CONFIGURATION (INDEPENDENT)
+    // =================================================================================
     const TIKTOK_CLIENT_KEY = 'sbaw5d5260t82p1ppy';
     const TIKTOK_CLIENT_SECRET = 'ErnjN9rguPdQByYZCWJpATljQUGogwh5';
-    
-    // Instagram Credentials
+
+    // =================================================================================
+    // 2. INSTAGRAM CONFIGURATION (INDEPENDENT)
+    // =================================================================================
     const INSTAGRAM_CLIENT_ID = '780330031777441';
     const INSTAGRAM_CLIENT_SECRET = '24f2dc9cd5903a234c9ae31eb6672794';
-    const META_USER_ACCESS_TOKEN = 'IGAALFtL5aBqFBZAFpWQVV3aWVqR2tHNTUtUGVHWW5OWGVzUldsYnltdmNBeXl1OFVDV2dUaHZAlVDFjVnZATa3ZArM3ZAlZAktMbjhCTXlRdHNCTUJ6Q0pCOEdXYjRMLWF3ZAXpXS0Y3V1RaS0dQZAnBTS0hEOWIwOGFNcDAxdFc5SHhOMAZDZD';
+    const INSTAGRAM_ACCESS_TOKEN = 'IGAALFtL5aBqFBZAFpWQVV3aWVqR2tHNTUtUGVHWW5OWGVzUldsYnltdmNBeXl1OFVDV2dUaHZAlVDFjVnZATa3ZArM3ZAlZAktMbjhCTXlRdHNCTUJ6Q0pCOEdXYjRMLWF3ZAXpXS0Y3V1RaS0dQZAnBTS0hEOWIwOGFNcDAxdFc5SHhOMAZDZD';
 
-    // Kick Credentials
+    // =================================================================================
+    // 3. FACEBOOK CONFIGURATION (INDEPENDENT)
+    // =================================================================================
+    // Note: If you have a specific Facebook App ID different from Instagram, update it here.
+    // Currently using the same ID as Instagram as they are often linked in Meta Business Suite.
+    const FACEBOOK_CLIENT_ID = '780330031777441'; 
+    const FACEBOOK_CLIENT_SECRET = '24f2dc9cd5903a234c9ae31eb6672794';
+
+    // =================================================================================
+    // 4. KICK CONFIGURATION (INDEPENDENT)
+    // =================================================================================
     const KICK_CLIENT_ID = '01KH3T8WNDZ269403HKC17JN7X';
     const KICK_CLIENT_SECRET = 'f29e0dc42671605b87263eb46264595c4b0530cacb6b5ee9e57a10e02e8faf35';
 
-    // --- Static Verification Files (Bypass SPA Routing) ---
+    // =================================================================================
+    // STATIC VERIFICATION FILES (Bypass SPA Routing)
+    // =================================================================================
     if (url.pathname === "/czuudtyh60e6l29pldx1s2htix8oxz") {
         return new Response("czuudtyh60e6l29pldx1s2htix8oxz", {
             headers: { "Content-Type": "text/plain" }
@@ -32,7 +48,9 @@ export default {
         });
     }
 
-    // --- TikTok Routes ---
+    // =================================================================================
+    // TIKTOK LOGIC (Completely Separated)
+    // =================================================================================
     
     // 1. TikTok Login Redirect
     if (url.pathname === "/api/tiktok/login") {
@@ -152,7 +170,9 @@ export default {
         }
     }
 
-    // --- Instagram Routes ---
+    // =================================================================================
+    // INSTAGRAM LOGIC (Completely Separated)
+    // =================================================================================
 
     // 1. Instagram Login Redirect
     if (url.pathname === "/api/instagram/login") {
@@ -169,8 +189,7 @@ export default {
     if (url.pathname === "/api/instagram/callback/" || url.pathname === "/api/instagram/callback") {
         const code = url.searchParams.get("code");
         if (code) {
-             // Simulate Success for now (Real exchange requires more complex form data)
-             // Or implement real exchange if needed. For now, let's just return success to unblock UI.
+             // Simulate Success for now
              const username = "Instagram User"; 
              const html = `
                 <!DOCTYPE html>
@@ -192,7 +211,7 @@ export default {
         }
     }
 
-    // 3. Instagram/Facebook Webhook (Data Deletion / Updates)
+    // 3. Instagram Webhook (Data Deletion / Updates)
     if (url.pathname === "/api/instagram/webhook" || url.pathname === "/api/instagram/webhook/") {
         // GET: Verification
         if (request.method === "GET") {
@@ -215,14 +234,16 @@ export default {
         }
     }
 
-    // --- Facebook Routes ---
+    // =================================================================================
+    // FACEBOOK LOGIC (Completely Separated)
+    // =================================================================================
     
     // 1. Facebook Login Redirect
     if (url.pathname === "/api/facebook/login") {
         const redirectUri = `${url.origin}/api/facebook/callback`;
         const state = Math.random().toString(36).substring(7);
-        // Facebook uses same Client ID as Instagram (usually) or separate. Assuming same app.
-        const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${INSTAGRAM_CLIENT_ID}&redirect_uri=${redirectUri}&state=${state}`;
+        // Using FACEBOOK_CLIENT_ID explicitly
+        const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${FACEBOOK_CLIENT_ID}&redirect_uri=${redirectUri}&state=${state}`;
         return Response.redirect(authUrl, 302);
     }
 
