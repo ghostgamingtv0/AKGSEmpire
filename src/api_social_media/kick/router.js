@@ -20,13 +20,18 @@ export async function handleKickRequest(request, url) {
             const origin = url.origin.replace('http:', 'https:');
             const redirectUri = `${origin}/api/kick/callback`;
             
-            const params = new URLSearchParams({
-                client_id: KICK_CONFIG.CLIENT_ID,
-                redirect_uri: redirectUri,
-                response_type: 'code',
-                scope: KICK_CONFIG.SCOPES,
-                state: encodeURIComponent(state)
-            });
+            // Workaround for NextJS 127.0.0.1 bug: Add sacrificial param BEFORE redirect_uri if needed
+            const params = new URLSearchParams();
+            params.append('response_type', 'code');
+            params.append('client_id', KICK_CONFIG.CLIENT_ID);
+            
+            if (redirectUri.includes('127.0.0.1')) {
+                params.append('redirect', '127.0.0.1');
+            }
+            
+            params.append('redirect_uri', redirectUri);
+            params.append('scope', KICK_CONFIG.SCOPES);
+            params.append('state', encodeURIComponent(state));
 
             return Response.redirect(`${KICK_CONFIG.AUTH_URL}?${params.toString()}`, 302);
         } catch (err) {
