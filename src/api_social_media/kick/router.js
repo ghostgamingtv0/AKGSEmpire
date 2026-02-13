@@ -11,22 +11,27 @@ export const KICK_CONFIG = {
 export async function handleKickRequest(request, url) {
     // 1. Kick Login Redirect
     if (url.pathname === "/api/kick/login") {
-        const { visitor_id } = Object.fromEntries(url.searchParams);
-        // Use state to pass visitor_id securely
-        const state = visitor_id ? JSON.stringify({ visitor_id }) : '{}';
-        
-        // Dynamic Redirect URI based on current host
-        const redirectUri = `${url.protocol}//${url.host}/api/kick/callback`;
-        
-        const params = new URLSearchParams({
-            client_id: KICK_CONFIG.CLIENT_ID,
-            redirect_uri: redirectUri,
-            response_type: 'code',
-            scope: KICK_CONFIG.SCOPES,
-            state: encodeURIComponent(state)
-        });
+        try {
+            const { visitor_id } = Object.fromEntries(url.searchParams);
+            // Use state to pass visitor_id securely
+            const state = visitor_id ? JSON.stringify({ visitor_id }) : '{}';
+            
+            // Dynamic Redirect URI based on current host (Force HTTPS)
+            const origin = url.origin.replace('http:', 'https:');
+            const redirectUri = `${origin}/api/kick/callback`;
+            
+            const params = new URLSearchParams({
+                client_id: KICK_CONFIG.CLIENT_ID,
+                redirect_uri: redirectUri,
+                response_type: 'code',
+                scope: KICK_CONFIG.SCOPES,
+                state: encodeURIComponent(state)
+            });
 
-        return Response.redirect(`${KICK_CONFIG.AUTH_URL}?${params.toString()}`, 302);
+            return Response.redirect(`${KICK_CONFIG.AUTH_URL}?${params.toString()}`, 302);
+        } catch (err) {
+            return new Response(`Kick Login Error: ${err.message}`, { status: 500 });
+        }
     }
 
     // 2. Kick Callback

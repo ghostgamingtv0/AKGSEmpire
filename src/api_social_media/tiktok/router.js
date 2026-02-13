@@ -8,7 +8,9 @@ export async function handleTikTokRequest(request, url) {
     // 1. TikTok Login Redirect
     if (url.pathname === "/api/tiktok/login") {
         const csrfState = Math.random().toString(36).substring(7);
-        const redirectUri = `${url.origin}/api/tiktok/callback`;
+        // Force HTTPS for redirect URI
+        const origin = url.origin.replace('http:', 'https:');
+        const redirectUri = `${origin}/api/tiktok/callback`;
         
         let targetUrl = 'https://www.tiktok.com/v2/auth/authorize/';
         targetUrl += `?client_key=${TIKTOK_CONFIG.CLIENT_KEY}`;
