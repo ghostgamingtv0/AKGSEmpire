@@ -32,7 +32,7 @@ export async function handleFacebookRequest(request, url) {
                             window.opener.postMessage({ type: 'FACEBOOK_CONNECTED', username: '${username}' }, '*');
                             window.close();
                         } else {
-                            window.location.href = '/earn';
+                            window.location.href = '/empire/earn';
                         }
                     </script>
                 </body>

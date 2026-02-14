@@ -5,29 +5,36 @@ export default {
     // =================================================================================
     // 1. TIKTOK CONFIGURATION (INDEPENDENT)
     // =================================================================================
-    const TIKTOK_CLIENT_KEY = 'awcqzuswlwpus7hs';
-    const TIKTOK_CLIENT_SECRET = 'Zqw7gHHHj0UZfr27qyJ1S4CY8eXExoiv';
+    const TIKTOK_SANDBOX_KEY = 'sbaw5d5260t82p1ppy';
+    const TIKTOK_SANDBOX_SECRET = 'ErnjN9rguPdQByYZCWJpATljQUGogwh5';
+    const TIKTOK_PROD_KEY = 'awcqzuswlwpus7hs';
+    const TIKTOK_PROD_SECRET = 'Zqw7gHHHj0UZfr27qyJ1S4CY8eXExoiv';
+    const IS_DEV = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
+    const TIKTOK_CLIENT_KEY = IS_DEV ? TIKTOK_SANDBOX_KEY : TIKTOK_PROD_KEY;
+    const TIKTOK_CLIENT_SECRET = IS_DEV ? TIKTOK_SANDBOX_SECRET : TIKTOK_PROD_SECRET;
 
     // =================================================================================
     // 2. INSTAGRAM CONFIGURATION (INDEPENDENT)
     // =================================================================================
     const INSTAGRAM_CLIENT_ID = '780330031777441';
     const INSTAGRAM_CLIENT_SECRET = '24f2dc9cd5903a234c9ae31eb6672794';
-    const INSTAGRAM_ACCESS_TOKEN = 'IGAALFtL5aBqFBZAFpWQVV3aWVqR2tHNTUtUGVHWW5OWGVzUldsYnltdmNBeXl1OFVDV2dUaHZAlVDFjVnZATa3ZArM3ZAlZAktMbjhCTXlRdHNCTUJ6Q0pCOEdXYjRMLWF3ZAXpXS0Y3V1RaS0dQZAnBTS0hEOWIwOGFNcDAxdFc5SHhOMAZDZD';
+    const INSTAGRAM_ACCESS_TOKEN = 'IGAALFtL5aBqFBZAFkwSTBvNklnYURBSmpOOEJ4bXhvbFVJSXJrUXZAqb3lqN0RPS3dpMXZAPMTJSTThvUHNXMWg1MXZAQR2F6c0lPT01SeEFNb2lrd3kwSVpBejJKcWxiQmZAyV2hrN3ZAvYlpYaFY0aXpfa3Y2TGF0cDh4Rll1V0UtMAZDZD';
+    const INSTAGRAM_VERIFY_TOKEN = '2e68281baaf661cf70cad6e819f0070c';
 
     // =================================================================================
     // 3. FACEBOOK CONFIGURATION (INDEPENDENT)
     // =================================================================================
     // Note: If you have a specific Facebook App ID different from Instagram, update it here.
     // Currently using the same ID as Instagram as they are often linked in Meta Business Suite.
-    const FACEBOOK_CLIENT_ID = '780330031777441'; 
-    const FACEBOOK_CLIENT_SECRET = '24f2dc9cd5903a234c9ae31eb6672794';
+    const FACEBOOK_CLIENT_ID = '1814051289293227'; 
+    const FACEBOOK_CLIENT_SECRET = '861a257c043c1499e5e9aa77081a5769';
+    const FACEBOOK_VERIFY_TOKEN = '2e68281baaf661cf70cad6e819f0070c';
 
     // =================================================================================
     // 4. KICK CONFIGURATION (INDEPENDENT)
     // =================================================================================
     const KICK_CLIENT_ID = '01KH3T8WNDZ269403HKC17JN7X';
-    const KICK_CLIENT_SECRET = 'f03323199a30a58e4dc5809aaee22a360d125d77e249d45b709e1246d64158d8';
+    const KICK_CLIENT_SECRET = 'c23959f212aca21f06584f80029291f71d4b26b537e21c1e1b8865737791f7ba';
 
     // =================================================================================
     // STATIC VERIFICATION FILES (Bypass SPA Routing)
@@ -149,7 +156,7 @@ export default {
                                     window.opener.postMessage({ type: 'TIKTOK_CONNECTED', username: '${tikTokName}' }, '*');
                                     window.close();
                                 } else {
-                                    window.location.href = '/earn';
+157                                     window.location.href = '/empire/earn/';
                                 }
                             </script>
                         </body>
@@ -201,7 +208,7 @@ export default {
                             window.opener.postMessage({ type: 'INSTAGRAM_CONNECTED', username: '${username}' }, '*');
                             window.close();
                         } else {
-                            window.location.href = '/earn';
+209                         window.location.href = '/empire/earn/';
                         }
                     </script>
                 </body>
@@ -219,7 +226,7 @@ export default {
             const token = url.searchParams.get("hub.verify_token");
             const challenge = url.searchParams.get("hub.challenge");
             
-            if (mode === "subscribe" && token === "akgs_empire_verify_2025") {
+            if (mode === "subscribe" && token === INSTAGRAM_VERIFY_TOKEN) {
                 return new Response(challenge, { 
                     status: 200,
                     headers: { "Content-Type": "text/plain" }
@@ -262,7 +269,7 @@ export default {
                             window.opener.postMessage({ type: 'FACEBOOK_CONNECTED', username: '${username}' }, '*');
                             window.close();
                         } else {
-                            window.location.href = '/earn';
+270                             window.location.href = '/empire/earn/';
                         }
                     </script>
                 </body>
@@ -272,6 +279,172 @@ export default {
          }
     }
 
+    // 3. Facebook Webhook
+    if (url.pathname === "/api/facebook/webhook" || url.pathname === "/api/facebook/webhook/") {
+        if (request.method === "GET") {
+            const mode = url.searchParams.get("hub.mode");
+            const token = url.searchParams.get("hub.verify_token");
+            const challenge = url.searchParams.get("hub.challenge");
+            if (mode === "subscribe" && token === FACEBOOK_VERIFY_TOKEN) {
+                return new Response(challenge, { status: 200, headers: { "Content-Type": "text/plain" } });
+            }
+            return new Response("Forbidden", { status: 403 });
+        }
+        if (request.method === "POST") {
+            return new Response("EVENT_RECEIVED", { status: 200 });
+        }
+    }
+
+    // 5. Kick Webhook (Support GET for browser checks, POST for events)
+    if (url.pathname === "/api/kick/webhook" || url.pathname === "/api/kick/webhook/") {
+        if (request.method === "GET") {
+            return new Response("Webhook OK", { status: 200, headers: { "Content-Type": "text/plain" } });
+        }
+        if (request.method === "POST") {
+            try {
+                const body = await request.text();
+                // TODO: Verify signature header if provided
+                return new Response("Webhook Received", { status: 200 });
+            } catch (err) {
+                return new Response(`Webhook Error: ${err.message}`, { status: 500 });
+            }
+        }
+        return new Response("Method Not Allowed", { status: 405 });
+    }
+
+    if (url.pathname === "/api/feed-status") {
+        const payload = {
+            twitter: { isNew: false },
+            instagram: { isNew: false },
+            tiktok: { isNew: false },
+            threads: { isNew: false }
+        };
+        return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
+    }
+
+    if (url.pathname === "/api/stats") {
+        const payload = {
+            kick_stats: { is_live: false }
+        };
+        return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
+    }
+
+    if (url.pathname === "/api/init-user" && request.method === "POST") {
+        try {
+            const body = await request.json();
+            const visitor = body?.visitor_id || "visitor_unknown";
+            const gcode = "G-" + btoa(visitor).substring(0, 6).toUpperCase().replace(/[^A-Z0-9]/g, "X");
+            const resp = {
+                success: true,
+                visitor_id: visitor,
+                kick_username: body?.kick_username || null,
+                wallet_address: body?.wallet_address || null,
+                total_points: 0,
+                g_code: gcode
+            };
+            return new Response(JSON.stringify(resp), { headers: { "Content-Type": "application/json" } });
+        } catch (e) {
+            return new Response(JSON.stringify({ error: "Init failed" }), { status: 400, headers: { "Content-Type": "application/json" } });
+        }
+    }
+
+    if (url.pathname === "/api/claim" && request.method === "POST") {
+        try {
+            const body = await request.json();
+            const resp = {
+                success: true,
+                message: "Claim recorded",
+                points_added: body?.points || 5
+            };
+            return new Response(JSON.stringify(resp), { headers: { "Content-Type": "application/json" } });
+        } catch (e) {
+            return new Response(JSON.stringify({ success: false, message: "Invalid payload" }), { status: 400, headers: { "Content-Type": "application/json" } });
+        }
+    }
+
+    if (url.pathname === "/api/mining/ping" && request.method === "POST") {
+        try {
+            const resp = { success: true, points_added: 5 };
+            return new Response(JSON.stringify(resp), { headers: { "Content-Type": "application/json" } });
+        } catch (e) {
+            return new Response(JSON.stringify({ success: false, message: "Ping failed" }), { status: 400, headers: { "Content-Type": "application/json" } });
+        }
+    }
+
+    // Redirect legacy /earn to new route
+    if (url.pathname === "/earn") {
+        return Response.redirect(`${url.origin}/empire/earn/${url.search}`, 301);
+    }
+    if (url.pathname === "/empire/earn") {
+        return Response.redirect(`${url.origin}/empire/earn/${url.search}`, 301);
+    }
+    // Map /empire/api/kick/callback to SPA handler at /empire/earn (preserve query)
+    if (url.pathname === "/empire/api/kick/callback") {
+        return Response.redirect(`${url.origin}/empire/earn/${url.search}`, 302);
+    }
+    if (url.pathname === "/empire/earn/api/kick/callback") {
+        return Response.redirect(`${url.origin}/empire/earn/${url.search}`, 302);
+    }
+    if (url.pathname === "/empire/dev/api/kick/webhook") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/kick/webhook";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/earn/api/kick/webhook") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/kick/webhook";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/earn/api/instagram/webhook") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/instagram/webhook";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/earn/api/facebook/webhook") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/facebook/webhook";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/earn/api/tiktok/callback") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/tiktok/callback";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/earn/api/stats") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/stats";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/earn/api/feed-status") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/feed-status";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/earn/earn") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/empire/earn/";
+        return Response.redirect(newUrl.toString(), 301);
+    }
+    if (url.pathname === "/empire/earn/api/instagram/callback") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/instagram/callback/";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/earn/api/facebook/callback") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/facebook/callback";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/dev/api/instagram/webhook") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/instagram/webhook";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/dev/api/facebook/webhook") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/facebook/webhook";
+        return Response.redirect(newUrl.toString(), 302);
+    }
     // Default: serve static assets
     return env.ASSETS.fetch(request);
   }

@@ -1,6 +1,6 @@
 export const KICK_CONFIG = {
     CLIENT_ID: '01KH3T8WNDZ269403HKC17JN7X',
-    CLIENT_SECRET: '77adce7e26bcf17690938eec8a16b8530648dad98901041a0f08d9dc08be104b',
+    CLIENT_SECRET: 'c23959f212aca21f06584f80029291f71d4b26b537e21c1e1b8865737791f7ba',
     AUTH_URL: 'https://id.kick.com/oauth/authorize',
     TOKEN_URL: 'https://id.kick.com/oauth/token',
     // Added channel:write for channel updates

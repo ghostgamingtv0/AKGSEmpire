@@ -2,7 +2,7 @@
 export const INSTAGRAM_CONFIG = {
     CLIENT_ID: '780330031777441',
     CLIENT_SECRET: '24f2dc9cd5903a234c9ae31eb6672794',
-    ACCESS_TOKEN: 'IGAALFtL5aBqFBZAFlraFNPN281Q09FalN2LWFRT0hlNUFWc0NNbXI1OFpIREhqRmIwekUzUHBHbkwyd0VpSGxLdW43S2pEU3RzbWhNWjlHMlk5OFllTkF0d2l3bFh0azlkZA0ZAFaGd3Rmt5amg4TU5fUmxPbVNSR2xUOTN6RE1fUQZDZD'
+    ACCESS_TOKEN: 'IGAALFtL5aBqFBZAFkwSTBvNklnYURBSmpOOEJ4bXhvbFVJSXJrUXZAqb3lqN0RPS3dpMXZAPMTJSTThvUHNXMWg1MXZAQR2F6c0lPT01SeEFNb2lrd3kwSVpBejJKcWxiQmZAyV2hrN3ZAvYlpYaFY0aXpfa3Y2TGF0cDh4Rll1V0UtMAZDZD'
 };
 
 export async function handleInstagramRequest(request, url) {
@@ -36,7 +36,7 @@ export async function handleInstagramRequest(request, url) {
                             window.opener.postMessage({ type: 'INSTAGRAM_CONNECTED', username: '${username}' }, '*');
                             window.close();
                         } else {
-                            window.location.href = '/earn';
+                            window.location.href = '/empire/earn';
                         }
                     </script>
                 </body>

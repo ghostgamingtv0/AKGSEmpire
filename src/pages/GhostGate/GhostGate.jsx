@@ -179,6 +179,8 @@ const GhostGate = () => {
                 setStep('success');
                 // Auto prompt to add token
                 setTimeout(addTokenToWallet, 1000);
+                // Redirect to Coming Soon immediately after successful registration
+                navigate('/coming-soon');
             } else {
                 setError(data.error || 'Registration failed');
             }

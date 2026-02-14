@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, Coins, Lock, Crown, Percent, Zap, Shield, ShieldCheck, Gem, Bell, PlayCircle, Video, Image as ImageIcon, Plus, Wallet, Ghost, Info, Share2, Youtube, Users } from 'lucide-react';
+import { CheckCircle, Clock, Coins, Lock, Crown, Percent, Zap, Shield, ShieldCheck, Gem, Bell, PlayCircle, Video, Image as ImageIcon, Plus, Wallet, Ghost, Info, Share2, Youtube, Users, ExternalLink } from 'lucide-react';
 import { FaInstagram, FaShareNodes, FaXTwitter, FaTiktok, FaThreads, FaFacebook } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
@@ -55,6 +55,11 @@ const Earn = () => {
   const [showCopyCodeModal, setShowCopyCodeModal] = useState(false);
   const [currentTaskForModal, setCurrentTaskForModal] = useState(null);
   const [generatedCode, setGeneratedCode] = useState('');
+  const [miningUnlocked, setMiningUnlocked] = useState(() => localStorage.getItem('kick_mining_unlocked') === 'true');
+  const [gCodeExpected, setGCodeExpected] = useState(() => localStorage.getItem('kick_gcode_expected') || '');
+  const [gCodeExpiresAt, setGCodeExpiresAt] = useState(() => parseInt(localStorage.getItem('kick_gcode_expires_at') || '0', 10));
+  const [gCodeInput, setGCodeInput] = useState('');
+  const [gCodeDigits, setGCodeDigits] = useState(() => localStorage.getItem('kick_gcode_digits') || '');
 
   // Generate G-Code
   const generateGCode = (platform) => {
@@ -799,6 +804,24 @@ const Earn = () => {
       }
   };
 
+  const handleVisitProfile = (e, platform) => {
+    e.stopPropagation();
+    const linkMap = {
+        'Kick': 'https://kick.com/ghost_gamingtv',
+        'Twitter': 'https://x.com/tv_ghostgaming',
+        'Telegram': 'https://t.me/ghost_gamingtv',
+        'TikTok': 'https://www.tiktok.com/@ghost.gamingtv',
+        'Threads': 'https://www.threads.net/@ghost.gamingtv',
+        'Facebook': 'https://www.facebook.com/profile.php?id=61587465162803',
+        'Instagram': 'https://www.instagram.com/ghost.gamingtv/',
+        'Discord': 'https://discord.gg/wMVJTrppXh',
+        'YouTube': 'https://www.youtube.com/@GhostGamingTV'
+    };
+    if (linkMap[platform]) {
+        window.open(linkMap[platform], '_blank');
+    }
+  };
+
   const handleKickConnect = async () => {
     // Generate PKCE
     const codeVerifier = generateRandomString(128);
@@ -812,7 +835,7 @@ const Earn = () => {
     
     // Construct Redirect URI (must match the one used in Exchange Token)
     const origin = window.location.origin.replace(/\/$/, '');
-    const redirectUri = `${origin}/earn`;
+    const redirectUri = `${origin}/empire/earn/`;
     console.log('Kick OAuth Redirect URI:', redirectUri);
     
     // Use the hardcoded Client ID if env var is missing (fallback)
@@ -825,6 +848,26 @@ const Earn = () => {
     window.location.href = KICK_AUTH_URL;
   };
 
+  // Normalize and parse G-Code from chat or manual input
+  // Accept both formats:
+  // 1) 👻<6digits>+<username>+GGT👻
+  // 2) <username>+GGT+<6digits>
+  const parseGCode = (raw) => {
+    if (!raw) return null;
+    let s = String(raw).trim();
+    // Remove leading/trailing ghost emoji
+    s = s.replace(/^👻/, '').replace(/👻$/, '');
+    // Remove invisible spaces
+    s = s.replace(/\s+/g, '');
+    // Try digits-first
+    let m = s.match(/^(\d{6})\+([a-zA-Z0-9_]+)\+GGT$/i);
+    if (m) return { digits: m[1], user: m[2].toLowerCase(), format: 'digits-first' };
+    // Try user-first (legacy)
+    m = s.match(/^([a-zA-Z0-9_]+)\+GGT\+(\d{6})$/i);
+    if (m) return { digits: m[2], user: m[1].toLowerCase(), format: 'user-first' };
+    return null;
+  };
+
   const handleTaskAction = async (e, task) => {
     e.preventDefault();
     e.stopPropagation();
@@ -835,6 +878,44 @@ const Earn = () => {
     if (task.platform === 'Kick' && task.id === 5) {
         handleKickConnect();
         return;
+    }
+    if (task.platform === 'Kick' && task.type === 'mining') {
+        if (!kickUsername) {
+            alert('Connect Kick first');
+            return;
+        }
+        const now = Date.now();
+        if (!gCodeExpected || now > gCodeExpiresAt) {
+            const num = String(Math.floor(100000 + Math.random() * 900000)).padStart(6, '0');
+            const code = `👻${num}+${kickUsername}+GGT👻`;
+            const expires = now + 15 * 60 * 1000;
+            setGCodeExpected(code);
+            setGCodeDigits(num);
+            setGCodeExpiresAt(expires);
+            localStorage.setItem('kick_gcode_expected', code);
+            localStorage.setItem('kick_gcode_expires_at', String(expires));
+            localStorage.setItem('kick_gcode_digits', num);
+            alert(`Your G-Code: ${code}\nValid for 15 minutes`);
+            return;
+        }
+        if (!miningUnlocked) {
+            const input = prompt('Enter your G-Code');
+            const parsed = parseGCode(input);
+            const expectedUser = (kickUsername || '').toLowerCase();
+            const valid =
+              parsed &&
+              parsed.user === expectedUser &&
+              parsed.digits === String(gCodeDigits) &&
+              Date.now() <= gCodeExpiresAt;
+            if (valid) {
+                setMiningUnlocked(true);
+                localStorage.setItem('kick_mining_unlocked', 'true');
+                alert('Mining unlocked');
+            } else {
+                alert('Invalid or expired code');
+            }
+            return;
+        }
     }
 
     // 2. API-Based Social Tasks (TikTok, Instagram, Facebook, Threads)
@@ -1101,7 +1182,7 @@ const Earn = () => {
     // Handle Kick OAuth Errors
     if (error) {
         const origin = window.location.origin.replace(/\/$/, '');
-        const currentRedirectUri = `${origin}/earn`;
+        const currentRedirectUri = `${origin}/empire/earn/`;
         
         // Detailed Error Message for User
         let errorMsg = `Kick Login Failed: ${error}`;
@@ -1125,7 +1206,7 @@ const Earn = () => {
                 try {
                     const API_BASE = ''; // Proxy handles routing
                     const origin = window.location.origin.replace(/\/$/, '');
-                    const redirectUri = `${origin}/earn`;
+                    const redirectUri = `${origin}/empire/earn/`;
 
                     const response = await fetch(`${API_BASE}/api/kick/exchange-token`, {
                         method: 'POST',
@@ -1783,6 +1864,13 @@ const Earn = () => {
                    onClick={(e) => task && !isClaimed && !isTimerRunning && handleTaskAction(e, task)}
                    className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
                  >
+                    <button 
+                        onClick={(e) => handleVisitProfile(e, 'Twitter')}
+                        className="absolute top-4 right-4 z-20 bg-black/50 hover:bg-white/20 text-white p-2 rounded-full backdrop-blur-sm transition-colors border border-white/10"
+                        title="Visit Profile"
+                    >
+                        <ExternalLink size={16} />
+                    </button>
                     {/* Background Icon */}
                     <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
                         <FaXTwitter size={200} />
@@ -1847,6 +1935,13 @@ const Earn = () => {
                    onClick={(e) => task && !isClaimed && !isTimerRunning && handleTaskAction(e, task)}
                    className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
                  >
+                    <button 
+                        onClick={(e) => handleVisitProfile(e, 'Instagram')}
+                        className="absolute top-4 right-4 z-20 bg-black/50 hover:bg-white/20 text-white p-2 rounded-full backdrop-blur-sm transition-colors border border-white/10"
+                        title="Visit Profile"
+                    >
+                        <ExternalLink size={16} />
+                    </button>
                     <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
                         <FaInstagram size={200} />
                     </div>
@@ -1907,6 +2002,13 @@ const Earn = () => {
                    onClick={(e) => task && !isClaimed && !isTimerRunning && handleTaskAction(e, task)}
                    className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
                  >
+                    <button 
+                        onClick={(e) => handleVisitProfile(e, 'TikTok')}
+                        className="absolute top-4 right-4 z-20 bg-black/50 hover:bg-white/20 text-white p-2 rounded-full backdrop-blur-sm transition-colors border border-white/10"
+                        title="Visit Profile"
+                    >
+                        <ExternalLink size={16} />
+                    </button>
                     <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
                         <FaTiktok size={200} />
                     </div>
@@ -2077,7 +2179,16 @@ const Earn = () => {
                 </div>
                 
                 <h3 className="text-lg font-bold mb-2">{task.action}</h3>
-                <p className="text-gray-400 text-sm mb-6">Platform: {task.platform}</p>
+                <div className="flex items-center justify-between mb-6">
+                  <p className="text-gray-400 text-sm">Platform: {task.platform}</p>
+                  <button
+                    onClick={(e) => handleVisitProfile(e, task.platform)}
+                    className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                    title={`Visit ${task.platform}`}
+                  >
+                    <ExternalLink size={14} />
+                  </button>
+                </div>
 
                 {task.instruction && (
                   <div className={`mb-4 p-2 rounded-lg text-xs font-bold border ${task.instruction.includes('MANDATORY') ? 'bg-red-500/10 border-red-500 text-red-500' : 'bg-yellow-500/10 border-yellow-500 text-yellow-500'}`}>
@@ -2092,7 +2203,7 @@ const Earn = () => {
                   </div>
                   <button 
                     type="button"
-                    disabled={status === 'disabled' || status === 'completed' || isLocked || isProcessing || isTimerRunning}
+                    disabled={status === 'disabled' || status === 'completed' || isLocked || isProcessing || isTimerRunning || (task.platform === 'Kick' && task.type === 'mining' && !miningUnlocked)}
                     onClick={(e) => handleTaskAction(e, task)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             status === 'completed' || status === 'disabled' || isLocked || isProcessing

@@ -56,15 +56,15 @@ const Hero = () => {
             }
             
             // Force Redirect to Earn Page
-            window.location.href = '/earn'; 
+            window.location.href = '/empire/earn/'; 
           } else {
             console.error('Kick Auth Failed');
             alert('Kick Connection Failed. Please try again.');
-            window.location.href = '/earn';
+            window.location.href = '/empire/earn/';
           }
         } catch (error) {
           console.error('Kick Auth Error', error);
-          window.location.href = '/earn';
+          window.location.href = '/empire/earn/';
         }
       };
       exchangeToken();
@@ -207,7 +207,7 @@ const Hero = () => {
           
           {/* CTA Buttons */}
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12 relative z-20">
-            <Link to="/earn" className="w-full sm:w-auto px-8 py-4 bg-[#53FC18] text-black text-lg font-bold rounded-xl hover:bg-[#45d415] transition-all hover:scale-105 shadow-[0_0_20px_rgba(83,252,24,0.3)] flex items-center justify-center gap-3 group relative overflow-hidden">
+            <Link to="/empire/earn" className="w-full sm:w-auto px-8 py-4 bg-[#53FC18] text-black text-lg font-bold rounded-xl hover:bg-[#45d415] transition-all hover:scale-105 shadow-[0_0_20px_rgba(83,252,24,0.3)] flex items-center justify-center gap-3 group relative overflow-hidden">
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
               <Zap className="relative z-10 group-hover:fill-black transition-colors" size={24} />
               <span className="relative z-10">Start Earning / ابدأ الربح</span>

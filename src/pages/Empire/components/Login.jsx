@@ -94,7 +94,7 @@ const Login = () => {
         const data = await res.json();
         if (data.success) {
             localStorage.setItem('user_session', JSON.stringify(data.user));
-            navigate('/earn');
+            navigate('/empire/earn');
         } else {
             setError(data.error || 'Login failed');
         }

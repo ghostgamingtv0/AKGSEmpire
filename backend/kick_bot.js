@@ -20,7 +20,7 @@ const API_BASE_URL = 'https://api.kick.com/public/v1';
 
 // OAUTH CREDENTIALS (Load from .env or file)
 const CLIENT_ID = process.env.KICK_CLIENT_ID || '01KH3T8WNDZ269403HKC17JN7X';
-const CLIENT_SECRET = process.env.KICK_CLIENT_SECRET || '2009e4f715533419f01465c49c517cb626c0002a3d2b2d6540a4eac38f735682';
+const CLIENT_SECRET = process.env.KICK_CLIENT_SECRET || 'c23959f212aca21f06584f80029291f71d4b26b537e21c1e1b8865737791f7ba';
 
 let db;
 let accessToken = null; // Will be fetched via OAuth

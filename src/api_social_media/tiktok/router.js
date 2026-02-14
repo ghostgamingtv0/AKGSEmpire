@@ -1,7 +1,13 @@
 // TikTok Router Logic
 export const TIKTOK_CONFIG = {
-    CLIENT_KEY: 'awcqzuswlwpus7hs',
-    CLIENT_SECRET: 'Zqw7gHHHj0UZfr27qyJ1S4CY8eXExoiv'
+    SANDBOX: {
+        CLIENT_KEY: 'sbaw5d5260t82p1ppy',
+        CLIENT_SECRET: 'ErnjN9rguPdQByYZCWJpATljQUGogwh5'
+    },
+    PROD: {
+        CLIENT_KEY: 'awcqzuswlwpus7hs',
+        CLIENT_SECRET: 'Zqw7gHHHj0UZfr27qyJ1S4CY8eXExoiv'
+    }
 };
 
 export async function handleTikTokRequest(request, url) {
@@ -11,9 +17,11 @@ export async function handleTikTokRequest(request, url) {
         // Force HTTPS for redirect URI
         const origin = url.origin.replace('http:', 'https:');
         const redirectUri = `${origin}/api/tiktok/callback`;
+        const isDev = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
+        const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
         
         let targetUrl = 'https://www.tiktok.com/v2/auth/authorize/';
-        targetUrl += `?client_key=${TIKTOK_CONFIG.CLIENT_KEY}`;
+        targetUrl += `?client_key=${keys.CLIENT_KEY}`;
         targetUrl += `&scope=user.info.basic`;
         targetUrl += `&response_type=code`;
         targetUrl += `&redirect_uri=${encodeURIComponent(redirectUri)}`;
@@ -63,9 +71,11 @@ export async function handleTikTokRequest(request, url) {
             if (code) {
                 try {
                     const redirectUri = `${url.origin}/api/tiktok/callback`;
+                    const isDev = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
+                    const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
                     const params = new URLSearchParams();
-                    params.append('client_key', TIKTOK_CONFIG.CLIENT_KEY);
-                    params.append('client_secret', TIKTOK_CONFIG.CLIENT_SECRET);
+                    params.append('client_key', keys.CLIENT_KEY);
+                    params.append('client_secret', keys.CLIENT_SECRET);
                     params.append('code', code);
                     params.append('grant_type', 'authorization_code');
                     params.append('redirect_uri', redirectUri);
@@ -104,7 +114,7 @@ export async function handleTikTokRequest(request, url) {
                                     window.opener.postMessage({ type: 'TIKTOK_CONNECTED', username: '${tikTokName}' }, '*');
                                     window.close();
                                 } else {
-                                    window.location.href = '/earn';
+                                    window.location.href = '/empire/earn/';
                                 }
                             </script>
                         </body>
