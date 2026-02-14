@@ -9,6 +9,7 @@ import Tokenomics from './components/Tokenomics';
 import WalletModal from './components/WalletModal';
 import Login from './components/Login';
 import BackgroundEffects from './components/UnifiedBackground';
+import FacebookSDK from '../../components/FacebookSDK';
 import { ASSETS } from '../../config/constants';
 
 const Navbar = ({ onConnect, walletAddress }) => {
@@ -243,6 +244,7 @@ function Empire() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-[#53FC18] selection:text-black relative">
+      <FacebookSDK />
       {!isHome && <BackgroundEffects />}
       <Navbar 
         onConnect={() => setIsWalletModalOpen(true)} 
