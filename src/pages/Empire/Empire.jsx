@@ -9,7 +9,7 @@ import Tokenomics from './components/Tokenomics';
 import WalletModal from './components/WalletModal';
 import Login from './components/Login';
 import BackgroundEffects from './components/UnifiedBackground';
-import FacebookSDK from '../../components/FacebookSDK';
+import FacebookSDK from './components/FacebookSDK';
 import { ASSETS } from '../../config/constants';
 
 const Navbar = ({ onConnect, walletAddress }) => {
