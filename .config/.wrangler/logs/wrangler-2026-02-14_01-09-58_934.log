@@ -373,3 +373,55 @@ RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
 --- 2026-02-14T01:10:15.823Z debug
 -- END CF API RESPONSE
 ---
+
+--- 2026-02-14T01:10:17.824Z debug
+attempt #2: Attempting to fetch status for deployment with id "bb36cc12-00a4-45ae-9b17-f1b61369298d" ...
+---
+
+--- 2026-02-14T01:10:17.824Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/f139034ef7924a1d387c88f394b535a2/pages/projects/akgsempire/deployments/bb36cc12-00a4-45ae-9b17-f1b61369298d
+---
+
+--- 2026-02-14T01:10:17.824Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-14T01:10:17.824Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-14T01:10:17.824Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-14T01:10:17.824Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-02-14T01:10:18.769Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-02-14T01:10:18.769Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-14T01:10:18.769Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-02-14T01:10:18.769Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-02-14T01:10:18.770Z log
+✨ Deployment complete! Take a peek over at https://bb36cc12.akgsempire.pages.dev
+---
+
+--- 2026-02-14T01:10:18.771Z debug
+Metrics dispatcher: Posting data {"deviceId":"672dd324-7ddc-4102-8d1e-2dabcfd6b5db","event":"create pages deployment","timestamp":1771031418771,"properties":{"amplitude_session_id":1771031418770,"amplitude_event_id":0,"wranglerVersion":"4.65.0","wranglerMajorVersion":4,"wranglerMinorVersion":65,"wranglerPatchVersion":0,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"category":"Workers","os":"win32:x64"}}
+---
+
+--- 2026-02-14T01:10:18.773Z debug
+Metrics dispatcher: Posting data {"deviceId":"672dd324-7ddc-4102-8d1e-2dabcfd6b5db","event":"wrangler command completed","timestamp":1771031418773,"properties":{"amplitude_session_id":1771031399168,"amplitude_event_id":1,"wranglerVersion":"4.65.0","wranglerMajorVersion":4,"wranglerMinorVersion":65,"wranglerPatchVersion":0,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"argsUsed":["projectName"],"argsCombination":"projectName","sanitizedCommand":"pages deploy","sanitizedArgs":{},"durationMs":19612}}
+---

@@ -12,10 +12,10 @@ export async function handleInstagramRequest(request, url) {
         const origin = url.origin.replace('http:', 'https:');
         // REMOVED trailing slash to match standard OAuth configuration
         const redirectUri = `${origin}/api/instagram/callback`; 
-        const scope = 'user_profile,user_media';
+        const scope = 'instagram_business_basic,instagram_business_manage_messages,instagram_business_manage_comments,instagram_business_content_publish,instagram_business_manage_insights';
         const state = Math.random().toString(36).substring(7);
         
-        const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code&state=${state}`;
+        const authUrl = `https://www.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code&state=${state}`;
         
         return Response.redirect(authUrl, 302);
     }
