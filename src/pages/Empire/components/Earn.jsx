@@ -234,6 +234,20 @@ const Earn = () => {
     }
   }, [activeTab]);
 
+  const handleConnect = (platform) => {
+    const endpoints = {
+      'Kick': '/api/kick/login',
+      'Instagram': '/api/instagram/login',
+      'Facebook': '/api/facebook/login',
+      'TikTok': '/api/tiktok/login',
+      'Discord': '/api/discord/login' // Assuming this exists or will exist
+    };
+    
+    if (endpoints[platform]) {
+      window.location.href = endpoints[platform];
+    }
+  };
+
   const tasks = [
     { 
       id: 1, 
