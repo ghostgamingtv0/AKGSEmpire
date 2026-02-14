@@ -13,7 +13,7 @@ export async function handleFacebookRequest(request, url) {
         const redirectUri = `${origin}/api/facebook/callback`;
         const state = Math.random().toString(36).substring(7);
         // Using FACEBOOK_CLIENT_ID explicitly
-        const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${FACEBOOK_CONFIG.CLIENT_ID}&redirect_uri=${redirectUri}&state=${state}`;
+        const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${FACEBOOK_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
         return Response.redirect(authUrl, 302);
     }
 

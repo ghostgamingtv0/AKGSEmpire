@@ -15,7 +15,7 @@ export async function handleInstagramRequest(request, url) {
         const scope = 'user_profile,user_media';
         const state = Math.random().toString(36).substring(7);
         
-        const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CONFIG.CLIENT_ID}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code&state=${state}`;
+        const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code&state=${state}`;
         
         return Response.redirect(authUrl, 302);
     }
