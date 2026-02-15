@@ -252,10 +252,12 @@ const ComingSoon = () => {
                       try {
                         const sessionRaw = localStorage.getItem('user_session');
                         let visitorId = null;
+                        let usernameForCheck = null;
                         if (sessionRaw) {
                           try {
                             const parsed = JSON.parse(sessionRaw);
                             visitorId = parsed.visitor_id || parsed.id || null;
+                            usernameForCheck = parsed.username || null;
                           } catch {}
                         }
                         fetch('/api/social/click', {
@@ -267,6 +269,16 @@ const ComingSoon = () => {
                             target: link.url
                           })
                         }).catch(() => {});
+                        if (usernameForCheck && (link.id === 'instagram' || link.id === 'facebook' || link.id === 'threads')) {
+                          fetch('/api/social/check-account', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              platform: link.id,
+                              username: usernameForCheck
+                            })
+                          }).catch(() => {});
+                        }
                       } catch {}
                     }}
                     href={link.url}
