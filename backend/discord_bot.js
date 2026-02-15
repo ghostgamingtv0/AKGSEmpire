@@ -129,6 +129,9 @@ async function populateAllChannels(guild) {
     // Links (New)
     await sendLinksEmbed(guild);
 
+    // Project Docs (Platform Focus)
+    await sendProjectDocs(guild);
+
     // Update Member Count in DB
     await updateMemberCount(guild);
 
@@ -450,6 +453,39 @@ Squad up, share clips, and discuss strategies.
             }
         }
     }
+}
+
+// 6. PROJECT DOCS (Discord + TikTok Focus)
+async function sendProjectDocs(guild) {
+    const announce = guild.channels.cache.find(c => c.name === '📢-announcements-إعلانات');
+    if (!announce || !announce.isTextBased()) return;
+    const msgs = await announce.messages.fetch({ limit: 3 });
+    if (msgs.size > 0) return;
+
+    const embed = new EmbedBuilder()
+        .setColor(THEME.COLOR)
+        .setTitle('📚 AKGS Empire • وثائق التشغيل')
+        .setDescription(
+            `**الأولوية الحالية لجمع البيانات:**\n` +
+            `• **ديسكورد (المنصة الثانية):** جمع المستخدمين، القوانين، الإعلانات، وعداد الأعضاء.\n` +
+            `• **تيك طوك (المنصة الثالثة):** ربط OAuth، التحقق من المنشورات، واحتساب نقاط Like/Comment مع **G‑Code**.\n` +
+            `• **منصات ثانوية (Instagram/Facebook/Threads):** التحقق فقط من **اسم المستخدم** بدون OAuth.\n\n` +
+            `**المعمارية:**\n` +
+            `• **Cloudflare Worker:** يقدم API سريع: /api/stats, /api/feed-status, /api/username/check.\n` +
+            `• **Backend (Node):** مهام خلفية وDiscord Bot.\n` +
+            `• **Front‑End (Vite/React):** صفحات Empire/Coming Soon/Genesis Gate.\n\n` +
+            `**مسارات رئيسية:**\n` +
+            `• /empire/earn/ → واجهة المهام والتفاعل.\n` +
+            `• /api/username/check → تحقق Regex ^[a-zA-Z0-9_]+$.\n` +
+            `• /empire/tiktok-developers-site-verification.txt → تحقق تيك طوك.\n\n` +
+            `**ملاحظات تشغيل:**\n` +
+            `• ممنوع البوتات. التفاعل يجب أن يكون حقيقي.\n` +
+            `• الـG‑Code إلزامي في التعليقات للمطالبة بالنقاط.`
+        )
+        .setFooter({ text: THEME.FOOTER })
+        .setTimestamp();
+
+    await announce.send({ embeds: [embed] });
 }
 
 client.login(TOKEN).catch(err => {

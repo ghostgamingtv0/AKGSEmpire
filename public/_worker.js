@@ -428,14 +428,39 @@ export default {
         return Response.redirect(newUrl.toString(), 302);
     }
     if (url.pathname === "/empire/earn/api/stats") {
-        const newUrl = new URL(request.url);
-        newUrl.pathname = "/api/stats";
-        return Response.redirect(newUrl.toString(), 302);
+        const payload = {
+            kick_stats: { is_live: false },
+            discord_members: 0,
+            telegram_members: 0
+        };
+        return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
     }
     if (url.pathname === "/empire/earn/api/feed-status") {
-        const newUrl = new URL(request.url);
-        newUrl.pathname = "/api/feed-status";
-        return Response.redirect(newUrl.toString(), 302);
+        const payload = {
+            twitter: { isNew: false },
+            instagram: { isNew: false },
+            tiktok: { isNew: false },
+            threads: { isNew: false }
+        };
+        return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
+    }
+
+    if (url.pathname === "/api/username/check" && request.method === "POST") {
+        try {
+            const body = await request.json();
+            const username = (body?.username || "").trim();
+            const platform = (body?.platform || "").toLowerCase();
+            const valid = /^[a-zA-Z0-9_]+$/.test(username);
+            const resp = {
+                success: true,
+                platform,
+                username,
+                is_valid: valid
+            };
+            return new Response(JSON.stringify(resp), { headers: { "Content-Type": "application/json" } });
+        } catch (e) {
+            return new Response(JSON.stringify({ success: false, message: "Invalid payload" }), { status: 400, headers: { "Content-Type": "application/json" } });
+        }
     }
     if (url.pathname === "/empire/earn/earn") {
         const newUrl = new URL(request.url);
