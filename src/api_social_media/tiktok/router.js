@@ -1,12 +1,12 @@
 // TikTok Router Logic
 export const TIKTOK_CONFIG = {
     SANDBOX: {
-        CLIENT_KEY: 'sbaw5d5260t82p1ppy',
-        CLIENT_SECRET: 'ErnjN9rguPdQByYZCWJpATljQUGogwh5'
+        CLIENT_KEY: 'sbaw8q48mtdwkfigi3',
+        CLIENT_SECRET: '7Z3CfRk2qI8nfoEqpczC96gZbvFaiOal'
     },
     PROD: {
-        CLIENT_KEY: 'awcqzuswlwpus7hs',
-        CLIENT_SECRET: 'Zqw7gHHHj0UZfr27qyJ1S4CY8eXExoiv'
+        CLIENT_KEY: 'awyk8qjpedujjzz6',
+        CLIENT_SECRET: 'FIPDCqZ7ahWnfm63Ve1oYUVkJfNTbKq9'
     }
 };
 

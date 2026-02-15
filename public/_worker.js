@@ -5,10 +5,10 @@ export default {
     // =================================================================================
     // 1. TIKTOK CONFIGURATION (INDEPENDENT)
     // =================================================================================
-    const TIKTOK_SANDBOX_KEY = 'sbaw5d5260t82p1ppy';
-    const TIKTOK_SANDBOX_SECRET = 'ErnjN9rguPdQByYZCWJpATljQUGogwh5';
-    const TIKTOK_PROD_KEY = 'awcqzuswlwpus7hs';
-    const TIKTOK_PROD_SECRET = 'Zqw7gHHHj0UZfr27qyJ1S4CY8eXExoiv';
+    const TIKTOK_SANDBOX_KEY = 'sbaw8q48mtdwkfigi3';
+    const TIKTOK_SANDBOX_SECRET = '7Z3CfRk2qI8nfoEqpczC96gZbvFaiOal';
+    const TIKTOK_PROD_KEY = 'awyk8qjpedujjzz6';
+    const TIKTOK_PROD_SECRET = 'FIPDCqZ7ahWnfm63Ve1oYUVkJfNTbKq9';
     const IS_DEV = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
     const TIKTOK_CLIENT_KEY = IS_DEV ? TIKTOK_SANDBOX_KEY : TIKTOK_PROD_KEY;
     const TIKTOK_CLIENT_SECRET = IS_DEV ? TIKTOK_SANDBOX_SECRET : TIKTOK_PROD_SECRET;
@@ -324,7 +324,17 @@ export default {
 
     if (url.pathname === "/api/stats") {
         const payload = {
-            kick_stats: { is_live: false }
+            kick_stats: { is_live: false },
+            discord_members: 0,
+            telegram_members: 0
+        };
+        return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
+    }
+
+    if (url.pathname === "/api/genesis/stats") {
+        const payload = {
+            totalSpots: 50,
+            spotsLeft: 50
         };
         return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
     }
@@ -369,6 +379,13 @@ export default {
         } catch (e) {
             return new Response(JSON.stringify({ success: false, message: "Ping failed" }), { status: 400, headers: { "Content-Type": "application/json" } });
         }
+    }
+
+    if (url.pathname === "/empire/tiktok-developers-site-verification.html") {
+        return new Response("tiktok-developers-site-verification=H1hXtnuV1RykPaw4v9kGMN2jI6ammhl5", { headers: { "Content-Type": "text/plain" } });
+    }
+    if (url.pathname === "/empire/tiktok-developers-site-verification.txt") {
+        return new Response("tiktok-developers-site-verification=urFDMcM8TfNVJhtYH401qnjCxXbTQkQf", { headers: { "Content-Type": "text/plain" } });
     }
 
     // Redirect legacy /earn to new route
