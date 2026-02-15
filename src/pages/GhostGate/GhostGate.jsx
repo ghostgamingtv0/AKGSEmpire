@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, ShieldCheck, Lock, Wallet, User, CheckCircle2, AlertTriangle, Key, Copy, Clock, Globe, Instagram, Gamepad2, Tv, ChevronDown, LogIn, ArrowRight, Facebook } from 'lucide-react';
 import SceneOneBackground from './components/UnifiedBackground';
@@ -12,6 +12,7 @@ const TOKEN_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
 // Renamed from GenesisGate to GhostGate
 const GhostGate = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [step, setStep] = useState('gate'); // gate, register, success
     const [authMode, setAuthMode] = useState('login'); // login, register
     const [spotsLeft, setSpotsLeft] = useState(50);
@@ -32,6 +33,15 @@ const GhostGate = () => {
     // Success State Variables
     const [gCode, setGCode] = useState('');
     const [timeLeft, setTimeLeft] = useState(1200); // 20 minutes in seconds
+
+    useEffect(() => {
+        try {
+            const existing = localStorage.getItem('user_session');
+            if (existing) {
+                navigate('/coming-soon');
+            }
+        } catch {}
+    }, []);
 
     // Fetch Real Spot Count
     useEffect(() => {
@@ -151,12 +161,14 @@ const GhostGate = () => {
             }
 
             // Send to Backend
+            const refParam = new URLSearchParams(location.search).get('ref') || null;
             const res = await fetch('/api/genesis/test-register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...formData,
-                    platform: selectedPlatform
+                    platform: selectedPlatform,
+                    ref: refParam
                 })
             });
 
@@ -175,6 +187,22 @@ const GhostGate = () => {
                     rank: data.rank
                 }));
                 // --------------------------------------------------------
+
+                try {
+                    await fetch('/api/log', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            type: 'genesis_register',
+                            platform: selectedPlatform,
+                            platformUsername: formData.platformUsername,
+                            nickname: formData.nickname,
+                            wallet: formData.wallet,
+                            gCode: data.gCode,
+                            rank: data.rank
+                        })
+                    });
+                } catch {}
 
                 setStep('success');
                 // Auto prompt to add token

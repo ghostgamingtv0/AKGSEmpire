@@ -48,6 +48,8 @@ const ComingSoon = () => {
     discord_members: 0,
     telegram_members: 0
   });
+  const [refLink, setRefLink] = useState('');
+  const [refReady, setRefReady] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -69,6 +71,29 @@ const ComingSoon = () => {
     fetchStats();
     const interval = setInterval(fetchStats, 60000); // Update every minute
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    try {
+      const existingG = localStorage.getItem('gCode');
+      if (existingG) {
+        setRefLink(`${window.location.origin}/?ref=${encodeURIComponent(existingG)}`);
+        setRefReady(true);
+        return;
+      }
+      fetch('/api/init-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      }).then(async (r) => {
+        if (!r.ok) return;
+        const data = await r.json();
+        if (data?.g_code) {
+          setRefLink(`${window.location.origin}/?ref=${encodeURIComponent(data.g_code)}`);
+          setRefReady(true);
+        }
+      }).catch(() => {});
+    } catch {}
   }, []);
 
   const badges = useMemo(() => ['Web3 Gaming', 'Metaverse', 'Social2Earn', 'Watch2Earn'].map(text => ({
@@ -401,6 +426,54 @@ const ComingSoon = () => {
                             <div>
                                 <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Community First</h4>
                                 <p className="text-gray-400 text-sm leading-relaxed">Built by the community, for the community. Fair rewards and transparent operations.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="group bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-[#53FC18]/10 hover:border-[#53FC18]/40 transition-all duration-300">
+                        <div className="flex items-start gap-4 w-full">
+                            <div className="p-3 bg-[#53FC18]/10 rounded-xl text-[#53FC18] group-hover:scale-110 transition-transform">
+                                <Send size={24} />
+                            </div>
+                            <div className="flex-1">
+                                <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Referral Generator</h4>
+                                <p className="text-gray-400 text-sm leading-relaxed mb-3">Generate your referral link. Each successful signup via your link awards <span className="text-[#53FC18] font-bold">500 points</span>.</p>
+                                <div className="flex items-center gap-2">
+                                    <input 
+                                        readOnly
+                                        value={refLink}
+                                        placeholder="Initialising..."
+                                        className="flex-1 bg-black/40 border border-[#53FC18]/30 rounded-xl py-2 px-3 text-white text-xs font-mono"
+                                    />
+                                    <button 
+                                        disabled={!refReady}
+                                        onClick={() => { try { navigator.clipboard.writeText(refLink); } catch {} }}
+                                        className={`px-4 py-2 rounded-xl font-bold ${refReady ? 'bg-[#53FC18] text-black' : 'bg-gray-700 text-gray-400 cursor-not-allowed'}`}
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="group bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-[#53FC18]/10 hover:border-[#53FC18]/40 transition-all duration-300">
+                        <div className="flex items-start gap-4">
+                            <div className="p-3 bg-[#53FC18]/10 rounded-xl text-[#53FC18] group-hover:scale-110 transition-transform">
+                                <Tv size={24} />
+                            </div>
+                            <div className="flex-1">
+                                <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Contracts</h4>
+                                <div className="text-gray-400 text-sm leading-relaxed space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[#53FC18] font-bold">Token</span>
+                                        <span className="font-mono text-xs break-all">{CONTRACTS.AKGS_TOKEN}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[#53FC18] font-bold">NFT</span>
+                                        <span className="font-mono text-xs break-all">{CONTRACTS.AKGS_NFT}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

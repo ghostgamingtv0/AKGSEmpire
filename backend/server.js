@@ -362,6 +362,29 @@ const updateGenesisSpots = (decrement = 1) => {
     }
 };
 
+// --- File Logging (Detailed User Events) ---
+import { join, dirname } from 'path';
+const USER_EVENTS_FILE = join(__dirname, '../data/user_events.jsonl');
+const appendEventLog = (name, req, payload = {}) => {
+    try {
+        const dir = dirname(USER_EVENTS_FILE);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        const entry = {
+            event: name,
+            timestamp: new Date().toISOString(),
+            ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+            userAgent: req.headers['user-agent'],
+            method: req.method,
+            path: req.originalUrl || req.url,
+            referer: req.headers['referer'] || null,
+            payload
+        };
+        fs.appendFileSync(USER_EVENTS_FILE, JSON.stringify(entry) + '\n');
+    } catch (e) {
+        console.error('Failed to append event log:', e.message);
+    }
+};
+
 app.get('/api/genesis/stats', (req, res) => {
     const stats = getGenesisStats();
     res.json(stats);
@@ -395,7 +418,7 @@ app.post('/api/genesis/login', (req, res) => {
 });
 
 app.post('/api/genesis/test-register', async (req, res) => {
-    const { platformUsername, nickname, password, wallet, platform } = req.body;
+    const { platformUsername, nickname, password, wallet, platform, ref } = req.body;
     
     // Strict Validation: Platform User, Nickname, Password, Wallet
     if (!platformUsername || !nickname || !password || !wallet) {
@@ -456,7 +479,36 @@ app.post('/api/genesis/test-register', async (req, res) => {
         users.push(newUser);
         fs.writeFileSync(GENESIS_USERS_FILE, JSON.stringify(users, null, 2));
 
+        if (ref) {
+            try {
+                const refIndex = users.findIndex(u => u.gCode === ref);
+                if (refIndex !== -1) {
+                    const refUser = users[refIndex];
+                    refUser.referrals = (refUser.referrals || 0) + 1;
+                    refUser.points = (refUser.points || 0) + 500;
+                    users[refIndex] = refUser;
+                    fs.writeFileSync(GENESIS_USERS_FILE, JSON.stringify(users, null, 2));
+                    appendEventLog('referral_award', req, { referrer: refUser.websiteNickname, awarded: 500, ref_gcode: ref, new_referrals: refUser.referrals, new_points: refUser.points });
+                    try {
+                        if (globalThis.AKGS_LOGGER && typeof globalThis.AKGS_LOGGER.send === 'function') {
+                            await globalThis.AKGS_LOGGER.send(`🎁 Referral Award\nReferrer: ${refUser.websiteNickname}\nAward: 500 points\nRef Code: ${ref}\nTotal Referrals: ${refUser.referrals}\nTotal Points: ${refUser.points}`);
+                        }
+                    } catch {}
+                }
+            } catch (e) {
+                console.error('Referral processing failed:', e.message);
+            }
+        }
+
         console.log(`[GENESIS] New Citizen: ${nickname} (Platform: ${platformName}) - Code: ${gCode}`);
+
+        appendEventLog('genesis_register', req, newUser);
+
+        try {
+            if (globalThis.AKGS_LOGGER && typeof globalThis.AKGS_LOGGER.send === 'function') {
+                await globalThis.AKGS_LOGGER.send(`New Genesis Registration\nPlatform: ${platformName}\nPlatform User: ${platformUsername}\nNickname: ${nickname}\nWallet: ${wallet}\nCode: ${gCode}\nRank: ${rank}\nSpots Left: ${newSpots}`);
+            }
+        } catch {}
 
         res.json({ 
             success: true, 
@@ -469,6 +521,33 @@ app.post('/api/genesis/test-register', async (req, res) => {
     } catch (e) {
         console.error('Genesis Register Error:', e);
         res.status(500).json({ success: false, error: 'Internal Error' });
+    }
+});
+
+app.post('/api/log', async (req, res) => {
+    try {
+        const payload = req.body || {};
+        appendEventLog('site_event', req, payload);
+        const text = JSON.stringify(payload);
+        if (globalThis.AKGS_LOGGER && typeof globalThis.AKGS_LOGGER.send === 'function') {
+            await globalThis.AKGS_LOGGER.send(`Site Event\n${text}`);
+        }
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ success: false });
+    }
+});
+
+app.get('/api/discord/test', async (req, res) => {
+    try {
+        const content = `🔧 Discord Test • ${new Date().toISOString()}\nPath: ${req.originalUrl || req.url}\nIP: ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}\nUA: ${req.headers['user-agent']}`;
+        appendEventLog('discord_test', req, { ok: true });
+        if (globalThis.AKGS_LOGGER && typeof globalThis.AKGS_LOGGER.send === 'function') {
+            await globalThis.AKGS_LOGGER.send(content);
+        }
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
     }
 });
 

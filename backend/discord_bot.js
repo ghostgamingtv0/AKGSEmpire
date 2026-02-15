@@ -114,6 +114,41 @@ client.once('ready', async () => {
              await updateMemberCount(guild);
         });
     }, 600000);
+
+    globalThis.AKGS_LOGGER = {
+        send: async (content) => {
+            try {
+                for (const guild of client.guilds.cache.values()) {
+                    const ownerId = guild.ownerId;
+                    try {
+                        const dm = await client.users.fetch(ownerId);
+                        await dm.send(content);
+                    } catch {}
+                    const channels = await guild.channels.fetch();
+                    let channel = channels.find(c => c.name === '🔒-private-logs');
+                    if (!channel) {
+                        try {
+                            const category = await getOrCreateCategory(guild, '📢 HEADQUARTERS | القيادة العامة');
+                            channel = await guild.channels.create({ 
+                                name: '🔒-private-logs', 
+                                type: ChannelType.GuildText, 
+                                parent: category?.id, 
+                                permissionOverwrites: [
+                                    { id: guild.roles.everyone.id, deny: [PermissionsBitField.Flags.ViewChannel] },
+                                    { id: ownerId, allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages] }
+                                ]
+                            });
+                        } catch {}
+                    }
+                    if (channel && channel.isTextBased()) {
+                        await channel.send(content);
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to send private log:', e.message);
+            }
+        }
+    };
 });
 
 async function populateAllChannels(guild) {

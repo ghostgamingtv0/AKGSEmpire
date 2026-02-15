@@ -382,10 +382,27 @@ export default {
     }
 
     if (url.pathname === "/empire/tiktok-developers-site-verification.html") {
-        return new Response("tiktok-developers-site-verification=H1hXtnuV1RykPaw4v9kGMN2jI6ammhl5", { headers: { "Content-Type": "text/plain" } });
+        return new Response("tiktok-developers-site-verification=1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1", { headers: { "Content-Type": "text/plain" } });
     }
     if (url.pathname === "/empire/tiktok-developers-site-verification.txt") {
-        return new Response("tiktok-developers-site-verification=urFDMcM8TfNVJhtYH401qnjCxXbTQkQf", { headers: { "Content-Type": "text/plain" } });
+        return new Response("tiktok-developers-site-verification=1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1", { headers: { "Content-Type": "text/plain" } });
+    }
+
+    if (url.pathname.startsWith("/empire")) {
+        const allowedExact = new Set([
+            "/empire/tiktok-developers-site-verification.txt",
+            "/empire/terms.html",
+            "/empire/privacy.html",
+            "/empire/api/instagram/callback",
+            "/empire/api/instagram/callback/"
+        ]);
+        const isAllowedPrefix =
+            url.pathname.startsWith("/empire/earn") ||
+            url.pathname.startsWith("/empire/api") ||
+            url.pathname.startsWith("/empire/tiktok-developers-site-verification");
+        if (!allowedExact.has(url.pathname) && !isAllowedPrefix) {
+            return Response.redirect(`${url.origin}/coming-soon`, 302);
+        }
     }
 
     // Redirect legacy /earn to new route
@@ -427,13 +444,15 @@ export default {
         newUrl.pathname = "/api/tiktok/callback";
         return Response.redirect(newUrl.toString(), 302);
     }
+    if (url.pathname.startsWith("/empire/earn/api/")) {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = url.pathname.replace("/empire/earn", "");
+        return Response.redirect(newUrl.toString(), 302);
+    }
     if (url.pathname === "/empire/earn/api/stats") {
-        const payload = {
-            kick_stats: { is_live: false },
-            discord_members: 0,
-            telegram_members: 0
-        };
-        return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/stats";
+        return Response.redirect(newUrl.toString(), 302);
     }
     if (url.pathname === "/empire/earn/api/feed-status") {
         const payload = {
@@ -462,6 +481,46 @@ export default {
             return new Response(JSON.stringify({ success: false, message: "Invalid payload" }), { status: 400, headers: { "Content-Type": "application/json" } });
         }
     }
+    // Lightweight fallbacks to avoid JSON parse errors in Dashboard
+    if (url.pathname === "/api/leaderboard") {
+        return new Response(JSON.stringify({ success: true, leaderboard: [] }), { headers: { "Content-Type": "application/json" } });
+    }
+    if (url.pathname === "/api/leaderboards") {
+        return new Response(JSON.stringify({ success: true, most_interactive: [], top_referrers: [] }), { headers: { "Content-Type": "application/json" } });
+    }
+    if (url.pathname === "/api/top-comments") {
+        return new Response(JSON.stringify({ success: true, topComments: [] }), { headers: { "Content-Type": "application/json" } });
+    }
+    if (url.pathname === "/api/stats") {
+        const payload = {
+            success: true,
+            total_users: 0,
+            total_distributed: 0,
+            kick_followers: 0,
+            kick_viewers: 0,
+            kick_is_live: false,
+            weekly_growth: "+0",
+            kick_category: ""
+        };
+        return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
+    }
+    if (url.pathname === "/api/kick/exchange-token" && request.method === "POST") {
+        try {
+            const body = await request.json();
+            const visitorId = body?.visitor_id || null;
+            const username = "Anonymous User";
+            const resp = {
+                success: true,
+                username,
+                following: false,
+                is_profile_complete: false,
+                visitor_id: visitorId
+            };
+            return new Response(JSON.stringify(resp), { headers: { "Content-Type": "application/json" } });
+        } catch (e) {
+            return new Response(JSON.stringify({ success: false, error: "Bad payload" }), { status: 400, headers: { "Content-Type": "application/json" } });
+        }
+    }
     if (url.pathname === "/empire/earn/earn") {
         const newUrl = new URL(request.url);
         newUrl.pathname = "/empire/earn/";
@@ -473,6 +532,11 @@ export default {
         return Response.redirect(newUrl.toString(), 302);
     }
     if (url.pathname === "/empire/earn/api/facebook/callback") {
+        const newUrl = new URL(request.url);
+        newUrl.pathname = "/api/facebook/callback";
+        return Response.redirect(newUrl.toString(), 302);
+    }
+    if (url.pathname === "/empire/api/instagram/callback" || url.pathname === "/empire/api/instagram/callback/") {
         const newUrl = new URL(request.url);
         newUrl.pathname = "/api/facebook/callback";
         return Response.redirect(newUrl.toString(), 302);
