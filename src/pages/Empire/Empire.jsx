@@ -10,7 +10,7 @@ import WalletModal from './components/WalletModal';
 import Login from './components/Login';
 import BackgroundEffects from './components/UnifiedBackground';
 import FacebookSDK from './components/FacebookSDK';
-import { ASSETS } from '../../config/constants';
+import { ASSETS, SOCIAL_LINKS } from '../../config/constants';
 
 const Navbar = ({ onConnect, walletAddress }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -141,14 +141,14 @@ const Footer = () => (
       </p>
       <div className="flex flex-wrap justify-center gap-6 mb-8">
         {[
-          { name: 'Twitter', url: 'https://x.com/tv_ghostgaming' },
-          { name: 'Telegram', url: 'https://t.me/ghost_gamingtv' },
-          { name: 'Discord', url: 'https://discord.gg/wMVJTrppXh' },
-          { name: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61587413956110' },
-          { name: 'Instagram', url: 'https://www.instagram.com/ghost.gamingtv/' },
-          { name: 'TikTok', url: 'https://www.tiktok.com/@ghost.gamingtv' },
-          { name: 'Threads', url: 'https://www.threads.com/@ghost.gamingtv' },
-          { name: 'Kick', url: 'https://kick.com/ghost_gamingtv' }
+          { name: 'Twitter', url: SOCIAL_LINKS.TWITTER },
+          { name: 'Telegram', url: SOCIAL_LINKS.TELEGRAM },
+          { name: 'Discord', url: SOCIAL_LINKS.DISCORD },
+          { name: 'Facebook', url: SOCIAL_LINKS.FACEBOOK },
+          { name: 'Instagram', url: SOCIAL_LINKS.INSTAGRAM },
+          { name: 'TikTok', url: SOCIAL_LINKS.TIKTOK },
+          { name: 'Threads', url: SOCIAL_LINKS.THREADS },
+          { name: 'Kick', url: SOCIAL_LINKS.KICK }
         ].map((social) => (
           <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#53FC18] transition-colors">
             {social.name}

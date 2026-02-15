@@ -34,14 +34,7 @@ const GhostGate = () => {
     const [gCode, setGCode] = useState('');
     const [timeLeft, setTimeLeft] = useState(1200); // 20 minutes in seconds
 
-    useEffect(() => {
-        try {
-            const existing = localStorage.getItem('user_session');
-            if (existing) {
-                navigate('/coming-soon');
-            }
-        } catch {}
-    }, []);
+    
 
     // Fetch Real Spot Count
     useEffect(() => {

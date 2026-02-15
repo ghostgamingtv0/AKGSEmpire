@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle, Clock, Coins, Lock, Crown, Percent, Zap, Shield, ShieldCheck, Gem, Bell, PlayCircle, Video, Image as ImageIcon, Plus, Wallet, Ghost, Info, Share2, Youtube, Users, ExternalLink } from 'lucide-react';
 import { FaInstagram, FaShareNodes, FaXTwitter, FaTiktok, FaThreads, FaFacebook } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
+import { SOCIAL_LINKS } from '../../../config/constants';
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 
 // Custom Project NFT Icon Component
@@ -261,7 +262,7 @@ const Earn = () => {
       action: 'Follow on Twitter', 
       reward: '5 Points', 
       status: 'pending', 
-      link: 'https://x.com/tv_ghostgaming',
+      link: SOCIAL_LINKS.TWITTER,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-white" aria-hidden="true">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
@@ -275,7 +276,7 @@ const Earn = () => {
       action: 'Join on Telegram', 
       reward: '5 Points', 
       status: 'pending', 
-      link: 'https://t.me/ghost_gamingtv',
+      link: SOCIAL_LINKS.TELEGRAM,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-blue-500" aria-hidden="true">
           <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 11.944 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"></path>
@@ -289,7 +290,7 @@ const Earn = () => {
       action: 'Follow on Instagram', 
       reward: '5 Points',  
       status: 'pending', 
-      link: 'https://www.instagram.com/ghost.gamingtv/',
+      link: SOCIAL_LINKS.INSTAGRAM,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-pink-500" aria-hidden="true">
           <path fillRule="evenodd" clipRule="evenodd" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path>
@@ -303,7 +304,7 @@ const Earn = () => {
       action: 'Follow on TikTok', 
       reward: '5 Points', 
       status: 'pending', 
-      link: 'https://www.tiktok.com/@ghost.gamingtv',
+      link: SOCIAL_LINKS.TIKTOK,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-white" aria-hidden="true">
           <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
@@ -317,7 +318,7 @@ const Earn = () => {
       action: 'Follow on Kick', 
       reward: '5 Points', 
       status: 'pending', 
-      link: 'https://kick.com/ghost_gamingtv',
+      link: SOCIAL_LINKS.KICK,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-[#53FC18]" aria-hidden="true">
           <path fillRule="evenodd" clipRule="evenodd" d="M3 0h18a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3zm5.7 6.6h2.7v3.6l3.3-3.6h3.6l-4.2 4.5 4.5 6.3h-3.6l-3-4.2v4.2H8.7V6.6z"/>
@@ -331,7 +332,7 @@ const Earn = () => {
       action: 'Join on Discord', 
       reward: '5 Points', 
       status: 'pending', 
-      link: 'https://discord.gg/wMVJTrppXh',
+      link: SOCIAL_LINKS.DISCORD,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-indigo-500" aria-hidden="true">
           <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419z"/>
@@ -345,7 +346,7 @@ const Earn = () => {
       action: 'Follow on Threads', 
       reward: '5 Points', 
       status: 'pending', 
-      link: 'https://www.threads.net/@ghost.gamingtv',
+      link: SOCIAL_LINKS.THREADS,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-white" aria-hidden="true">
           <path fillRule="evenodd" clipRule="evenodd" d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12zM16.4 12.8c.2-2.1-1.3-3.6-3.3-3.8-2.6-.2-4.5 2-4.2 4.8.2 2.1 2 3.6 4.3 3.4.9-.1 1.7-.4 2.3-.9v2.1c-.8.6-1.9 1-2.9 1-3.6 0-6.4-2.8-6.3-6.4 0-3.5 2.8-6.4 6.4-6.4 3.4 0 6.1 2.6 6.3 6h2c-.2-4.5-3.8-8-8.3-8-4.6 0-8.3 3.7-8.3 8.3 0 4.6 3.7 8.3 8.3 1.6 0 3.2-.5 4.5-1.3l-1-1.7c-.9.6-2.1.9-3.4.9-3.4 0-6.2-2.7-6.2-6.1 0-3.4 2.8-6.2 6.2-6.2 3.2 0 5.8 2.4 6.1 5.5v.1c0 1.9-1.3 3.3-3.1 3.3-1.1 0-1.8-.7-1.7-1.8.1-1.8 1.4-3.1 3-3.2.1 0 .2 0 .3 0v-2c-.1 0-.3 0-.4 0-2.6.2-4.6 2.4-4.5 5 0 1.5.8 2.7 2.1 2.7 1.6 0 2.8-1.2 2.8-3.4v-.2z"/>
@@ -361,7 +362,7 @@ const Earn = () => {
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Reel', 
-      link: 'https://www.tiktok.com/@ghost.gamingtv',
+      link: SOCIAL_LINKS.TIKTOK,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-white" aria-hidden="true">
           <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
@@ -377,7 +378,7 @@ const Earn = () => {
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Reel', 
-      link: 'https://www.instagram.com/ghost.gamingtv/',
+      link: SOCIAL_LINKS.INSTAGRAM,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-pink-500" aria-hidden="true">
           <path fillRule="evenodd" clipRule="evenodd" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path>
@@ -393,7 +394,7 @@ const Earn = () => {
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Post', 
-      link: 'https://x.com/tv_ghostgaming',
+      link: SOCIAL_LINKS.TWITTER,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-white" aria-hidden="true">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
@@ -409,7 +410,7 @@ const Earn = () => {
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Post', 
-      link: 'https://www.threads.net/@ghost.gamingtv',
+      link: SOCIAL_LINKS.THREADS,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-white" aria-hidden="true">
           <path fillRule="evenodd" clipRule="evenodd" d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12zM16.4 12.8c.2-2.1-1.3-3.6-3.3-3.8-2.6-.2-4.5 2-4.2 4.8.2 2.1 2 3.6 4.3 3.4.9-.1 1.7-.4 2.3-.9v2.1c-.8.6-1.9 1-2.9 1-3.6 0-6.4-2.8-6.3-6.4 0-3.5 2.8-6.4 6.4-6.4 3.4 0 6.1 2.6 6.3 6h2c-.2-4.5-3.8-8-8.3-8-4.6 0-8.3 3.7-8.3 8.3 0 4.6 3.7 8.3 8.3 1.6 0 3.2-.5 4.5-1.3l-1-1.7c-.9.6-2.1.9-3.4.9-3.4 0-6.2-2.7-6.2-6.1 0-3.4 2.8-6.2 6.2-6.2 3.2 0 5.8 2.4 6.1 5.5v.1c0 1.9-1.3 3.3-3.1 3.3-1.1 0-1.8-.7-1.7-1.8.1-1.8 1.4-3.1 3-3.2.1 0 .2 0 .3 0v-2c-.1 0-.3 0-.4 0-2.6.2-4.6 2.4-4.5 5 0 1.5.8 2.7 2.1 2.7 1.6 0 2.8-1.2 2.8-3.4v-.2z"/>
@@ -423,7 +424,7 @@ const Earn = () => {
       action: isKickLive ? 'Mining Active (+5 pts/3min)' : 'Offline', 
       reward: '100 Points/Hour', 
       status: isKickLive ? 'pending' : 'disabled', 
-      link: 'https://kick.com/ghost_gamingtv',
+      link: SOCIAL_LINKS.KICK,
       isLive: isKickLive,
       icon: (
         <svg viewBox="0 0 24 24" className={`w-6 h-6 fill-current ${isKickLive ? 'text-[#53FC18]' : 'text-gray-400'}`} aria-hidden="true">
@@ -438,7 +439,7 @@ const Earn = () => {
       action: '1x Sub or Gift Sub', 
       reward: 'Tax: 4%', 
       status: 'pending', 
-      link: 'https://kick.com/ghost_gamingtv',
+      link: SOCIAL_LINKS.KICK,
       icon: <ProjectNFTIcon color="#A855F7" tier="1x" />
     },
     { 
@@ -448,7 +449,7 @@ const Earn = () => {
       action: '2x Subs or Gift Subs', 
       reward: 'Tax: 3%', 
       status: 'pending', 
-      link: 'https://kick.com/ghost_gamingtv',
+      link: SOCIAL_LINKS.KICK,
       icon: <ProjectNFTIcon color="#3B82F6" tier="2x" />
     },
     { 
@@ -458,7 +459,7 @@ const Earn = () => {
       action: '3x Subs or Gift Subs', 
       reward: 'Tax: 2%', 
       status: 'pending', 
-      link: 'https://kick.com/ghost_gamingtv',
+      link: SOCIAL_LINKS.KICK,
       icon: <ProjectNFTIcon color="#22C55E" tier="3x" />
     },
     { 
@@ -468,7 +469,7 @@ const Earn = () => {
       action: 'Follow on Facebook', 
       reward: '5 Points', 
       status: 'pending', 
-      link: 'https://www.facebook.com/ghost.gamingtv',
+      link: SOCIAL_LINKS.FACEBOOK,
       icon: (
         <FaFacebook className="w-6 h-6 text-blue-600" />
       )
@@ -480,7 +481,7 @@ const Earn = () => {
       action: '4x Subs or Gift Subs', 
       reward: 'Tax: 1%', 
       status: 'pending', 
-      link: 'https://kick.com/ghost_gamingtv',
+      link: SOCIAL_LINKS.KICK,
       icon: <ProjectNFTIcon color="#EAB308" tier="4x" />
     },
     { 
@@ -490,7 +491,7 @@ const Earn = () => {
       action: '5x Subs or Gift Subs', 
       reward: 'Tax: 0%', 
       status: 'pending', 
-      link: 'https://kick.com/ghost_gamingtv',
+      link: SOCIAL_LINKS.KICK,
       icon: <ProjectNFTIcon color="#53FC18" tier="5x" />
     },
   ];
@@ -807,14 +808,14 @@ const Earn = () => {
   const handleVisitProfile = (e, platform) => {
     e.stopPropagation();
     const linkMap = {
-        'Kick': 'https://kick.com/ghost_gamingtv',
-        'Twitter': 'https://x.com/tv_ghostgaming',
-        'Telegram': 'https://t.me/ghost_gamingtv',
-        'TikTok': 'https://www.tiktok.com/@ghost.gamingtv',
-        'Threads': 'https://www.threads.net/@ghost.gamingtv',
-        'Facebook': 'https://www.facebook.com/profile.php?id=61587465162803',
-        'Instagram': 'https://www.instagram.com/ghost.gamingtv/',
-        'Discord': 'https://discord.gg/wMVJTrppXh',
+        'Kick': SOCIAL_LINKS.KICK,
+        'Twitter': SOCIAL_LINKS.TWITTER,
+        'Telegram': SOCIAL_LINKS.TELEGRAM,
+        'TikTok': SOCIAL_LINKS.TIKTOK,
+        'Threads': SOCIAL_LINKS.THREADS,
+        'Facebook': SOCIAL_LINKS.FACEBOOK,
+        'Instagram': SOCIAL_LINKS.INSTAGRAM,
+        'Discord': SOCIAL_LINKS.DISCORD,
         'YouTube': 'https://www.youtube.com/@GhostGamingTV'
     };
     if (linkMap[platform]) {

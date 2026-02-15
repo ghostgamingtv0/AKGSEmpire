@@ -1,4 +1,5 @@
 import { Timer, Rocket, Sparkles, Send, Twitter, Instagram, CheckCircle2, ShieldCheck, TrendingUp, MonitorCheck, Loader2, Zap, Tv, HeartHandshake } from 'lucide-react';
+import { SOCIAL_LINKS } from '../config/constants';
 import { useState, useEffect } from 'react';
 
 const AKGsannance = () => {
@@ -98,12 +99,12 @@ const AKGsannance = () => {
                 For Investment or Inquiries Contact <span className="text-[#53FC18]">//</span> للاستثمار او مزيد من معلومات مرجوا مراسلة على
             </p>
             <div className="flex items-center gap-6">
-                <a href="https://kick.com/ghost_gamingtv" target="_blank" rel="noreferrer" className="group">
+                <a href={SOCIAL_LINKS.KICK} target="_blank" rel="noreferrer" className="group">
                    <div className="w-12 h-12 rounded-xl bg-black border border-[#53FC18]/50 flex items-center justify-center group-hover:bg-[#53FC18] group-hover:scale-110 transition-all duration-300 shadow-[0_0_15px_rgba(83,252,24,0.2)] group-hover:shadow-[0_0_25px_rgba(83,252,24,0.6)]">
                        <svg viewBox="0 0 24 24" className="w-6 h-6 fill-[#53FC18] group-hover:fill-black transition-colors"><path fillRule="evenodd" clipRule="evenodd" d="M3 0h18a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3zm5.7 6.6h2.7v3.6l3.3-3.6h3.6l-4.2 4.5 4.5 6.3h-3.6l-3-4.2v4.2H8.7V6.6z"/></svg>
                    </div>
                 </a>
-                <a href="https://www.instagram.com/ghost.gamingtv/" target="_blank" rel="noreferrer" className="group">
+                <a href={SOCIAL_LINKS.INSTAGRAM} target="_blank" rel="noreferrer" className="group">
                    <div className="w-12 h-12 rounded-xl bg-black border border-[#53FC18]/50 flex items-center justify-center group-hover:bg-[#53FC18] group-hover:scale-110 transition-all duration-300 shadow-[0_0_15px_rgba(83,252,24,0.2)] group-hover:shadow-[0_0_25px_rgba(83,252,24,0.6)]">
                        <Instagram className="w-6 h-6 text-[#53FC18] group-hover:text-black transition-colors" />
                    </div>
