@@ -816,7 +816,7 @@ const Earn = () => {
         'Facebook': SOCIAL_LINKS.FACEBOOK,
         'Instagram': SOCIAL_LINKS.INSTAGRAM,
         'Discord': SOCIAL_LINKS.DISCORD,
-        'YouTube': 'https://www.youtube.com/@GhostGamingTV'
+        'YouTube': 'https://www.youtube.com/@ghostgamingtvGhost.gamingtv'
     };
     if (linkMap[platform]) {
         window.open(linkMap[platform], '_blank');

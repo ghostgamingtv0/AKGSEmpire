@@ -50,6 +50,7 @@ const ComingSoon = () => {
   });
   const [refLink, setRefLink] = useState('');
   const [refReady, setRefReady] = useState(false);
+  const [userSession, setUserSession] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -75,6 +76,13 @@ const ComingSoon = () => {
 
   useEffect(() => {
     try {
+      const sessionRaw = localStorage.getItem('user_session');
+      if (sessionRaw) {
+        try {
+          const parsed = JSON.parse(sessionRaw);
+          setUserSession(parsed);
+        } catch {}
+      }
       const existingG = localStorage.getItem('gCode');
       if (existingG) {
         setRefLink(`${window.location.origin}/?ref=${encodeURIComponent(existingG)}`);
@@ -240,6 +248,27 @@ const ComingSoon = () => {
             {socialLinks.map((link) => (
                 <motion.a
                     key={link.id}
+                    onClick={() => {
+                      try {
+                        const sessionRaw = localStorage.getItem('user_session');
+                        let visitorId = null;
+                        if (sessionRaw) {
+                          try {
+                            const parsed = JSON.parse(sessionRaw);
+                            visitorId = parsed.visitor_id || parsed.id || null;
+                          } catch {}
+                        }
+                        fetch('/api/social/click', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            visitor_id: visitorId,
+                            platform: link.id,
+                            target: link.url
+                          })
+                        }).catch(() => {});
+                      } catch {}
+                    }}
                     href={link.url}
                     target="_blank"
                     rel="noreferrer"
@@ -294,6 +323,40 @@ const ComingSoon = () => {
             Where <span className="text-[#53FC18]">Passion</span> Meets <span className="text-[#53FC18]">Profit</span>.. Redefining The Future of Digital Interaction, Where Your Time Is The Ultimate <span className="text-[#53FC18]">Asset</span>
           </p>
         </div>
+
+        {/* User Session Preview */}
+        {userSession && (
+          <div className="w-full max-w-3xl mx-auto mb-10 bg-black/60 border border-[#53FC18]/30 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_0_30px_rgba(83,252,24,0.2)]">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#53FC18] to-black p-0.5 shadow-[0_0_20px_rgba(83,252,24,0.3)]">
+                <div className="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
+                  <span className="text-[#53FC18] font-bold text-xl">
+                    {userSession.nickname ? userSession.nickname.charAt(0).toUpperCase() : 'G'}
+                  </span>
+                </div>
+              </div>
+              <div className="text-left">
+                <p className="text-xs text-[#53FC18] font-bold uppercase tracking-[0.2em] mb-1">Genesis Profile Linked</p>
+                <p className="text-lg md:text-2xl font-bold text-white">
+                  {userSession.nickname || userSession.username || 'Genesis Citizen'}
+                </p>
+                {userSession.rank && (
+                  <p className="text-sm text-gray-300 mt-1">
+                    Rank #{userSession.rank} • Early Access Secured
+                  </p>
+                )}
+              </div>
+            </div>
+            {refReady && (
+              <div className="w-full md:w-auto flex flex-col gap-2">
+                <p className="text-xs text-gray-400 uppercase tracking-widest">Your Referral Link</p>
+                <div className="bg-black/70 border border-white/10 rounded-xl px-4 py-3 text-xs md:text-sm text-gray-200 font-mono overflow-x-auto">
+                  {refLink}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Countdown Timer */}
         {timeLeft ? (

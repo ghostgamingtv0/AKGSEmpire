@@ -1,8 +1,8 @@
 const https = require('https');
 const dns = require('dns');
 
-const url = 'https://akgsempire.org/tiktok-developers-site-verification.txt';
-const domain = 'akgsempire.org';
+const url = 'https://akgsempire.org/empire/earn/tiktok-developers-site-verification=1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1.txt';
+const domain = 'akgsempire.org/empire/';
 
 console.log('🔍 Checking Verification Status...');
 

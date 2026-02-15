@@ -30,7 +30,7 @@ export const getAuthUrl = (redirectUri, state) => {
     if (!INSTAGRAM_CLIENT_ID) throw new Error('Instagram Client ID missing');
     
     // User provided integration URL structure:
-    // https://www.instagram.com/oauth/authorize?force_reauth=true&client_id=...&redirect_uri=...&response_type=code&scope=...
+    // https://www.instagram.com/oauth/authorize?force_reauth=true&client_id=780330031777441&redirect_uri=https://akgsempire.org/empire/api/instagram/callback/&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights
     
     const scopes = [
         'instagram_business_basic',

@@ -309,15 +309,14 @@ app.get('/api/stats', async (req, res) => {
             if (row.key === 'weekly_start_followers') weeklyStart = parseInt(row.value) || 0;
         });
         
-        // Calculate Growth
         if (weeklyStart > 0 && stats.kick_followers > 0) {
             const growth = stats.kick_followers - weeklyStart;
-            stats.weekly_growth = growth > 0 ? `+${growth}` : `${growth}`;
+            stats.weekly_growth = growth;
         } else {
-            stats.weekly_growth = '+0';
+            stats.weekly_growth = 0;
         }
         
-        res.json(stats);
+        res.json({ success: true, ...stats });
     } catch (e) {
         console.error('Stats API Error:', e);
         res.status(500).json({ error: 'Failed to fetch stats' });
@@ -326,7 +325,7 @@ app.get('/api/stats', async (req, res) => {
 
 // Explicit Route for TikTok Verification
 app.get('/tiktok_verifier.txt', (req, res) => {
-    res.send('tiktok-developers-site-verification=xJgu1ONkNFns9xGKdH1XGFvmxyj5M6lu');
+    res.send('tiktok-developers-site-verification=1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1');
 });
 
 // --- GENESIS PROTOTYPE ROUTES ---
@@ -602,9 +601,8 @@ app.get('/api/tiktok/login', (req, res) => {
 });
 
 // --- Instagram OAuth Flow ---
-const INSTAGRAM_CLIENT_ID = (process.env.INSTAGRAM_CLIENT_ID || '949236510997168').trim();
-const INSTAGRAM_CLIENT_SECRET = (process.env.INSTAGRAM_CLIENT_SECRET || '90d640b8cc494fb02dc5334650db9550').trim();
-
+const INSTAGRAM_CLIENT_ID = (process.env.INSTAGRAM_CLIENT_ID || '780330031777441').trim();
+const INSTAGRAM_CLIENT_SECRET = (process.env.INSTAGRAM_CLIENT_SECRET || '24f2dc9cd5903a234c9ae31eb6672794').trim();
 app.get('/api/instagram/login', (req, res) => {
     const { visitor_id } = req.query;
     const state = visitor_id ? JSON.stringify({ visitor_id }) : '{}';
@@ -707,7 +705,7 @@ app.post('/api/instagram/delete', (req, res) => {
     console.log('Instagram Data Deletion Request:', req.body);
     // Return the confirmation code URL as required by Meta
     const confirmationCode = 'AKGS_DELETE_' + Math.random().toString(36).substring(7);
-    const url = `https://akgsempire.org/api/instagram/delete/status?code=${confirmationCode}`;
+    const url = `https://akgsempire.org/empire/earn/api/instagram/delete/status?code=${confirmationCode}`;
     res.json({ url: url, confirmation_code: confirmationCode });
 });
 
@@ -1681,7 +1679,7 @@ app.get('/tiktok_callback.html', (req, res) => {
 
 app.get('/tiktok-developers-site-verification.txt', (req, res) => {
     res.type('text/plain');
-    res.send('tiktok-developers-site-verification=OsbbaMIa84FaBVlSXk5yijKiexW8J6Pn');
+    res.send('tiktok-developers-site-verification=1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1');
 });
 
 // The "catchall" handler: for any request that doesn't

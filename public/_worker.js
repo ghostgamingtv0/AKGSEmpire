@@ -17,8 +17,8 @@ export default {
     // 2. INSTAGRAM CONFIGURATION (INDEPENDENT)
     // =================================================================================
     const INSTAGRAM_CLIENT_ID = '780330031777441';
-    const INSTAGRAM_CLIENT_SECRET = '24f2dc9cd5903a234c9ae31eb6672794';
-    const INSTAGRAM_ACCESS_TOKEN = 'IGAALFtL5aBqFBZAFkwSTBvNklnYURBSmpOOEJ4bXhvbFVJSXJrUXZAqb3lqN0RPS3dpMXZAPMTJSTThvUHNXMWg1MXZAQR2F6c0lPT01SeEFNb2lrd3kwSVpBejJKcWxiQmZAyV2hrN3ZAvYlpYaFY0aXpfa3Y2TGF0cDh4Rll1V0UtMAZDZD';
+    const INSTAGRAM_CLIENT_SECRET = '17841477672773380';
+    const INSTAGRAM_ACCESS_TOKEN = 'IGAALFtL5aBqFBZAFptRExKWTktcjYyU3VJS201blF4ZAVVmV2VmS004b09lZAVUzNndqY3lYWklBclZALc3gzSTRvdjFmeGhocXB4RkhycDUzdjV4SjFWYTVqUHRKVEJqU3FtNVJqRWc0SkFMUmNMZAFZADb0cybThLcEthaUFWMFZAwawZDZD';
     const INSTAGRAM_VERIFY_TOKEN = '2e68281baaf661cf70cad6e819f0070c';
 
     // =================================================================================
@@ -49,8 +49,8 @@ export default {
             headers: { "Content-Type": "text/html" }
         });
     }
-    if (url.pathname === "/tiktokB2349wnKUX0GZx3d5AiH74FwPtj2x28d.txt") {
-        return new Response("tiktok-developers-site-verification=B2349wnKUX0GZx3d5AiH74FwPtj2x28d", {
+    if (url.pathname === "/tiktok1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1.txt") {
+        return new Response("tiktok-developers-site-verification=1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1", {
             headers: { "Content-Type": "text/plain" }
         });
     }

@@ -205,9 +205,19 @@ const Dashboard = () => {
 
   const isStreamLive = globalStats.kick_is_live;
 
+  const totalFollowers = (globalStats.kick_followers || globalStats.total_users || 0);
+  const weeklyGrowth = typeof globalStats.weekly_growth === 'number' ? globalStats.weekly_growth : 0;
+  const heatScore = (() => {
+    const followersScore = Math.min(totalFollowers / 1000, 50);
+    const growthScore = Math.max(Math.min(weeklyGrowth / 100, 30), -30);
+    const viewersScore = Math.min((globalStats.kick_viewers || 0) / 10, 20);
+    return Math.max(0, Math.round(followersScore + growthScore + viewersScore));
+  })();
+
   const stats = [
-    { label: 'Total Users (Followers)', value: (globalStats.kick_followers || globalStats.total_users || 0).toLocaleString(), icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
-    { label: 'Weekly Growth', value: globalStats.weekly_growth || '+0', icon: <TrendingUp className="text-[#53FC18]" />, change: 'This Week' },
+    { label: 'Empire Heat Index', value: `${heatScore}/100`, icon: <Activity className="text-[#53FC18]" />, change: isStreamLive ? 'Live Momentum' : 'Ambient Growth' },
+    { label: 'Total Users (Followers)', value: totalFollowers.toLocaleString(), icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
+    { label: 'Weekly Growth', value: `${weeklyGrowth >= 0 ? '+' : ''}${weeklyGrowth}`, icon: <TrendingUp className="text-[#53FC18]" />, change: 'This Week' },
     { label: 'Live Viewers', value: globalStats.kick_viewers?.toLocaleString() || '0', icon: <Activity className="text-red-500" />, change: isStreamLive ? 'LIVE' : 'Offline' },
     { label: 'Category', value: globalStats.kick_category || 'None', icon: <Flame className="text-orange-500" />, change: 'Stream' },
   ];

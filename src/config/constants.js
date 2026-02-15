@@ -19,6 +19,6 @@ export const ASSETS = {
 };
 
 export const API_ENDPOINTS = {
-  STATS: 'https://akgsempire.org/api/stats',
+  STATS: 'https://akgsempire.org/empire/earn/api/stats',
   GENESIS_STATS: '/api/genesis/stats'
 };

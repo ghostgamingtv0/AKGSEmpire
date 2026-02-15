@@ -108,8 +108,7 @@ cron.schedule('* * * * *', updateKickStats);
 updateKickStats(); // Run on start
 
 app.get('/api/stats', async (req, res) => {
-    try {
-        // Fetch all stats in parallel
+    try {          // Fetch all stats in parallel                        // Fetch all stats in parallel
         const [kick, discord, telegram, instagram, tiktok, facebook, threads] = await Promise.all([
             getKickStats(),
             getDiscordStats(),
@@ -122,20 +121,27 @@ app.get('/api/stats', async (req, res) => {
 
         const platforms = [kick, discord, telegram, instagram, tiktok, facebook, threads];
 
-        // Legacy support (optional, if frontend needs it)
+        const totalUsers = kick.stats.followers || 0;
+        const weeklyStart = await getSystemStat('weekly_start_followers');
+        let weeklyGrowth = 0;
+        if (weeklyStart && totalUsers) {
+            weeklyGrowth = totalUsers - Number(weeklyStart);
+        }
+
         const legacyStats = {
             discord_members: discord.stats.followers,
             telegram_members: telegram.stats.followers,
-            kick_followers: kick.stats.followers,
+            kick_followers: totalUsers,
             kick_viewers: kick.stats.viewers,
             kick_is_live: kick.stats.is_live,
-            kick_category: kick.stats.category || 'None'
+            kick_category: kick.stats.category || 'None',
+            weekly_growth: weeklyGrowth
         };
 
         res.json({
             success: true,
-            platforms, // New Standardized Array
-            ...legacyStats // For backward compatibility
+            platforms,
+            ...legacyStats
         });
     } catch (e) {
         console.error('Stats API Error:', e);
@@ -170,6 +176,19 @@ app.get('/api/instagram/login', (req, res) => {
     const state = visitor_id ? JSON.stringify({ visitor_id }) : '{}';
     const redirectUri = `${req.protocol}://${req.get('host')}/api/instagram/callback/`;
     res.redirect(getInstaAuthUrl(redirectUri, state));
+});
+
+app.post('/api/social/click', async (req, res) => {
+    const { visitor_id, platform, target } = req.body || {};
+    if (!platform || !target) {
+        return res.status(400).json({ success: false, error: 'Missing platform or target' });
+    }
+    try {
+        appendEventLog('social_click', req, { visitor_id, platform, target });
+        return res.json({ success: true });
+    } catch (e) {
+        return res.status(500).json({ success: false, error: 'Failed to log click' });
+    }
 });
 
 // --- WEBHOOKS ---
@@ -220,7 +239,7 @@ app.post('/api/genesis/login', (req, res) => {
 });
 
 app.post('/api/genesis/test-register', async (req, res) => {
-    const { platformUsername, nickname, password, wallet, platform } = req.body;
+    const { platformUsername, nickname, password, wallet, platform, ref } = req.body;
     if (!platformUsername || !nickname || !password || !wallet) return res.status(400).json({ success: false, error: 'Missing fields' });
     try {
         const stats = getGenesisStats();
@@ -258,6 +277,25 @@ app.post('/api/genesis/test-register', async (req, res) => {
         
         users.push(newUser);
         fs.writeFileSync(GENESIS_USERS_FILE, JSON.stringify(users, null, 2));
+
+        if (ref) {
+            try {
+                const refIndex = users.findIndex(u => u.gCode === ref);
+                if (refIndex !== -1) {
+                    const refUser = users[refIndex];
+                    refUser.referrals = (refUser.referrals || 0) + 1;
+                    refUser.points = (refUser.points || 0) + 500;
+                    users[refIndex] = refUser;
+                    fs.writeFileSync(GENESIS_USERS_FILE, JSON.stringify(users, null, 2));
+                    appendEventLog('referral_award', req, { referrer: refUser.websiteNickname, awarded: 500, ref_gcode: ref, new_referrals: refUser.referrals, new_points: refUser.points });
+                    try {
+                        if (globalThis.AKGS_LOGGER && typeof globalThis.AKGS_LOGGER.send === 'function') {
+                            await globalThis.AKGS_LOGGER.send(`🎁 Referral Award\nReferrer: ${refUser.websiteNickname}\nAward: 500 points\nRef Code: ${ref}\nTotal Referrals: ${refUser.referrals}\nTotal Points: ${refUser.points}`);
+                        }
+                    } catch {}
+                }
+            } catch (e) {}
+        }
         
         res.json({ success: true, rank, spotsLeft: newSpots, gCode, message: 'Welcome' });
     } catch (e) {
