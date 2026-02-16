@@ -212,6 +212,18 @@ const ComingSoon = () => {
       <BackgroundEffects />
 
       <div className="relative z-10 max-w-7xl w-full text-center flex flex-col items-center pt-10 pb-10">
+        {userSession?.gCode && (
+          <div className="w-full flex justify-end mb-4">
+            <div className="flex items-center gap-2 bg-black/80 border border-[#53FC18]/60 rounded-l-2xl rounded-r-md px-4 py-2 shadow-[0_0_20px_rgba(83,252,24,0.3)]">
+              <span className="text-[9px] md:text-[10px] uppercase tracking-[0.25em] text-gray-400">
+                Genesis Code
+              </span>
+              <span className="text-xs md:text-sm font-mono text-[#53FC18]">
+                {userSession.gCode}
+              </span>
+            </div>
+          </div>
+        )}
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center">
            <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-2 border-[#53FC18] shadow-[0_0_50px_rgba(83,252,24,0.3)] overflow-hidden p-1 bg-black group hover:scale-105 transition-transform duration-500">
@@ -253,11 +265,13 @@ const ComingSoon = () => {
                         const sessionRaw = localStorage.getItem('user_session');
                         let visitorId = null;
                         let usernameForCheck = null;
+                        let hasGenesisSession = false;
                         if (sessionRaw) {
                           try {
                             const parsed = JSON.parse(sessionRaw);
                             visitorId = parsed.visitor_id || parsed.id || null;
                             usernameForCheck = parsed.username || null;
+                            hasGenesisSession = !!parsed.nickname;
                           } catch {}
                         }
                         fetch('/api/social/click', {
@@ -269,6 +283,10 @@ const ComingSoon = () => {
                             target: link.url
                           })
                         }).catch(() => {});
+                        if (link.id === 'kick' && hasGenesisSession) {
+                          window.location.href = '/api/kick/login';
+                          return;
+                        }
                         if (usernameForCheck && (link.id === 'instagram' || link.id === 'facebook' || link.id === 'threads')) {
                           fetch('/api/social/check-account', {
                             method: 'POST',
@@ -348,6 +366,11 @@ const ComingSoon = () => {
                 </div>
               </div>
               <div className="text-left">
+                {userSession.gCode && (
+                  <p className="text-[10px] text-gray-400 font-mono mb-1">
+                    User Code: <span className="text-[#53FC18]">{userSession.gCode}</span>
+                  </p>
+                )}
                 <p className="text-xs text-[#53FC18] font-bold uppercase tracking-[0.2em] mb-1">Genesis Profile Linked</p>
                 <p className="text-lg md:text-2xl font-bold text-white">
                   {userSession.nickname || userSession.username || 'Genesis Citizen'}

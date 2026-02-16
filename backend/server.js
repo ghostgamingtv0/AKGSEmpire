@@ -347,9 +347,8 @@ const getGenesisStats = () => {
 const updateGenesisSpots = (decrement = 1) => {
     try {
         const stats = getGenesisStats();
-        stats.spotsLeft = Math.max(0, stats.spotsLeft - decrement);
+        stats.spotsLeft = stats.spotsLeft - decrement;
         
-        // Ensure directory exists
         const dir = dirname(GENESIS_STATS_FILE);
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
         
@@ -417,7 +416,7 @@ app.post('/api/genesis/login', (req, res) => {
 });
 
 app.post('/api/genesis/test-register', async (req, res) => {
-    const { platformUsername, nickname, password, wallet, platform, ref } = req.body;
+    const { platformUsername, nickname, password, wallet, platform, ref, signMessage, signTimestamp } = req.body;
     
     // Strict Validation: Platform User, Nickname, Password, Wallet
     if (!platformUsername || !nickname || !password || !wallet) {
@@ -425,12 +424,6 @@ app.post('/api/genesis/test-register', async (req, res) => {
     }
 
     try {
-        // Check spots first
-        const stats = getGenesisStats();
-        if (stats.spotsLeft <= 0) {
-            return res.status(400).json({ success: false, error: 'No spots remaining' });
-        }
-
         console.log(`[GENESIS] Register Request: Platform=${platform}, Nickname=${nickname}`);
 
         // Generate G-Code (Server Side)
@@ -457,9 +450,8 @@ app.post('/api/genesis/test-register', async (req, res) => {
             }
         }
 
-        // Decrement Spot
         const newSpots = updateGenesisSpots(1);
-        const rank = 50 - newSpots;
+        const rank = users.length + 1;
 
         const newUser = {
             id: users.length + 1,
@@ -468,8 +460,10 @@ app.post('/api/genesis/test-register', async (req, res) => {
             websiteNickname: nickname,
             wallet,
             gCode,
-            password: password, // Storing as requested for full local record
+            password: password,
             rank: rank,
+            signMessage: signMessage || null,
+            signTimestamp: signTimestamp || null,
             ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
             userAgent: req.headers['user-agent'],
             timestamp: new Date().toISOString()
@@ -575,6 +569,9 @@ const setSystemStat = async (key, value) => {
 // --- TikTok OAuth Flow ---
 const TIKTOK_CLIENT_KEY = process.env.TIKTOK_CLIENT_KEY || 'awyk8qjpedujjzz6';
 const TIKTOK_CLIENT_SECRET = process.env.TIKTOK_CLIENT_SECRET || 'FIPDCqZ7ahWnfm63Ve1oYUVkJfNTbKq9';
+
+const TIKTOK_CLIENT_KEY = process.env.TIKTOK_CLIENT_KEY || 'sbaw8q48mtdwkfigi3';
+const TIKTOK_CLIENT_SECRET = process.env.TIKTOK_CLIENT_SECRET || '7Z3CfRk2qI8nfoEqpczC96gZbvFaiOal';
 
 app.get('/api/tiktok/login', (req, res) => {
     const { visitor_id } = req.query;

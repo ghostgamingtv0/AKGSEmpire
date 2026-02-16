@@ -245,7 +245,7 @@ const getGenesisStats = () => {
 const updateGenesisSpots = (decrement = 1) => {
     try {
         const stats = getGenesisStats();
-        stats.spotsLeft = Math.max(0, stats.spotsLeft - decrement);
+        stats.spotsLeft = stats.spotsLeft - decrement;
         const dir = dirname(GENESIS_STATS_FILE);
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
         fs.writeFileSync(GENESIS_STATS_FILE, JSON.stringify(stats, null, 2));
@@ -271,12 +271,10 @@ app.post('/api/genesis/login', (req, res) => {
 });
 
 app.post('/api/genesis/test-register', async (req, res) => {
-    const { platformUsername, nickname, password, wallet, platform, ref } = req.body;
+    const { platformUsername, nickname, password, wallet, platform, ref, signMessage, signTimestamp } = req.body;
     if (!platformUsername || !nickname || !password || !wallet) return res.status(400).json({ success: false, error: 'Missing fields' });
     try {
         const stats = getGenesisStats();
-        if (stats.spotsLeft <= 0) return res.status(400).json({ success: false, error: 'No spots' });
-        
         const staticPrefix = "ghost";
         const walletPart = wallet.substring(0, 8);
         const platformName = platform || 'Kick';
@@ -293,7 +291,7 @@ app.post('/api/genesis/test-register', async (req, res) => {
         if (fs.existsSync(GENESIS_USERS_FILE)) users = JSON.parse(fs.readFileSync(GENESIS_USERS_FILE));
         
         const newSpots = updateGenesisSpots(1);
-        const rank = 50 - newSpots;
+        const rank = users.length + 1;
         
         const newUser = {
             id: users.length + 1,
@@ -304,6 +302,8 @@ app.post('/api/genesis/test-register', async (req, res) => {
             gCode,
             password,
             rank,
+            signMessage: signMessage || null,
+            signTimestamp: signTimestamp || null,
             timestamp: new Date().toISOString()
         };
         

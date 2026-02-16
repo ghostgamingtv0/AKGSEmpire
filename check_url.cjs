@@ -1,6 +1,6 @@
 const https = require('https');
 
-const url = 'https://akgsempire.org/tiktok_callback.html';
+const url = 'https://akgsempire.org/empire/earn/tiktok_callback.html';
 
 console.log(`Checking ${url}...`);
 

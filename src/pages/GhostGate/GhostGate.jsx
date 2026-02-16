@@ -144,13 +144,18 @@ const GhostGate = () => {
         }
 
         try {
+            let signMessage = null;
+            let signTimestamp = Date.now();
+
             // Request Signature
-            if (window.ethereum) {
-                const message = `Sign to verify ownership for AKGS Genesis Gate\nUser: ${formData.nickname}\nTimestamp: ${Date.now()}`;
-                await window.ethereum.request({
-                    method: 'personal_sign',
-                    params: [message, formData.wallet],
-                });
+            if (window.ethereum && formData.wallet) {
+                signMessage = `Sign to verify ownership for AKGS Genesis Gate\nUser: ${formData.nickname}\nTimestamp: ${signTimestamp}`;
+                try {
+                    await window.ethereum.request({
+                        method: 'personal_sign',
+                        params: [signMessage, formData.wallet],
+                    });
+                } catch (e) {}
             }
 
             // Send to Backend
@@ -161,7 +166,9 @@ const GhostGate = () => {
                 body: JSON.stringify({
                     ...formData,
                     platform: selectedPlatform,
-                    ref: refParam
+                    ref: refParam,
+                    signMessage,
+                    signTimestamp
                 })
             });
 
@@ -177,7 +184,10 @@ const GhostGate = () => {
                     username: formData.platformUsername,
                     nickname: formData.nickname,
                     wallet_address: formData.wallet,
-                    rank: data.rank
+                    rank: data.rank,
+                    gCode: data.gCode,
+                    signMessage,
+                    signTimestamp
                 }));
                 // --------------------------------------------------------
 

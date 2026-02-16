@@ -150,29 +150,6 @@ const Dashboard = () => {
             console.error('Failed to fetch extra leaderboards', e);
         }
 
-        // 8. Client-Side Kick Stats Fetch (Crowdsourcing Real Data)
-        try {
-            const kickRes = await fetch('https://kick.com/api/v1/channels/ghost_gamingtv');
-            if (kickRes.ok) {
-                const kickData = await kickRes.json();
-                if (kickData && (kickData.followers_count || kickData.followersCount)) {
-                    const count = kickData.followers_count || kickData.followersCount;
-                    // Send to backend
-                    await fetch(`${API_BASE}/api/update-kick-stats`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            followers: count,
-                            is_live: kickData.livestream !== null
-                        })
-                    });
-                }
-            }
-        } catch (e) {
-            // CORS might block this, but it's worth a try from user browsers
-            console.log('Client-side fetch check');
-        }
-
       } catch (error) {
         console.error('Failed to init dashboard', error);
       } finally {
@@ -205,7 +182,7 @@ const Dashboard = () => {
 
   const isStreamLive = globalStats.kick_is_live;
 
-  const totalFollowers = (globalStats.kick_followers || globalStats.total_users || 0);
+  const totalFollowers = globalStats.kick_followers || 0;
   const weeklyGrowth = typeof globalStats.weekly_growth === 'number' ? globalStats.weekly_growth : 0;
   const heatScore = (() => {
     const followersScore = Math.min(totalFollowers / 1000, 50);
@@ -216,7 +193,7 @@ const Dashboard = () => {
 
   const stats = [
     { label: 'Empire Heat Index', value: `${heatScore}/100`, icon: <Activity className="text-[#53FC18]" />, change: isStreamLive ? 'Live Momentum' : 'Ambient Growth' },
-    { label: 'Total Users (Followers)', value: totalFollowers.toLocaleString(), icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
+    { label: 'Kick Followers', value: totalFollowers.toLocaleString(), icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
     { label: 'Weekly Growth', value: `${weeklyGrowth >= 0 ? '+' : ''}${weeklyGrowth}`, icon: <TrendingUp className="text-[#53FC18]" />, change: 'This Week' },
     { label: 'Live Viewers', value: globalStats.kick_viewers?.toLocaleString() || '0', icon: <Activity className="text-red-500" />, change: isStreamLive ? 'LIVE' : 'Offline' },
     { label: 'Category', value: globalStats.kick_category || 'None', icon: <Flame className="text-orange-500" />, change: 'Stream' },
