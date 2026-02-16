@@ -357,7 +357,7 @@ const ComingSoon = () => {
         <div className="w-full max-w-3xl mx-auto mb-12 bg-black/70 border border-[#53FC18]/40 rounded-3xl px-6 py-6 md:px-8 md:py-8 shadow-[0_0_35px_rgba(83,252,24,0.25)] space-y-5">
           <div dir="rtl" className="space-y-2 text-right font-arabic">
             <h2 className="text-[#53FC18] font-bold text-xl md:text-2xl">
-              حدث الجينيسيس: نهضة القادة
+              حدث الجينيسيس – نهضة القادة الأوائل
             </h2>
             <p className="text-gray-200 text-sm md:text-base leading-relaxed">
               خزينة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لـ أفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
@@ -381,7 +381,7 @@ const ComingSoon = () => {
 
         {/* User Session Preview - G-Code Card */}
         {userSession && userSession.gCode && (
-          <div className="w-full max-w-3xl mx-auto mb-12 bg-black/80 border border-[#53FC18]/40 rounded-3xl p-8 relative overflow-hidden shadow-[0_0_40px_rgba(83,252,24,0.3)]">
+          <div className="w-full md:max-w-sm self-end mb-12 bg-black/80 border border-[#53FC18]/40 rounded-3xl p-8 relative overflow-hidden shadow-[0_0_40px_rgba(83,252,24,0.3)]">
             <div className="absolute inset-0 bg-gradient-to-br from-[#53FC18]/10 via-transparent to-[#53FC18]/20 opacity-70 pointer-events-none"></div>
             <div className="relative z-10 flex flex-col items-center text-center gap-4">
               <div className="w-20 h-20 rounded-full bg-[#53FC18]/10 flex items-center justify-center mx-auto mb-4 border border-[#53FC18]/50 shadow-[0_0_40px_rgba(83,252,24,0.2)] relative">

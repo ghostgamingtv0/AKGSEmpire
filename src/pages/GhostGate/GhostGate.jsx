@@ -315,16 +315,16 @@ const GhostGate = () => {
                                         </p>
                                     </div>
 
-                                    {/* Description: Arabic then English */}
-                                    <div className="space-y-4 text-left">
-                                        <div dir="rtl" className="space-y-2 text-right">
-                                            <p className="text-[#53FC18] font-arabic font-bold text-sm md:text-base">
-                                                حدث الجينيسيس: نهضة القادة
+                                    {/* Description: Arabic and English side-by-side */}
+                                    <div className="grid md:grid-cols-2 gap-6 text-left">
+                                        <div dir="rtl" className="space-y-2 text-right font-arabic">
+                                            <p className="text-[#53FC18] font-bold text-sm md:text-base">
+                                                حدث الجينيسيس – نهضة القادة الأوائل
                                             </p>
-                                            <p className="text-gray-100 font-arabic text-sm md:text-base leading-relaxed">
+                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed">
                                                 خزينة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لـ أفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
                                             </p>
-                                            <p className="text-gray-100 font-arabic text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
+                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
                                                 الخطة الاستراتيجية: بمجرد انتهاء الأسبوع الأول، يُفعل "بروتوكول الاستمرارية". احصد 50 نقطة يومياً، لكن احذر؛ فاليوم الذي تغيب فيه يتصفر عدادك. أثبت ولاءك لـ 4 أيام متتالية لتفعيل مضاعف القوة x3.
                                             </p>
                                         </div>
