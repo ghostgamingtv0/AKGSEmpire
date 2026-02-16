@@ -7,26 +7,23 @@ import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 
-// Custom Project NFT Icon Component
-const ProjectNFTIcon = ({ color = "#53FC18", tier = "1" }) => (
-  <div className="relative w-12 h-12 group">
-    {/* Glow Effect */}
+const NFT_IMAGE_MAIN = "https://i.ibb.co/5h5qky3V/a6903b67700ee23f51b5794eb6cf7eca.jpg";
+const NFT_IMAGE_MINING = NFT_IMAGE_MAIN;
+const NFT_IMAGE_REWARD = NFT_IMAGE_MAIN;
+
+const ProjectNFTIcon = ({ color = "#53FC18", tier = "1", imageSrc = NFT_IMAGE_MAIN }) => (
+  <div className="relative w-16 h-16 md:w-20 md:h-20 group">
     <div className="absolute inset-0 rounded-lg blur-md opacity-60 group-hover:opacity-100 transition-opacity duration-300" style={{ backgroundColor: color }}></div>
-    
-    {/* Main Image Container */}
     <div className="relative w-full h-full rounded-lg overflow-hidden border-2 bg-black z-10" style={{ borderColor: color }}>
       <img 
-        src="https://i.ibb.co/5h5qky3V/a6903b67700ee23f51b5794eb6cf7eca.jpg" 
+        src={imageSrc} 
         alt="AKGS NFT" 
         className="w-full h-full object-cover"
       />
-      {/* Overlay Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
     </div>
-
-    {/* Tier Badge */}
-    <div className="absolute -bottom-2 -right-2 w-5 h-5 rounded-full bg-black border border-white flex items-center justify-center z-20 shadow-lg">
-       <span className="text-[10px] font-bold text-white leading-none" style={{ color: color }}>{tier}</span>
+    <div className="absolute -bottom-2 -right-2 w-7 h-7 rounded-full bg-black border border-white flex items-center justify-center z-20 shadow-lg">
+       <span className="text-[11px] font-bold text-white leading-none" style={{ color: color }}>{tier}</span>
     </div>
   </div>
 );
@@ -451,7 +448,7 @@ const Earn = () => {
       reward: 'Tax: 4%', 
       status: 'pending', 
       link: SOCIAL_LINKS.KICK,
-      icon: <ProjectNFTIcon color="#A855F7" tier="1x" />
+      icon: <ProjectNFTIcon color="#A855F7" tier="1x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
       id: 15, 
@@ -461,7 +458,7 @@ const Earn = () => {
       reward: 'Tax: 3%', 
       status: 'pending', 
       link: SOCIAL_LINKS.KICK,
-      icon: <ProjectNFTIcon color="#3B82F6" tier="2x" />
+      icon: <ProjectNFTIcon color="#3B82F6" tier="2x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
       id: 16, 
@@ -471,7 +468,7 @@ const Earn = () => {
       reward: 'Tax: 2%', 
       status: 'pending', 
       link: SOCIAL_LINKS.KICK,
-      icon: <ProjectNFTIcon color="#22C55E" tier="3x" />
+      icon: <ProjectNFTIcon color="#22C55E" tier="3x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
       id: 17, 
@@ -493,17 +490,17 @@ const Earn = () => {
       reward: 'Tax: 1%', 
       status: 'pending', 
       link: SOCIAL_LINKS.KICK,
-      icon: <ProjectNFTIcon color="#EAB308" tier="4x" />
+      icon: <ProjectNFTIcon color="#EAB308" tier="4x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
-      id: 18, 
+      id: 19, 
       type: 'nft', 
       platform: 'Kick', 
       action: '5x Subs or Gift Subs', 
       reward: 'Tax: 0%', 
       status: 'pending', 
       link: SOCIAL_LINKS.KICK,
-      icon: <ProjectNFTIcon color="#53FC18" tier="5x" />
+      icon: <ProjectNFTIcon color="#53FC18" tier="5x" imageSrc={NFT_IMAGE_REWARD} />
     },
   ];
 
@@ -2107,7 +2104,7 @@ const Earn = () => {
                     }}
                     className="relative flex flex-col items-center justify-between p-4 rounded-xl border border-[#53FC18]/30 bg-black/60 hover:bg-black/80 hover:border-[#53FC18] transition-all shadow-[0_0_20px_rgba(83,252,24,0.1)]"
                   >
-                    <div className="mb-2">
+                    <div className="mb-4">
                       <ProjectNFTIcon
                         color={
                           tier.id === 1
@@ -2121,11 +2118,12 @@ const Earn = () => {
                             : '#53FC18'
                         }
                         tier={`${tier.id}x`}
+                        imageSrc={NFT_IMAGE_MINING}
                       />
                     </div>
                     <div className="text-center">
                       <div className="text-sm font-bold text-white mb-1">{tier.label}</div>
-                      <div className="text-xs text-[#53FC18] font-semibold">+{tier.bonusPoints} Points / Hour</div>
+                      <div className="text-xs text-[#53FC18] font-semibold">x{tier.multiplier} Mining Power</div>
                     </div>
                   </button>
                 ))}
@@ -2295,6 +2293,7 @@ const Earn = () => {
                       : '#53FC18'
                   }
                   tier={`${selectedMiningTier.id}x`}
+                  imageSrc={NFT_IMAGE_MINING}
                 />
                 <div>
                   <p className="text-sm text-gray-300">
@@ -2302,8 +2301,8 @@ const Earn = () => {
                     في جلسات المشاهدة والتفاعل مع قناة Kick الرسمية.
                   </p>
                   <p className="text-sm text-[#53FC18] font-semibold mt-2">
-                    مستوى {selectedMiningTier.id} يمنحك تقريباً +{selectedMiningTier.bonusPoints} نقطة إضافية في الساعة
-                    فوق النقاط الأساسية للتعدين.
+                    مستوى {selectedMiningTier.id} يمنحك مضاعف تعدين بقيمة {selectedMiningTier.multiplier}x
+                    على نقاطك الأساسية في الساعة.
                   </p>
                 </div>
               </div>
