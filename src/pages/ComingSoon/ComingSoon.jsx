@@ -212,38 +212,77 @@ const ComingSoon = () => {
       <BackgroundEffects />
 
       <div className="relative z-10 max-w-7xl w-full text-center flex flex-col items-center pt-10 pb-10">
-        {userSession?.gCode && (
-          <div className="w-full flex justify-end mb-6">
-            <div className="w-full md:max-w-sm bg-black/80 border border-[#53FC18]/40 rounded-3xl p-6 md:p-7 relative overflow-hidden shadow-[0_0_40px_rgba(83,252,24,0.3)] text-center">
+        {/* Logo + G-Code Card on same row (desktop) */}
+        <div className="mb-10 w-full flex flex-col md:flex-row items-center justify-between gap-6">
+          {/* Logo */}
+          <div className="flex flex-col items-center">
+            <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-2 border-[#53FC18] shadow-[0_0_50px_rgba(83,252,24,0.3)] overflow-hidden p-1 bg-black group hover:scale-105 transition-transform duration-500">
+              <img 
+                src="https://i.ibb.co/Jjdm6v0J/fe58cfb14a674ec977bf157cdc091cfd.jpg" 
+                alt="AKGS Empire Logo" 
+                className="w-full h-full object-cover rounded-full"
+              />
+            </div>
+            <div className="text-[#53FC18] font-bold text-xl md:text-2xl tracking-[0.5em] mt-8 animate-pulse font-heading">
+              COMING SOON
+            </div>
+          </div>
+
+          {/* Compact G-Code + Referral Card */}
+          {userSession?.gCode && (
+            <div className="w-full md:w-[320px] bg-black/80 border border-[#53FC18]/40 rounded-3xl p-5 md:p-6 relative overflow-hidden shadow-[0_0_30px_rgba(83,252,24,0.3)] text-center">
               <div className="absolute inset-0 bg-gradient-to-br from-[#53FC18]/10 via-transparent to-[#53FC18]/20 opacity-70 pointer-events-none"></div>
-              <div className="relative z-10 flex flex-col items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-[#53FC18]/10 flex items-center justify-center mb-2 border border-[#53FC18]/50 shadow-[0_0_40px_rgba(83,252,24,0.2)] relative">
+              <div className="relative z-10 flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-[#53FC18]/10 flex items-center justify-center mb-1 border border-[#53FC18]/50 shadow-[0_0_30px_rgba(83,252,24,0.2)] relative">
                   <div className="absolute inset-0 rounded-full bg-[#53FC18] blur-xl opacity-20"></div>
-                  <Crown size={32} className="text-[#53FC18] relative z-10" />
+                  <Crown size={28} className="text-[#53FC18] relative z-10" />
                 </div>
-                <h2 className="text-[10px] md:text-xs font-bold text-gray-300 uppercase tracking-[0.35em]">
+                <h2 className="text-[9px] md:text-[10px] font-bold text-gray-300 uppercase tracking-[0.35em]">
                   Your Unique G-Code
                 </h2>
-                <div className="w-full bg-black/90 border border-[#53FC18] rounded-2xl px-5 py-4 shadow-inner shadow-[#53FC18]/15 relative overflow-hidden">
+                <div className="w-full bg-black/90 border border-[#53FC18] rounded-2xl px-4 py-3 shadow-inner shadow-[#53FC18]/15 relative overflow-hidden">
                   <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-soft-light pointer-events-none"></div>
-                  <span className="text-xl md:text-2xl font-mono font-bold text-[#53FC18] tracking-widest relative z-10 select-all">
+                  <span className="text-lg md:text-xl font-mono font-bold text-[#53FC18] tracking-widest relative z-10 select-all">
                     {userSession.gCode}
                   </span>
                 </div>
+                <p className="text-[9px] text-gray-500 uppercase tracking-[0.3em] font-bold">
+                  Permanent ID • Non-Renewable
+                </p>
+
+                <div className="w-full pt-3 border-t border-white/10">
+                  <h3 className="text-[10px] font-bold text-gray-400 mb-2 flex items-center justify-center gap-2 uppercase tracking-wider">
+                    <Users size={12} className="text-[#53FC18]" />
+                    Referral Program
+                  </h3>
+                  <div className="flex flex-col gap-2">
+                    <div className="bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-[10px] text-gray-200 font-mono overflow-x-auto">
+                      {refLink || `${window.location.origin}/?ref=${encodeURIComponent(userSession.gCode)}`}
+                    </div>
+                    <button
+                      disabled={!(refReady || userSession.gCode)}
+                      onClick={() => {
+                        const link = refLink || `${window.location.origin}/?ref=${encodeURIComponent(userSession.gCode)}`;
+                        try {
+                          navigator.clipboard.writeText(link);
+                        } catch {}
+                      }}
+                      className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wide shadow-[0_0_15px_rgba(83,252,24,0.3)] border ${
+                        refReady || userSession.gCode
+                          ? "bg-[#53FC18] text-black border-[#53FC18] hover:bg-[#45d612] transition-colors"
+                          : "bg-gray-700 text-gray-400 border-gray-600 cursor-not-allowed"
+                      }`}
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <p className="text-[9px] text-gray-500 mt-2">
+                    Earn <span className="text-[#53FC18] font-bold">5%</span> of your friends' points forever
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        {/* Logo */}
-        <div className="mb-8 flex flex-col items-center">
-           <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-2 border-[#53FC18] shadow-[0_0_50px_rgba(83,252,24,0.3)] overflow-hidden p-1 bg-black group hover:scale-105 transition-transform duration-500">
-             <img 
-               src="https://i.ibb.co/Jjdm6v0J/fe58cfb14a674ec977bf157cdc091cfd.jpg" 
-               alt="AKGS Empire Logo" 
-               className="w-full h-full object-cover rounded-full"
-             />
-           </div>
-           <div className="text-[#53FC18] font-bold text-xl md:text-2xl tracking-[0.5em] mt-8 animate-pulse font-heading">COMING SOON</div>
+          )}
         </div>
 
         {/* Main Title */}
@@ -388,58 +427,6 @@ const ComingSoon = () => {
             </p>
           </div>
         </div>
-
-        {/* User Session Preview - G-Code Card */}
-        {userSession && userSession.gCode && (
-          <div className="w-full max-w-3xl mx-auto mb-12 bg-black/80 border border-[#53FC18]/40 rounded-3xl p-8 relative overflow-hidden shadow-[0_0_40px_rgba(83,252,24,0.3)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#53FC18]/10 via-transparent to-[#53FC18]/20 opacity-70 pointer-events-none"></div>
-            <div className="relative z-10 flex flex-col items-center text-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-[#53FC18]/10 flex items-center justify-center mx-auto mb-4 border border-[#53FC18]/50 shadow-[0_0_40px_rgba(83,252,24,0.2)] relative">
-                <div className="absolute inset-0 rounded-full bg-[#53FC18] blur-xl opacity-20"></div>
-                <Crown size={40} className="text-[#53FC18] relative z-10" />
-              </div>
-              <h2 className="text-xs md:text-sm font-bold text-gray-300 uppercase tracking-[0.35em]">Your Unique G-Code</h2>
-              <div className="w-full max-w-xl bg-black/90 border border-[#53FC18] rounded-2xl px-6 py-5 mb-2 shadow-inner shadow-[#53FC18]/15 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-soft-light pointer-events-none"></div>
-                <span className="text-2xl md:text-3xl font-mono font-bold text-[#53FC18] tracking-widest relative z-10 select-all">
-                  {userSession.gCode}
-                </span>
-              </div>
-              <p className="text-[10px] text-gray-500 mb-4 uppercase tracking-widest font-bold">Permanent ID • Non-Renewable</p>
-
-              <div className="w-full mt-2 pt-4 border-t border-white/10">
-                <h3 className="text-[11px] md:text-xs font-bold text-gray-400 mb-3 flex items-center justify-center gap-2 uppercase tracking-wider">
-                  <Users size={14} className="text-[#53FC18]" />
-                  Referral Program
-                </h3>
-                <div className="flex flex-col md:flex-row gap-2 items-stretch">
-                  <div className="flex-1 bg-black/40 border border-white/15 rounded-xl px-4 py-3 text-[11px] md:text-xs text-gray-200 font-mono overflow-x-auto">
-                    {refLink || `${window.location.origin}/?ref=${encodeURIComponent(userSession.gCode)}`}
-                  </div>
-                  <button
-                    disabled={!(refReady || userSession.gCode)}
-                    onClick={() => {
-                      const link = refLink || `${window.location.origin}/?ref=${encodeURIComponent(userSession.gCode)}`;
-                      try {
-                        navigator.clipboard.writeText(link);
-                      } catch {}
-                    }}
-                    className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide shadow-[0_0_15px_rgba(83,252,24,0.3)] border ${
-                      refReady || userSession.gCode
-                        ? "bg-[#53FC18] text-black border-[#53FC18] hover:bg-[#45d612] transition-colors"
-                        : "bg-gray-700 text-gray-400 border-gray-600 cursor-not-allowed"
-                    }`}
-                  >
-                    Copy
-                  </button>
-                </div>
-                <p className="text-[10px] text-gray-500 mt-3">
-                  Earn <span className="text-[#53FC18] font-bold">5%</span> of your friends' points forever
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Countdown Timer */}
         {timeLeft ? (
