@@ -388,7 +388,7 @@ app.get('/api/genesis/stats', (req, res) => {
     res.json(stats);
 });
 
-app.post('/api/genesis/login', (req, res) => {
+app.post('/api/genesis/login', async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
@@ -402,13 +402,30 @@ app.post('/api/genesis/login', (req, res) => {
         }
 
         const users = JSON.parse(fs.readFileSync(GENESIS_USERS_FILE));
-        const user = users.find(u => u.websiteNickname === username && u.password === password);
+        const user = users.find(u => u.websiteNickname === username);
 
-        if (user) {
-            res.json({ success: true, user });
-        } else {
-            res.status(401).json({ success: false, error: 'Invalid credentials' });
+        if (!user || !user.password) {
+            return res.status(401).json({ success: false, error: 'Invalid credentials' });
         }
+
+        let ok = false;
+        try {
+            if (user.password && user.password.startsWith('$2')) {
+                const bcrypt = await import('bcryptjs');
+                ok = await bcrypt.default.compare(password, user.password);
+            } else {
+                ok = user.password === password;
+            }
+        } catch (e) {
+            console.error('Genesis Login Hash Error:', e);
+            return res.status(500).json({ success: false, error: 'Login failed' });
+        }
+
+        if (!ok) {
+            return res.status(401).json({ success: false, error: 'Invalid credentials' });
+        }
+
+        res.json({ success: true, user });
     } catch (e) {
         console.error('Genesis Login Error:', e);
         res.status(500).json({ success: false, error: 'Login failed' });
@@ -418,7 +435,6 @@ app.post('/api/genesis/login', (req, res) => {
 app.post('/api/genesis/test-register', async (req, res) => {
     const { platformUsername, nickname, password, wallet, platform, ref, signMessage, signTimestamp } = req.body;
     
-    // Strict Validation: Platform User, Nickname, Password, Wallet
     if (!platformUsername || !nickname || !password || !wallet) {
         return res.status(400).json({ success: false, error: 'Missing fields: Platform Username, Nickname, Password, or Wallet' });
     }
@@ -426,17 +442,14 @@ app.post('/api/genesis/test-register', async (req, res) => {
     try {
         console.log(`[GENESIS] Register Request: Platform=${platform}, Nickname=${nickname}`);
 
-        // Generate G-Code (Server Side)
-        // Format: 👻ghost-WALLET-GS{PlatformInitial}-RANDOM👻
         const staticPrefix = "ghost";
         const walletPart = wallet.substring(0, 8);
-        const platformName = platform || 'Kick'; // Default to Kick if missing
+        const platformName = platform || 'Kick';
         const platformInitial = platformName.charAt(0).toUpperCase();
-        const thirdPart = `GS${platformInitial}`; // GSK, GSI, GSD
+        const thirdPart = `GS${platformInitial}`;
         const random = Math.floor(100000 + Math.random() * 900000);
         const gCode = `👻${staticPrefix}-${walletPart}-${thirdPart}-${random}👻`;
 
-        // Save to File (Platform Username + Website Username + Code)
         const GENESIS_USERS_FILE = join(__dirname, '../data/genesis_users.json');
         const dataDir = dirname(GENESIS_USERS_FILE);
         if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
@@ -453,6 +466,15 @@ app.post('/api/genesis/test-register', async (req, res) => {
         const newSpots = updateGenesisSpots(1);
         const rank = users.length + 1;
 
+        let storedPassword = password;
+        try {
+            const bcrypt = await import('bcryptjs');
+            const saltRounds = 10;
+            storedPassword = await bcrypt.default.hash(password, saltRounds);
+        } catch (e) {
+            console.error('Genesis Register Hash Error:', e);
+        }
+
         const newUser = {
             id: users.length + 1,
             platform: platformName,
@@ -460,7 +482,7 @@ app.post('/api/genesis/test-register', async (req, res) => {
             websiteNickname: nickname,
             wallet,
             gCode,
-            password: password,
+            password: storedPassword,
             rank: rank,
             signMessage: signMessage || null,
             signTimestamp: signTimestamp || null,
