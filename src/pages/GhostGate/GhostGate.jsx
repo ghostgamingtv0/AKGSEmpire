@@ -318,21 +318,36 @@ const GhostGate = () => {
                                         </p>
                                     </div>
 
-                                    {/* Description */}
-                                    <div className="space-y-3">
-                                        <p className="text-gray-100 text-sm md:text-base uppercase tracking-wider leading-relaxed">
-                                            Reserved for the <span className="text-white font-bold">Top 100 Commanders</span>. 
-                                            Prove your loyalty through consistent engagement on Kick & Instagram.
-                                        </p>
-                                        <p className="text-gray-100 font-arabic text-sm md:text-base leading-relaxed font-bold border-t border-[#53FC18]/30 pt-3">
-                                            مخصصة لأفضل 100 قائد. أثبت ولاءك واستمراريتك عبر التفاعل القوي على منصات كيك وإنستغرام.
-                                        </p>
+                                    {/* Description: Arabic then English */}
+                                    <div className="space-y-4 text-left">
+                                        <div dir="rtl" className="space-y-2 text-right">
+                                            <p className="text-[#53FC18] font-arabic font-bold text-sm md:text-base">
+                                                حدث الجينيسيس: نهضة القادة
+                                            </p>
+                                            <p className="text-gray-100 font-arabic text-sm md:text-base leading-relaxed">
+                                                خزينة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لـ أفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
+                                            </p>
+                                            <p className="text-gray-100 font-arabic text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
+                                                الخطة الاستراتيجية: بمجرد انتهاء الأسبوع الأول، يُفعل "بروتوكول الاستمرارية". احصد 50 نقطة يومياً، لكن احذر؛ فاليوم الذي تغيب فيه يتصفر عدادك. أثبت ولاءك لـ 4 أيام متتالية لتفعيل مضاعف القوة x3.
+                                            </p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <p className="text-[#53FC18] font-heading text-xs md:text-sm tracking-[0.25em] uppercase">
+                                                GENESIS EVENT: THE RISE OF COMMANDERS
+                                            </p>
+                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed">
+                                                A pool of 150,000,000 $AKGS & 50 Exclusive Genesis NFTs awaits the elite. This ultimate bounty is reserved strictly for the Top 100 Commanders who prove their dominance through relentless engagement on Kick & Instagram.
+                                            </p>
+                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed">
+                                                The Strategy: After the Genesis week, the Daily Streak Protocol begins. Gain +50 points daily. Be warned: Missing a day resets your progress. Hold your ground for 4 consecutive days to trigger the x3 Multiplier.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* CTA Footer */}
                                 <div className="relative z-10 mt-6 flex items-center justify-center gap-2 text-[#53FC18] animate-bounce">
-                                    <span className="text-sm md:text-base font-bold tracking-[0.3em] uppercase">Click to Initialize</span>
+                                    <span className="text-sm md:text-base font-bold tracking-[0.3em] uppercase">[ CLICK TO INITIALIZE ]</span>
                                     <ChevronDown size={16} />
                                 </div>
                             </motion.button>

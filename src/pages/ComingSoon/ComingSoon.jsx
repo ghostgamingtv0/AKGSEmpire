@@ -354,6 +354,31 @@ const ComingSoon = () => {
           </p>
         </div>
 
+        <div className="w-full max-w-5xl mx-auto mb-12 grid md:grid-cols-2 gap-8 text-left">
+          <div dir="rtl" className="space-y-3 text-right font-arabic">
+            <h2 className="text-[#53FC18] font-bold text-lg md:text-xl">
+              حدث الجينيسيس: نهضة القادة
+            </h2>
+            <p className="text-gray-200 text-sm md:text-base leading-relaxed">
+              خزينة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لـ أفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
+            </p>
+            <p className="text-gray-200 text-sm md:text-base leading-relaxed">
+              الخطة الاستراتيجية: بمجرد انتهاء الأسبوع الأول، يُفعل "بروتوكول الاستمرارية". احصد 50 نقطة يومياً، لكن احذر؛ فاليوم الذي تغيب فيه يتصفر عدادك. أثبت ولاءك لـ 4 أيام متتالية لتفعيل مضاعف القوة x3.
+            </p>
+          </div>
+          <div className="space-y-3">
+            <h2 className="text-[#53FC18] font-heading text-xs md:text-sm tracking-[0.25em] uppercase">
+              GENESIS EVENT: THE RISE OF COMMANDERS
+            </h2>
+            <p className="text-gray-200 text-sm md:text-base leading-relaxed">
+              A pool of 150,000,000 $AKGS & 50 Exclusive Genesis NFTs awaits the elite. This ultimate bounty is reserved strictly for the Top 100 Commanders who prove their dominance through relentless engagement on Kick & Instagram.
+            </p>
+            <p className="text-gray-200 text-sm md:text-base leading-relaxed">
+              The Strategy: After the Genesis week, the Daily Streak Protocol begins. Gain +50 points daily. Be warned: Missing a day resets your progress. Hold your ground for 4 consecutive days to trigger the x3 Multiplier.
+            </p>
+          </div>
+        </div>
+
         {/* User Session Preview - G-Code Card */}
         {userSession && userSession.gCode && (
           <div className="w-full max-w-3xl mx-auto mb-12 bg-black/80 border border-[#53FC18]/40 rounded-3xl p-8 relative overflow-hidden shadow-[0_0_40px_rgba(83,252,24,0.3)]">
