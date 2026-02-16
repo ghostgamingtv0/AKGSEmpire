@@ -7,12 +7,12 @@ import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 
-const NFT_IMAGE_MAIN = "https://i.ibb.co/5h5qky3V/a6903b67700ee23f51b5794eb6cf7eca.jpg";
-const NFT_IMAGE_MINING = NFT_IMAGE_MAIN;
-const NFT_IMAGE_REWARD = NFT_IMAGE_MAIN;
+const NFT_IMAGE_MINING = "/assets/nft_mining_multiplicator.png";
+const NFT_IMAGE_REWARD = "/assets/nft_reward.png";
+const NFT_IMAGE_MAIN = NFT_IMAGE_MINING;
 
 const ProjectNFTIcon = ({ color = "#53FC18", tier = "1", imageSrc = NFT_IMAGE_MAIN }) => (
-  <div className="relative w-16 h-16 md:w-20 md:h-20 group">
+  <div className="relative w-20 h-20 md:w-24 md:h-24 group">
     <div className="absolute inset-0 rounded-lg blur-md opacity-60 group-hover:opacity-100 transition-opacity duration-300" style={{ backgroundColor: color }}></div>
     <div className="relative w-full h-full rounded-lg overflow-hidden border-2 bg-black z-10" style={{ borderColor: color }}>
       <img 
@@ -1701,8 +1701,11 @@ const Earn = () => {
                      <Coins size={18} /> Earning & Conversion Rate
                    </h3>
                    <p className="text-gray-300 text-sm leading-relaxed font-arabic" dir="rtl">
-                     <span className="text-[#53FC18] font-bold text-base font-sans">كل نقطة تساوي نصف عملة (1 Point = 0.5 Coin)</span>. 
-                     أكمل المهام الاجتماعية، شاهد المحتوى، وشارك في التعدين (Mining) لزيادة رصيدك.
+                     <span className="text-[#53FC18] font-bold text-base font-sans">
+                       كل <span className="underline">100 نقطة</span> تساوي <span className="underline">1000 حبة</span> من عملة AKGS
+                       (100 Points = 1,000 Coins)
+                     </span>. 
+                     كلما جمعت نقاط أكثر عبر المهام والتعدين، كلما تضاعفت حصتك الفعلية من العملة.
                    </p>
                 </div>
 
