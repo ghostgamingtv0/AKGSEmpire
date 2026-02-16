@@ -295,14 +295,11 @@ const GhostGate = () => {
                                 <div className="relative z-10 flex flex-col items-center mb-6">
                                     <div className="flex items-center gap-3 mb-3">
                                         <Globe className="text-[#53FC18] animate-[spin_10s_linear_infinite]" size={24} />
-                                        <h3 className="text-xl md:text-2xl font-black text-white tracking-[0.35em] font-heading">
+                                        <h3 className="text-xl md:text-2xl font-black text-white tracking-[0.5em] font-heading">
                                             GENESIS EVENT
                                         </h3>
                                         <Globe className="text-[#53FC18] animate-[spin_10s_linear_infinite_reverse]" size={24} />
                                     </div>
-                                    <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-[#53FC18] text-center mb-2">
-                                        2026 AKGS EMPIRE · SYSTEMS ONLINE · COMMANDERS PREPARING FOR LAUNCH
-                                    </p>
                                     <div className="h-0.5 w-40 bg-gradient-to-r from-transparent via-[#53FC18] to-transparent"></div>
                                 </div>
 

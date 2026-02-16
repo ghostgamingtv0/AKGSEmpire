@@ -354,20 +354,20 @@ const ComingSoon = () => {
           </p>
         </div>
 
-        <div className="w-full max-w-5xl mx-auto mb-12 grid md:grid-cols-2 gap-8 text-left">
-          <div dir="rtl" className="space-y-3 text-right font-arabic">
-            <h2 className="text-[#53FC18] font-bold text-lg md:text-xl">
+        <div className="w-full max-w-3xl mx-auto mb-12 bg-black/70 border border-[#53FC18]/40 rounded-3xl px-6 py-6 md:px-8 md:py-8 shadow-[0_0_35px_rgba(83,252,24,0.25)] space-y-5">
+          <div dir="rtl" className="space-y-2 text-right font-arabic">
+            <h2 className="text-[#53FC18] font-bold text-xl md:text-2xl">
               حدث الجينيسيس: نهضة القادة
             </h2>
             <p className="text-gray-200 text-sm md:text-base leading-relaxed">
               خزينة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لـ أفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
             </p>
-            <p className="text-gray-200 text-sm md:text-base leading-relaxed">
+            <p className="text-gray-200 text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
               الخطة الاستراتيجية: بمجرد انتهاء الأسبوع الأول، يُفعل "بروتوكول الاستمرارية". احصد 50 نقطة يومياً، لكن احذر؛ فاليوم الذي تغيب فيه يتصفر عدادك. أثبت ولاءك لـ 4 أيام متتالية لتفعيل مضاعف القوة x3.
             </p>
           </div>
-          <div className="space-y-3">
-            <h2 className="text-[#53FC18] font-heading text-xs md:text-sm tracking-[0.25em] uppercase">
+          <div className="space-y-2">
+            <h2 className="text-[#53FC18] font-heading text-xs md:text-sm tracking-[0.3em] uppercase">
               GENESIS EVENT: THE RISE OF COMMANDERS
             </h2>
             <p className="text-gray-200 text-sm md:text-base leading-relaxed">
