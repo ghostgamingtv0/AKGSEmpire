@@ -7,8 +7,8 @@ import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 
-const NFT_IMAGE_MINING = "/assets/nft_mining_multiplicator.png";
-const NFT_IMAGE_REWARD = "/assets/nft_reward.png";
+const NFT_IMAGE_MINING = "https://i.ibb.co/sv1qDbd0/E4gk6-In-WEAQ1s-JF.jpg";
+const NFT_IMAGE_REWARD = "https://i.ibb.co/dwzrDDGk/33710b273ed1e486862440e0446dfc18.jpg";
 const NFT_IMAGE_MAIN = NFT_IMAGE_MINING;
 
 const ProjectNFTIcon = ({ color = "#53FC18", tier = "1", imageSrc = NFT_IMAGE_MAIN }) => (
