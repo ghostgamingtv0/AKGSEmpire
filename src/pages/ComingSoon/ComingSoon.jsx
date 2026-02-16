@@ -212,25 +212,30 @@ const ComingSoon = () => {
       <BackgroundEffects />
 
       <div className="relative z-10 max-w-7xl w-full text-center flex flex-col items-center pt-10 pb-10">
-        {/* Logo + G-Code Card on same row (desktop) */}
-        <div className="mb-10 w-full flex flex-col md:flex-row items-center justify-between gap-6">
-          {/* Logo */}
-          <div className="flex flex-col items-center">
-            <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-2 border-[#53FC18] shadow-[0_0_50px_rgba(83,252,24,0.3)] overflow-hidden p-1 bg-black group hover:scale-105 transition-transform duration-500">
-              <img 
-                src="https://i.ibb.co/Jjdm6v0J/fe58cfb14a674ec977bf157cdc091cfd.jpg" 
-                alt="AKGS Empire Logo" 
-                className="w-full h-full object-cover rounded-full"
-              />
-            </div>
-            <div className="text-[#53FC18] font-bold text-xl md:text-2xl tracking-[0.5em] mt-8 animate-pulse font-heading">
-              COMING SOON
-            </div>
+        {/* Logo centered above hero */}
+        <div className="mb-8 flex flex-col items-center">
+          <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-2 border-[#53FC18] shadow-[0_0_50px_rgba(83,252,24,0.3)] overflow-hidden p-1 bg-black group hover:scale-105 transition-transform duration-500">
+            <img 
+              src="https://i.ibb.co/Jjdm6v0J/fe58cfb14a674ec977bf157cdc091cfd.jpg" 
+              alt="AKGS Empire Logo" 
+              className="w-full h-full object-cover rounded-full"
+            />
           </div>
+          <div className="text-[#53FC18] font-bold text-xl md:text-2xl tracking-[0.5em] mt-8 animate-pulse font-heading">
+            COMING SOON
+          </div>
+        </div>
 
-          {/* Compact G-Code + Referral Card */}
+        {/* AKGS EMPIRE + Referral Card: نفس الصف */}
+        <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-center md:justify-between gap-6 mb-6">
+          {/* Main Title */}
+          <h1 className="text-4xl md:text-7xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#53FC18] to-white uppercase tracking-tighter font-heading">
+            AKGS EMPIRE
+          </h1>
+
+          {/* Compact G-Code + Referral Card محاذاة يمين العنوان */}
           {userSession?.gCode && (
-            <div className="w-full md:w-[320px] bg-black/80 border border-[#53FC18]/40 rounded-3xl p-5 md:p-6 relative overflow-hidden shadow-[0_0_30px_rgba(83,252,24,0.3)] text-center">
+            <div className="w-full md:w-[320px] md:mt-4 bg-black/80 border border-[#53FC18]/40 rounded-3xl p-5 md:p-6 relative overflow-hidden shadow-[0_0_30px_rgba(83,252,24,0.3)] text-center">
               <div className="absolute inset-0 bg-gradient-to-br from-[#53FC18]/10 via-transparent to-[#53FC18]/20 opacity-70 pointer-events-none"></div>
               <div className="relative z-10 flex flex-col items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-[#53FC18]/10 flex items-center justify-center mb-1 border border-[#53FC18]/50 shadow-[0_0_30px_rgba(83,252,24,0.2)] relative">
@@ -285,23 +290,18 @@ const ComingSoon = () => {
           )}
         </div>
 
-        {/* Main Title */}
-        <h1 className="text-4xl md:text-7xl font-black mb-2 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#53FC18] to-white uppercase tracking-tighter font-heading">
-          AKGS EMPIRE
-        </h1>
-        
-        {/* Subtitle / Theme Badges */}
+        {/* Subtitle / Theme Badges تحت AKGS EMPIRE */}
         <div className="relative flex flex-wrap justify-center gap-2 md:gap-4 mb-10">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[150%] bg-[#53FC18] rounded-full blur-[60px] opacity-15 -z-10"></div>
-            {badges.map((badge, index) => (
-                <span 
-                    key={badge.text}
-                    className="px-3 py-1 rounded border border-[#53FC18]/30 bg-[#53FC18]/5 text-[#53FC18] text-[10px] md:text-xs font-bold tracking-widest uppercase shadow-[inset_0_0_10px_rgba(83,252,24,0.1)] animate-pulse"
-                    style={badge.style}
-                >
-                    {badge.text}
-                </span>
-            ))}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[150%] bg-[#53FC18] rounded-full blur-[60px] opacity-15 -z-10"></div>
+          {badges.map((badge, index) => (
+            <span 
+              key={badge.text}
+              className="px-3 py-1 rounded border border-[#53FC18]/30 bg-[#53FC18]/5 text-[#53FC18] text-[10px] md:text-xs font-bold tracking-widest uppercase shadow-[inset_0_0_10px_rgba(83,252,24,0.1)] animate-pulse"
+              style={badge.style}
+            >
+              {badge.text}
+            </span>
+          ))}
         </div>
 
         {/* Big Social Buttons Grid */}
