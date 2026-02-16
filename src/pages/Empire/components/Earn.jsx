@@ -2208,13 +2208,13 @@ const Earn = () => {
                   )}
                 </div>
                 
-                <h3 className="text-lg font-bold mb-2">{task.action}</h3>
+                <h3 className="text-xl md:text-2xl font-extrabold mb-3 text-white">{task.action}</h3>
                 <div className="flex items-center justify-between mb-6">
-                  <p className="text-gray-400 text-sm">Platform: {task.platform}</p>
+                  <p className="text-gray-300 text-sm md:text-base">Platform: {task.platform}</p>
                 </div>
 
                 {task.instruction && (
-                  <div className={`mb-4 p-2 rounded-lg text-xs font-bold border ${task.instruction.includes('MANDATORY') ? 'bg-red-500/10 border-red-500 text-red-500' : 'bg-yellow-500/10 border-yellow-500 text-yellow-500'}`}>
+                  <div className={`mb-4 p-3 rounded-lg text-xs md:text-sm font-bold border ${task.instruction.includes('MANDATORY') ? 'bg-red-500/15 border-red-400 text-red-300' : 'bg-yellow-500/10 border-yellow-400 text-yellow-200'}`}>
                     {task.instruction}
                   </div>
                 )}

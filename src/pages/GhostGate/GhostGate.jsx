@@ -304,22 +304,22 @@ const GhostGate = () => {
                                 {/* Content Body */}
                                 <div className="relative z-10 flex flex-col gap-4 text-center">
                                     {/* Reward Box */}
-                                    <div className="bg-[#53FC18]/10 border border-[#53FC18]/30 rounded-xl p-4 backdrop-blur-sm">
-                                        <p className="text-[#53FC18] font-bold text-lg mb-1 drop-shadow-[0_0_5px_rgba(83,252,24,0.5)]">
+                                    <div className="bg-[#53FC18]/10 border border-[#53FC18]/30 rounded-xl p-5 md:p-6 backdrop-blur-sm">
+                                        <p className="text-[#53FC18] font-extrabold text-xl md:text-2xl mb-2 drop-shadow-[0_0_6px_rgba(83,252,24,0.7)]">
                                             150,000,000 $AKGS
                                         </p>
-                                        <p className="text-white font-['Cairo'] font-bold text-sm">
+                                        <p className="text-white font-['Cairo'] font-bold text-base md:text-lg">
                                             + 50 GENESIS NFTs
                                         </p>
                                     </div>
 
                                     {/* Description */}
                                     <div className="space-y-3">
-                                        <p className="text-gray-300 text-xs uppercase tracking-wider leading-relaxed">
+                                        <p className="text-gray-100 text-sm md:text-base uppercase tracking-wider leading-relaxed">
                                             Reserved for the <span className="text-white font-bold">Top 100 Commanders</span>. 
                                             Prove your loyalty through consistent engagement on Kick & Instagram.
                                         </p>
-                                        <p className="text-gray-400 font-['Cairo'] text-sm leading-relaxed font-bold border-t border-[#53FC18]/20 pt-2">
+                                        <p className="text-gray-100 font-['Cairo'] text-sm md:text-base leading-relaxed font-bold border-t border-[#53FC18]/30 pt-3">
                                             مخصصة لأفضل 100 قائد. أثبت ولاءك واستمراريتك عبر التفاعل القوي على منصات كيك وإنستغرام.
                                         </p>
                                     </div>
@@ -327,7 +327,7 @@ const GhostGate = () => {
 
                                 {/* CTA Footer */}
                                 <div className="relative z-10 mt-6 flex items-center justify-center gap-2 text-[#53FC18] animate-bounce">
-                                    <span className="text-xs font-bold tracking-[0.3em] uppercase">Click to Initialize</span>
+                                    <span className="text-sm md:text-base font-bold tracking-[0.3em] uppercase">Click to Initialize</span>
                                     <ChevronDown size={16} />
                                 </div>
                             </motion.button>

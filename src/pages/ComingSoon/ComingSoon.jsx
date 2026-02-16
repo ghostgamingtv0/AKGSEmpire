@@ -441,12 +441,12 @@ const ComingSoon = () => {
                             <CheckCircle2 size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-['Orbitron'] tracking-wide">
                                 Strategic Feasibility Study
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold">DONE</span>
                             </h4>
-                            <p className="text-gray-300 text-sm mt-1 font-medium">Expert-led market analysis & strategic planning.</p>
-                            <p className="text-[#53FC18] text-xs mt-1 font-arabic font-bold" dir="rtl">دراسة جدوى شاملة وتحليل استراتيجي.</p>
+                            <p className="text-gray-100 text-sm md:text-base mt-1 font-medium leading-relaxed">Expert-led market analysis & strategic planning.</p>
+                            <p className="text-[#53FC18] text-sm mt-1 font-arabic font-bold leading-relaxed" dir="rtl">دراسة جدوى شاملة وتحليل استراتيجي.</p>
                         </div>
                     </div>
 
@@ -456,12 +456,12 @@ const ComingSoon = () => {
                             <ShieldCheck size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-['Orbitron'] tracking-wide">
                                 Legal & IP Protection
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold">DONE</span>
                             </h4>
-                            <p className="text-gray-300 text-sm mt-1 font-medium">Official documentation & IP registration.</p>
-                            <p className="text-[#53FC18] text-xs mt-1 font-arabic font-bold" dir="rtl">توثيق قانوني وحماية الملكية الفكرية.</p>
+                            <p className="text-gray-100 text-sm md:text-base mt-1 font-medium leading-relaxed">Official documentation & IP registration.</p>
+                            <p className="text-[#53FC18] text-sm mt-1 font-arabic font-bold leading-relaxed" dir="rtl">توثيق قانوني وحماية الملكية الفكرية.</p>
                         </div>
                     </div>
 
@@ -471,12 +471,12 @@ const ComingSoon = () => {
                             <MonitorCheck size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-['Orbitron'] tracking-wide">
                                 Platform Development
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold animate-pulse">IN PROGRESS</span>
                             </h4>
-                            <p className="text-gray-300 text-sm mt-1 font-medium">Building the core infrastructure & features.</p>
-                            <p className="text-[#53FC18] text-xs mt-1 font-arabic font-bold" dir="rtl">تطوير البنية التحتية والميزات الأساسية.</p>
+                            <p className="text-gray-100 text-sm md:text-base mt-1 font-medium leading-relaxed">Building the core infrastructure & features.</p>
+                            <p className="text-[#53FC18] text-sm mt-1 font-arabic font-bold leading-relaxed" dir="rtl">تطوير البنية التحتية والميزات الأساسية.</p>
                         </div>
                     </div>
 
@@ -486,12 +486,12 @@ const ComingSoon = () => {
                             <Rocket size={20} className="text-gray-500" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-gray-500 font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-gray-400 font-bold flex items-center gap-2 text-base md:text-lg font-['Orbitron'] tracking-wide">
                                 Global Launch
                                 <span className="text-gray-500 text-[10px] px-1.5 py-0.5 rounded bg-gray-500/10 border border-gray-500/30 font-sans font-bold">UPCOMING</span>
                             </h4>
-                            <p className="text-gray-600 text-sm mt-1 font-medium">Official release to the public.</p>
-                            <p className="text-gray-600 text-xs mt-1 font-arabic font-bold" dir="rtl">الإطلاق الرسمي للجمهور.</p>
+                            <p className="text-gray-400 text-sm md:text-base mt-1 font-medium leading-relaxed">Official release to the public.</p>
+                            <p className="text-gray-500 text-sm mt-1 font-arabic font-bold leading-relaxed" dir="rtl">الإطلاق الرسمي للجمهور.</p>
                         </div>
                     </div>
                 </div>
@@ -501,7 +501,7 @@ const ComingSoon = () => {
             <div>
                 <div className="flex items-center gap-3 mb-8">
                     <div className="h-[1px] w-12 bg-[#53FC18]"></div>
-                    <h3 className="text-[#53FC18] font-bold text-sm tracking-[0.2em] uppercase font-['Orbitron']">The Winning Formula</h3>
+                    <h3 className="text-[#53FC18] font-bold text-base md:text-lg tracking-[0.2em] uppercase font-['Orbitron']">The Winning Formula</h3>
                 </div>
 
                 <div className="grid gap-6">
@@ -511,8 +511,8 @@ const ComingSoon = () => {
                                 <Zap size={24} />
                             </div>
                             <div>
-                                <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Watch & Earn</h4>
-                                <p className="text-gray-400 text-sm leading-relaxed">Earn while watching hand‑picked content. Every session strengthens your position inside the empire.</p>
+                                <h4 className="text-white font-bold text-xl mb-2 font-['Orbitron']">Watch & Earn</h4>
+                                <p className="text-gray-100 text-sm md:text-base leading-relaxed">Earn while watching hand‑picked content. Every session strengthens your position inside the empire.</p>
                             </div>
                         </div>
                     </div>
@@ -523,8 +523,8 @@ const ComingSoon = () => {
                                 <TrendingUp size={24} />
                             </div>
                             <div>
-                                <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Social Growth</h4>
-                                <p className="text-gray-400 text-sm leading-relaxed">Grow your social presence while stacking points. Connect, engage, and expand your reach with AKGS.</p>
+                                <h4 className="text-white font-bold text-xl mb-2 font-['Orbitron']">Social Growth</h4>
+                                <p className="text-gray-100 text-sm md:text-base leading-relaxed">Grow your social presence while stacking points. Connect, engage, and expand your reach with AKGS.</p>
                             </div>
                         </div>
                     </div>
@@ -535,8 +535,8 @@ const ComingSoon = () => {
                                 <HeartHandshake size={24} />
                             </div>
                             <div>
-                                <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Community First</h4>
-                                <p className="text-gray-400 text-sm leading-relaxed">Designed with the community at the core. Fair rewards, clear rules, and transparent tracking.</p>
+                                <h4 className="text-white font-bold text-xl mb-2 font-['Orbitron']">Community First</h4>
+                                <p className="text-gray-100 text-sm md:text-base leading-relaxed">Designed with the community at the core. Fair rewards, clear rules, and transparent tracking.</p>
                             </div>
                         </div>
                     </div>
@@ -547,8 +547,8 @@ const ComingSoon = () => {
                                 <Send size={24} />
                             </div>
                             <div className="flex-1">
-                                <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Referral Generator</h4>
-                                <p className="text-gray-400 text-sm leading-relaxed mb-3">Create your personal invite link. Every verified signup through your link unlocks <span className="text-[#53FC18] font-bold">500 points</span> for your account.</p>
+                                <h4 className="text-white font-bold text-xl mb-2 font-['Orbitron']">Referral Generator</h4>
+                                <p className="text-gray-100 text-sm md:text-base leading-relaxed mb-3">Create your personal invite link. Every verified signup through your link unlocks <span className="text-[#53FC18] font-bold">500 points</span> for your account.</p>
                                 <div className="flex items-center gap-2">
                                     <input 
                                         readOnly
