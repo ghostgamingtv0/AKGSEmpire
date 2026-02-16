@@ -53,7 +53,7 @@ const AKGsannance = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-['Rajdhani'] text-white p-4">
+    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4">
       {/* Background Effects */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(83,252,24,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(83,252,24,0.03)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
@@ -73,7 +73,7 @@ const AKGsannance = () => {
         </div>
 
         {/* Main Title */}
-        <h1 className="text-4xl md:text-7xl font-black mb-2 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#53FC18] to-white uppercase tracking-tighter font-['Orbitron']">
+        <h1 className="text-4xl md:text-7xl font-black mb-2 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#53FC18] to-white uppercase tracking-tighter font-heading">
           AKGS EMPIRE
         </h1>
         
@@ -127,7 +127,7 @@ const AKGsannance = () => {
             <div>
                 <div className="flex items-center gap-3 mb-8">
                     <div className="h-[1px] w-12 bg-[#53FC18]"></div>
-                    <h3 className="text-[#53FC18] font-bold text-sm tracking-[0.2em] uppercase font-['Orbitron']">Development Roadmap</h3>
+                    <h3 className="text-[#53FC18] font-bold text-sm tracking-[0.2em] uppercase font-heading">Development Roadmap</h3>
                 </div>
 
                 <div className="space-y-0 relative">
@@ -140,7 +140,7 @@ const AKGsannance = () => {
                             <CheckCircle2 size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-heading tracking-wide">
                                 Strategic Feasibility Study
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold">DONE</span>
                             </h4>
@@ -155,7 +155,7 @@ const AKGsannance = () => {
                             <ShieldCheck size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-heading tracking-wide">
                                 Legal & IP Protection
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold">DONE</span>
                             </h4>
@@ -170,7 +170,7 @@ const AKGsannance = () => {
                             <MonitorCheck size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-heading tracking-wide">
                                 Infrastructure Setup
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold">DONE</span>
                             </h4>
@@ -185,7 +185,7 @@ const AKGsannance = () => {
                             <TrendingUp size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-heading tracking-wide">
                                 Development & Polish
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold">DONE</span>
                             </h4>
@@ -200,7 +200,7 @@ const AKGsannance = () => {
                             <Loader2 size={20} className="text-black animate-spin" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-heading tracking-wide">
                                 Final Pre-Launch Phase
                                 <span className="text-black bg-[#53FC18] text-[10px] px-1.5 py-0.5 rounded font-bold animate-pulse font-sans">99%</span>
                             </h4>
@@ -215,7 +215,7 @@ const AKGsannance = () => {
             <div>
                  <div className="flex items-center gap-3 mb-8">
                     <div className="h-[1px] w-12 bg-[#53FC18]"></div>
-                    <h3 className="text-[#53FC18] font-bold text-sm tracking-[0.2em] uppercase font-['Orbitron']">The Winning Formula</h3>
+                    <h3 className="text-[#53FC18] font-bold text-sm tracking-[0.2em] uppercase font-heading">The Winning Formula</h3>
                 </div>
 
                 <div className="space-y-0 relative">
@@ -228,7 +228,7 @@ const AKGsannance = () => {
                             <Zap size={20} className="text-[#53FC18] group-hover:text-black transition-colors" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-heading tracking-wide">
                                 Engagement = Wealth
                             </h4>
                             <p className="text-gray-300 text-sm mt-1 leading-relaxed font-medium">Interact to earn points, convert to $AKGS tokens. Your time is currency.</p>
@@ -242,7 +242,7 @@ const AKGsannance = () => {
                             <Tv size={20} className="text-[#53FC18] group-hover:text-black transition-colors" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-heading tracking-wide">
                                 Kick Stream & NFT Power
                             </h4>
                             <p className="text-gray-300 text-sm mt-1 leading-relaxed font-medium">Follow on Kick for NFT giveaways. NFTs reduce tax & boost rewards.</p>
@@ -256,7 +256,7 @@ const AKGsannance = () => {
                             <HeartHandshake size={20} className="text-[#53FC18] group-hover:text-black transition-colors" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-sm md:text-base font-heading tracking-wide">
                                 The 90% Pledge
                             </h4>
                             <p className="text-gray-300 text-sm mt-1 leading-relaxed font-medium">We reinvest ~90% of profits back into the ecosystem to support YOU.</p>
@@ -270,7 +270,7 @@ const AKGsannance = () => {
         {/* Footer */}
         <div className="mt-4 flex items-center gap-2 opacity-50 pb-8">
           <div className="w-2 h-2 rounded-full bg-[#53FC18] animate-pulse"></div>
-          <span className="text-xs text-gray-500 uppercase tracking-[0.2em] font-['Orbitron']">System Status: Pre-Launch</span>
+          <span className="text-xs text-gray-500 uppercase tracking-[0.2em] font-heading">System Status: Pre-Launch</span>
         </div>
       </div>
     </div>

@@ -208,7 +208,7 @@ const ComingSoon = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-['Rajdhani'] text-white p-4">
+    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4">
       <BackgroundEffects />
 
       <div className="relative z-10 max-w-7xl w-full text-center flex flex-col items-center pt-10 pb-10">
@@ -233,11 +233,11 @@ const ComingSoon = () => {
                className="w-full h-full object-cover rounded-full"
              />
            </div>
-           <div className="text-[#53FC18] font-bold text-xl md:text-2xl tracking-[0.5em] mt-8 animate-pulse font-['Orbitron']">COMING SOON</div>
+           <div className="text-[#53FC18] font-bold text-xl md:text-2xl tracking-[0.5em] mt-8 animate-pulse font-heading">COMING SOON</div>
         </div>
 
         {/* Main Title */}
-        <h1 className="text-4xl md:text-7xl font-black mb-2 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#53FC18] to-white uppercase tracking-tighter font-['Orbitron']">
+        <h1 className="text-4xl md:text-7xl font-black mb-2 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#53FC18] to-white uppercase tracking-tighter font-heading">
           AKGS EMPIRE
         </h1>
         
@@ -349,7 +349,7 @@ const ComingSoon = () => {
             عندما يلتقي <span className="text-[#53FC18]">الشغف بالأرباح</span>.. نعيد تعريف مستقبل التفاعل الرقمي، حيث يصبح <span className="text-[#53FC18]">لوقتك قيمة حقيقية</span>
           </p>
           <div className="h-[1px] w-24 bg-[#53FC18]/30 mx-auto my-2"></div>
-          <p className="text-sm md:text-xl text-gray-300 font-medium tracking-[0.15em] uppercase leading-relaxed font-['Orbitron']">
+          <p className="text-sm md:text-xl text-gray-300 font-medium tracking-[0.15em] uppercase leading-relaxed font-heading">
             Where <span className="text-[#53FC18]">Passion</span> Meets <span className="text-[#53FC18]">Profit</span>.. Redefining The Future of Digital Interaction, Where Your Time Is The Ultimate <span className="text-[#53FC18]">Asset</span>
           </p>
         </div>
@@ -428,7 +428,7 @@ const ComingSoon = () => {
             <div>
                 <div className="flex items-center gap-3 mb-8">
                     <div className="h-[1px] w-12 bg-[#53FC18]"></div>
-                    <h3 className="text-[#53FC18] font-bold text-sm tracking-[0.2em] uppercase font-['Orbitron']">Development Roadmap</h3>
+                    <h3 className="text-[#53FC18] font-bold text-sm tracking-[0.2em] uppercase font-heading">Development Roadmap</h3>
                 </div>
 
                 <div className="space-y-0 relative">
@@ -441,7 +441,7 @@ const ComingSoon = () => {
                             <CheckCircle2 size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide">
                                 Strategic Feasibility Study
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold">DONE</span>
                             </h4>
@@ -456,7 +456,7 @@ const ComingSoon = () => {
                             <ShieldCheck size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide">
                                 Legal & IP Protection
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold">DONE</span>
                             </h4>
@@ -471,7 +471,7 @@ const ComingSoon = () => {
                             <MonitorCheck size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-['Orbitron'] tracking-wide">
+                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide">
                                 Platform Development
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold animate-pulse">IN PROGRESS</span>
                             </h4>
@@ -486,7 +486,7 @@ const ComingSoon = () => {
                             <Rocket size={20} className="text-gray-500" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-gray-400 font-bold flex items-center gap-2 text-base md:text-lg font-['Orbitron'] tracking-wide">
+                            <h4 className="text-gray-400 font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide">
                                 Global Launch
                                 <span className="text-gray-500 text-[10px] px-1.5 py-0.5 rounded bg-gray-500/10 border border-gray-500/30 font-sans font-bold">UPCOMING</span>
                             </h4>
@@ -501,7 +501,7 @@ const ComingSoon = () => {
             <div>
                 <div className="flex items-center gap-3 mb-8">
                     <div className="h-[1px] w-12 bg-[#53FC18]"></div>
-                    <h3 className="text-[#53FC18] font-bold text-base md:text-lg tracking-[0.2em] uppercase font-['Orbitron']">The Winning Formula</h3>
+                    <h3 className="text-[#53FC18] font-bold text-base md:text-lg tracking-[0.2em] uppercase font-heading">The Winning Formula</h3>
                 </div>
 
                 <div className="grid gap-6">
@@ -511,7 +511,7 @@ const ComingSoon = () => {
                                 <Zap size={24} />
                             </div>
                             <div>
-                                <h4 className="text-white font-bold text-xl mb-2 font-['Orbitron']">Watch & Earn</h4>
+                                <h4 className="text-white font-bold text-xl mb-2 font-heading">Watch & Earn</h4>
                                 <p className="text-gray-100 text-sm md:text-base leading-relaxed">Earn while watching hand‑picked content. Every session strengthens your position inside the empire.</p>
                             </div>
                         </div>
@@ -523,7 +523,7 @@ const ComingSoon = () => {
                                 <TrendingUp size={24} />
                             </div>
                             <div>
-                                <h4 className="text-white font-bold text-xl mb-2 font-['Orbitron']">Social Growth</h4>
+                                <h4 className="text-white font-bold text-xl mb-2 font-heading">Social Growth</h4>
                                 <p className="text-gray-100 text-sm md:text-base leading-relaxed">Grow your social presence while stacking points. Connect, engage, and expand your reach with AKGS.</p>
                             </div>
                         </div>
@@ -535,7 +535,7 @@ const ComingSoon = () => {
                                 <HeartHandshake size={24} />
                             </div>
                             <div>
-                                <h4 className="text-white font-bold text-xl mb-2 font-['Orbitron']">Community First</h4>
+                                <h4 className="text-white font-bold text-xl mb-2 font-heading">Community First</h4>
                                 <p className="text-gray-100 text-sm md:text-base leading-relaxed">Designed with the community at the core. Fair rewards, clear rules, and transparent tracking.</p>
                             </div>
                         </div>
@@ -547,7 +547,7 @@ const ComingSoon = () => {
                                 <Send size={24} />
                             </div>
                             <div className="flex-1">
-                                <h4 className="text-white font-bold text-2xl mb-3 font-['Orbitron'] tracking-wide uppercase">Referral Command Link</h4>
+                                <h4 className="text-white font-bold text-2xl mb-3 font-heading tracking-wide uppercase">Referral Command Link</h4>
                                 <p className="text-gray-100 text-base md:text-lg leading-relaxed mb-3">
                                     Forge your personal invite link. Every verified signup through your link instantly grants you
                                     <span className="text-[#53FC18] font-bold"> 500 points</span> and pushes your rank forward inside the empire.
@@ -577,7 +577,7 @@ const ComingSoon = () => {
                                 <Tv size={24} />
                             </div>
                             <div className="flex-1">
-                                <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Contracts</h4>
+                                <h4 className="text-white font-bold text-lg mb-2 font-heading">Contracts</h4>
                                 <div className="text-gray-400 text-sm leading-relaxed space-y-2">
                                     <div className="flex items-center gap-2">
                                         <span className="text-[#53FC18] font-bold">Token</span>

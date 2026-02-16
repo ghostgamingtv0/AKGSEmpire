@@ -105,7 +105,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-['Rajdhani'] relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen bg-[#050505] text-white font-sans relative overflow-hidden flex items-center justify-center">
       <BackgroundEffects forceVisible={true} />
       
       <div className="relative z-10 w-full max-w-md p-6">

@@ -12,9 +12,9 @@ export default {
         'empire-gray': '#1A1A1A',
       },
       fontFamily: {
-        sans: ['Rajdhani', 'sans-serif'],
-        heading: ['Orbitron', 'sans-serif'],
-        arabic: ['Cairo', 'sans-serif'], // Assuming Cairo or similar is used for Arabic, keeping fallback
+        sans: ['Exo 2', 'Rajdhani', 'sans-serif'],
+        heading: ['Michroma', 'Syncopate', 'Orbitron', 'sans-serif'],
+        arabic: ['Cairo', 'Changa', 'Kufam', 'sans-serif'],
       },
       keyframes: {
         shimmer: {

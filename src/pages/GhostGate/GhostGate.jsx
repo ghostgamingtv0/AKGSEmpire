@@ -224,7 +224,7 @@ const GhostGate = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white font-['Rajdhani'] relative overflow-hidden flex items-center justify-center">
+        <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden flex items-center justify-center">
             {/* Background Layers */}
             <SceneOneBackground />
 
@@ -234,7 +234,7 @@ const GhostGate = () => {
                 
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <h1 className="text-4xl md:text-5xl font-black text-[#53FC18] font-['Orbitron'] mb-4 tracking-widest drop-shadow-[0_0_15px_rgba(83,252,24,0.5)]">
+                    <h1 className="text-4xl md:text-5xl font-black text-[#53FC18] font-heading mb-4 tracking-[0.35em] drop-shadow-[0_0_15px_rgba(83,252,24,0.5)]">
                         GHOST EMPIRE
                     </h1>
                     <div className="relative inline-block max-w-2xl mx-auto">
@@ -245,7 +245,7 @@ const GhostGate = () => {
                                 <div className="bg-[#53FC18]/10 p-2 rounded-full">
                                     <ShieldCheck size={18} className="text-[#53FC18]" />
                                 </div>
-                                <p className="text-gray-300 text-xs md:text-sm font-['Rajdhani'] font-medium tracking-wide text-left leading-relaxed">
+                                <p className="text-gray-300 text-xs md:text-sm font-sans font-medium tracking-wide text-left leading-relaxed">
                                     Not a sponsored platform, but a <span className="text-white font-bold">self-sufficient empire</span>. 
                                     Fueled 100% by personal dedication and revenue from <span className="text-[#53FC18] font-bold">Kick</span>.
                                 </p>
@@ -256,7 +256,7 @@ const GhostGate = () => {
                                 <div className="bg-[#53FC18]/10 p-2 rounded-full">
                                     <ShieldCheck size={18} className="text-[#53FC18]" />
                                 </div>
-                                <p className="text-gray-200 text-xs md:text-sm font-['Cairo'] font-bold text-right leading-relaxed" dir="rtl">
+                                <p className="text-gray-200 text-xs md:text-sm font-arabic font-bold text-right leading-relaxed" dir="rtl">
                                     لسنا منصة مدعومة، بل <span className="text-[#53FC18]">مشروع مستقل</span> بذاته. 
                                     قائم على الاكتفاء الذاتي وبتمويل شخصي 100% من عوائد منصة <span className="text-[#53FC18]">كيك</span>.
                                 </p>
@@ -293,12 +293,17 @@ const GhostGate = () => {
 
                                 {/* Header */}
                                 <div className="relative z-10 flex flex-col items-center mb-6">
-                                    <div className="flex items-center gap-3 mb-2">
+                                    <div className="flex items-center gap-3 mb-3">
                                         <Globe className="text-[#53FC18] animate-[spin_10s_linear_infinite]" size={24} />
-                                        <h3 className="text-xl font-black text-white tracking-[0.2em] font-['Orbitron']">GENESIS EVENT</h3>
+                                        <h3 className="text-xl md:text-2xl font-black text-white tracking-[0.35em] font-heading">
+                                            GENESIS EVENT
+                                        </h3>
                                         <Globe className="text-[#53FC18] animate-[spin_10s_linear_infinite_reverse]" size={24} />
                                     </div>
-                                    <div className="h-0.5 w-32 bg-gradient-to-r from-transparent via-[#53FC18] to-transparent"></div>
+                                    <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-[#53FC18] text-center mb-2">
+                                        2026 AKGS EMPIRE · SYSTEMS ONLINE · COMMANDERS PREPARING FOR LAUNCH
+                                    </p>
+                                    <div className="h-0.5 w-40 bg-gradient-to-r from-transparent via-[#53FC18] to-transparent"></div>
                                 </div>
 
                                 {/* Content Body */}
@@ -308,7 +313,7 @@ const GhostGate = () => {
                                         <p className="text-[#53FC18] font-extrabold text-xl md:text-2xl mb-2 drop-shadow-[0_0_6px_rgba(83,252,24,0.7)]">
                                             150,000,000 $AKGS
                                         </p>
-                                        <p className="text-white font-['Cairo'] font-bold text-base md:text-lg">
+                                        <p className="text-white font-arabic font-bold text-base md:text-lg">
                                             + 50 GENESIS NFTs
                                         </p>
                                     </div>
@@ -319,7 +324,7 @@ const GhostGate = () => {
                                             Reserved for the <span className="text-white font-bold">Top 100 Commanders</span>. 
                                             Prove your loyalty through consistent engagement on Kick & Instagram.
                                         </p>
-                                        <p className="text-gray-100 font-['Cairo'] text-sm md:text-base leading-relaxed font-bold border-t border-[#53FC18]/30 pt-3">
+                                        <p className="text-gray-100 font-arabic text-sm md:text-base leading-relaxed font-bold border-t border-[#53FC18]/30 pt-3">
                                             مخصصة لأفضل 100 قائد. أثبت ولاءك واستمراريتك عبر التفاعل القوي على منصات كيك وإنستغرام.
                                         </p>
                                     </div>
@@ -346,7 +351,7 @@ const GhostGate = () => {
                         >
                             {/* Header */}
                             <div className="text-center mb-8">
-                                <h2 className="text-4xl font-black text-white tracking-wider font-['Orbitron'] mb-4">AKGS <span className="text-[#53FC18]">EMPIRE</span></h2>
+                                <h2 className="text-4xl font-black text-white tracking-[0.25em] font-heading mb-4">AKGS <span className="text-[#53FC18]">EMPIRE</span></h2>
                                 <p className="text-gray-400 text-lg tracking-[0.2em] uppercase">Join the Elite Ranks</p>
                             </div>
 
@@ -456,7 +461,7 @@ const GhostGate = () => {
                                                 <p className="text-[10px] text-gray-300 leading-tight">
                                                     <span className="text-[#53FC18] font-bold">Authenticity Check:</span> Access requires a verifiable digital footprint. Only valid usernames from <span className="text-white font-bold">Kick, Instagram, Discord, Facebook, or TikTok</span> will unlock the gate.
                                                 </p>
-                                                <p className="text-[10px] text-gray-400 font-['Cairo'] leading-tight">
+                                                <p className="text-[10px] text-gray-400 font-arabic leading-tight">
                                                     <span className="text-[#53FC18] font-bold">فحص المصداقية:</span> يتطلب الوصول بصمة رقمية يمكن التحقق منها. فقط المعرفات الحقيقية من <span className="text-white font-bold">كيك، إنستغرام، ديسكورد، فيسبوك، أو تيك توك</span> ستفتح البوابة.
                                                 </p>
                                             </div>
@@ -467,7 +472,7 @@ const GhostGate = () => {
                                     <div className="space-y-2">
                                         <label className="text-[#53FC18] text-xs font-bold ml-1 uppercase tracking-wider flex justify-between">
                                             <span>Select Platform</span>
-                                            <span className="font-['Cairo']">اختر المنصة</span>
+                                            <span className="font-arabic">اختر المنصة</span>
                                         </label>
                                         <div className="grid grid-cols-3 gap-2">
                                             {['Kick', 'Instagram', 'Discord', 'Facebook', 'TikTok'].map((platform) => (
@@ -522,7 +527,7 @@ const GhostGate = () => {
                                                 type="text" 
                                                 name="nickname"
                                                 placeholder="Site Username | اسم بالموقع"
-                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-['Cairo'] text-sm"
+                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-arabic text-sm"
                                                 value={formData.nickname}
                                                 onChange={handleInputChange}
                                                 required
@@ -533,7 +538,7 @@ const GhostGate = () => {
                                             <input 
                                                 type="text" 
                                                 placeholder="Confirm Username | تأكيد الاسم"
-                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-['Cairo'] text-sm"
+                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-arabic text-sm"
                                                 value={formData.confirmNickname}
                                                 onChange={(e) => setFormData({...formData, confirmNickname: e.target.value})}
                                                 onPaste={(e) => { e.preventDefault(); return false; }}
@@ -549,7 +554,7 @@ const GhostGate = () => {
                                             <input 
                                                 type="password" 
                                                 placeholder="Password | كلمة المرور"
-                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-['Cairo'] text-sm"
+                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-arabic text-sm"
                                                 value={formData.password}
                                                 onChange={(e) => setFormData({...formData, password: e.target.value})}
                                                 onPaste={(e) => { e.preventDefault(); return false; }}
@@ -561,7 +566,7 @@ const GhostGate = () => {
                                             <input 
                                                 type="password" 
                                                 placeholder="Confirm | تأكيد"
-                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-['Cairo'] text-sm"
+                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-arabic text-sm"
                                                 value={formData.confirmPassword}
                                                 onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                                                 onPaste={(e) => { e.preventDefault(); return false; }}
@@ -580,7 +585,7 @@ const GhostGate = () => {
                                         <input 
                                             type="text" 
                                             placeholder="Connect Wallet First | اربط المحفظة أولاً"
-                                            className="w-full bg-black/30 border border-[#53FC18]/10 rounded-xl py-3 pl-12 pr-4 text-gray-400 cursor-not-allowed font-['Cairo'] text-sm"
+                                            className="w-full bg-black/30 border border-[#53FC18]/10 rounded-xl py-3 pl-12 pr-4 text-gray-400 cursor-not-allowed font-arabic text-sm"
                                             value={formData.wallet}
                                             readOnly
                                         />
@@ -618,7 +623,7 @@ const GhostGate = () => {
                                             <>
                                                 <div className="flex flex-col leading-none items-center z-10">
                                                     <span>CLAIM G-CODE</span>
-                                                    <span className="font-['Cairo'] text-sm">احصل على الكود</span>
+                                                    <span className="font-arabic text-sm">احصل على الكود</span>
                                                 </div>
                                                 <div className="px-2 py-0.5 bg-black/20 rounded text-xs z-10">#{50 - spotsLeft + 1}</div>
                                             </>
@@ -639,17 +644,17 @@ const GhostGate = () => {
                                     <CheckCircle2 size={32} className="text-[#53FC18]" />
                                 </div>
                                 <div className="text-left">
-                                    <h2 className="text-2xl font-black text-white font-['Orbitron']">ACCESS GRANTED</h2>
-                                    <h2 className="text-xl font-bold text-[#53FC18] font-['Cairo'] leading-none">تم منح الدخول</h2>
+                                    <h2 className="text-2xl font-black text-white font-heading">ACCESS GRANTED</h2>
+                                    <h2 className="text-xl font-bold text-[#53FC18] font-arabic leading-none">تم منح الدخول</h2>
                                     <p className="text-gray-400 text-sm mt-1">Welcome, Citizen | أهلاً بك أيها المواطن</p>
                                 </div>
                             </div>
 
                             {/* G-CODE DISPLAY */}
                             <div className="w-full bg-[#53FC18]/10 border border-[#53FC18]/30 rounded-xl p-4 relative overflow-hidden group">
-                                <p className="text-[#53FC18] text-[10px] font-mono mb-1 uppercase tracking-widest flex justify-between">
+                                <p className="text-[#53FC18] text-[10px] font-mono mb-1 uppercase tracking-widest flex justify-between items-center">
                                     <span>Your Unique G-Code</span>
-                                    <span className="font-['Cairo']">الكود الخاص بك</span>
+                                    <span className="font-arabic">الكود الخاص بك</span>
                                 </p>
                                 <div className="text-lg md:text-xl font-mono font-bold text-white break-all drop-shadow-[0_0_5px_rgba(83,252,24,0.8)]">
                                     {gCode}
@@ -679,7 +684,7 @@ const GhostGate = () => {
                                             <br />
                                             You must DM this G-Code via <span className="text-white font-bold">ANY PLATFORM</span> of your choice immediately. Failure to verify within 20:00 mins will revoke your Rank #{userRank} and downgrade you to Citizen Class.
                                         </p>
-                                        <p className="text-[10px] text-gray-400 font-['Cairo'] leading-tight">
+                                        <p className="text-[10px] text-gray-400 font-arabic leading-tight">
                                             <span className="text-red-500 font-bold">تحذير: المقعد غير مؤكد.</span>
                                             <br />
                                             يجب عليك إرسال هذا الكود عبر <span className="text-white font-bold">أي منصة تختارها</span> فوراً. عدم التحقق خلال 20 دقيقة سيؤدي لسحب الرتبة #{userRank} وتسجيلك كمستخدم عادي.
@@ -705,7 +710,7 @@ const GhostGate = () => {
                                 <Copy size={20} className="group-hover:scale-110 transition-transform" />
                                 <div className="flex flex-col leading-none items-center">
                                     <span>COPY CODE & ENTER</span>
-                                    <span className="font-['Cairo'] text-xs font-bold">نسخ الكود والدخول</span>
+                                    <span className="font-arabic text-xs font-bold">نسخ الكود والدخول</span>
                                 </div>
                             </motion.button>
 
@@ -734,7 +739,7 @@ const GhostGate = () => {
                                     <span className="flex items-center gap-1">
                                         <span>Add to MetaMask</span>
                                         <span className="text-[#53FC18]/50">|</span>
-                                        <span className="font-['Cairo']">إضافة للمحفظة</span>
+                                        <span className="font-arabic">إضافة للمحفظة</span>
                                     </span>
                                 </button>
                             </div>
@@ -748,14 +753,14 @@ const GhostGate = () => {
                         <span className="w-1.5 h-1.5 bg-[#53FC18] rounded-full animate-pulse"></span>
                         <span className="flex gap-1">
                             <span>System Online</span>
-                            <span className="font-['Cairo']">النظام يعمل</span>
+                            <span className="font-arabic">النظام يعمل</span>
                         </span>
                     </span>
                     <span className="flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 bg-[#53FC18] rounded-full animate-pulse"></span>
                         <span className="flex gap-1">
                             <span>Secure Connection</span>
-                            <span className="font-['Cairo']">اتصال آمن</span>
+                            <span className="font-arabic">اتصال آمن</span>
                         </span>
                     </span>
                 </div>
