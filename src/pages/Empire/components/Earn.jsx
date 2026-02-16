@@ -55,6 +55,8 @@ const Earn = () => {
   
   const [showCopyCodeModal, setShowCopyCodeModal] = useState(false);
   const [currentTaskForModal, setCurrentTaskForModal] = useState(null);
+  const [showMiningNftModal, setShowMiningNftModal] = useState(false);
+  const [selectedMiningTier, setSelectedMiningTier] = useState(null);
   const [generatedCode, setGeneratedCode] = useState('');
   const [miningUnlocked, setMiningUnlocked] = useState(() => localStorage.getItem('kick_mining_unlocked') === 'true');
   const [gCodeExpected, setGCodeExpected] = useState(() => localStorage.getItem('kick_gcode_expected') || '');
@@ -208,6 +210,15 @@ const Earn = () => {
           }));
       }
   };
+
+
+  const miningNftTiers = [
+    { id: 1, label: 'Level 1', multiplier: 1, bonusPoints: 20 },
+    { id: 2, label: 'Level 2', multiplier: 2, bonusPoints: 40 },
+    { id: 3, label: 'Level 3', multiplier: 3, bonusPoints: 60 },
+    { id: 4, label: 'Level 4', multiplier: 4, bonusPoints: 80 },
+    { id: 5, label: 'Level 5', multiplier: 5, bonusPoints: 100 },
+  ];
 
 
 
@@ -875,11 +886,6 @@ const Earn = () => {
     
     if (task.status === 'disabled' || claimedTasks.includes(task.id)) return;
 
-    // 1. Kick Task Special Handling
-    if (task.platform === 'Kick' && task.id === 5) {
-        handleKickConnect();
-        return;
-    }
     if (task.platform === 'Kick' && task.type === 'mining') {
         if (!kickUsername) {
             alert('Connect Kick first');
@@ -1865,13 +1871,6 @@ const Earn = () => {
                    onClick={(e) => task && !isClaimed && !isTimerRunning && handleTaskAction(e, task)}
                    className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
                  >
-                    <button 
-                        onClick={(e) => handleVisitProfile(e, 'Twitter')}
-                        className="absolute top-4 right-4 z-20 bg-black/50 hover:bg-white/20 text-white p-2 rounded-full backdrop-blur-sm transition-colors border border-white/10"
-                        title="Visit Profile"
-                    >
-                        <ExternalLink size={16} />
-                    </button>
                     {/* Background Icon */}
                     <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
                         <FaXTwitter size={200} />
@@ -1936,13 +1935,6 @@ const Earn = () => {
                    onClick={(e) => task && !isClaimed && !isTimerRunning && handleTaskAction(e, task)}
                    className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
                  >
-                    <button 
-                        onClick={(e) => handleVisitProfile(e, 'Instagram')}
-                        className="absolute top-4 right-4 z-20 bg-black/50 hover:bg-white/20 text-white p-2 rounded-full backdrop-blur-sm transition-colors border border-white/10"
-                        title="Visit Profile"
-                    >
-                        <ExternalLink size={16} />
-                    </button>
                     <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
                         <FaInstagram size={200} />
                     </div>
@@ -2003,13 +1995,6 @@ const Earn = () => {
                    onClick={(e) => task && !isClaimed && !isTimerRunning && handleTaskAction(e, task)}
                    className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
                  >
-                    <button 
-                        onClick={(e) => handleVisitProfile(e, 'TikTok')}
-                        className="absolute top-4 right-4 z-20 bg-black/50 hover:bg-white/20 text-white p-2 rounded-full backdrop-blur-sm transition-colors border border-white/10"
-                        title="Visit Profile"
-                    >
-                        <ExternalLink size={16} />
-                    </button>
                     <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
                         <FaTiktok size={200} />
                     </div>
@@ -2103,6 +2088,50 @@ const Earn = () => {
 
         {/* Task Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {activeTab === 'mining' && (
+            <div className="md:col-span-2 lg:col-span-3 mb-4">
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-bold text-white">Mining Boost NFTs</h3>
+                  <p className="text-xs text-gray-400 mt-1">اختر مستوى المضاعف لزيادة قوة التعدين الخاصة بك.</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {miningNftTiers.map((tier) => (
+                  <button
+                    key={tier.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedMiningTier(tier);
+                      setShowMiningNftModal(true);
+                    }}
+                    className="relative flex flex-col items-center justify-between p-4 rounded-xl border border-[#53FC18]/30 bg-black/60 hover:bg-black/80 hover:border-[#53FC18] transition-all shadow-[0_0_20px_rgba(83,252,24,0.1)]"
+                  >
+                    <div className="mb-2">
+                      <ProjectNFTIcon
+                        color={
+                          tier.id === 1
+                            ? '#A855F7'
+                            : tier.id === 2
+                            ? '#3B82F6'
+                            : tier.id === 3
+                            ? '#22C55E'
+                            : tier.id === 4
+                            ? '#EAB308'
+                            : '#53FC18'
+                        }
+                        tier={`${tier.id}x`}
+                      />
+                    </div>
+                    <div className="text-center">
+                      <div className="text-sm font-bold text-white mb-1">{tier.label}</div>
+                      <div className="text-xs text-[#53FC18] font-semibold">+{tier.bonusPoints} Points / Hour</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           {tasks.filter(t => (t.type === activeTab || (activeTab === 'social' && t.type === 'social') || (activeTab === 'NFTs' && t.type === 'nft')) && ![8, 9, 10, 19].includes(t.id)).map((task, index, array) => {
             const isClaimed = claimedTasks.includes(task.id);
             const isVerifying = verifyingTasks.includes(task.id);
@@ -2182,13 +2211,6 @@ const Earn = () => {
                 <h3 className="text-lg font-bold mb-2">{task.action}</h3>
                 <div className="flex items-center justify-between mb-6">
                   <p className="text-gray-400 text-sm">Platform: {task.platform}</p>
-                  <button
-                    onClick={(e) => handleVisitProfile(e, task.platform)}
-                    className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
-                    title={`Visit ${task.platform}`}
-                  >
-                    <ExternalLink size={14} />
-                  </button>
                 </div>
 
                 {task.instruction && (
@@ -2243,6 +2265,73 @@ const Earn = () => {
             <p className="text-gray-500 text-sm">New opportunities available in 23:45:12</p>
           </div>
         </div>
+        {showMiningNftModal && selectedMiningTier && (
+          <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+            <div className="bg-[#020617] border border-[#53FC18]/40 rounded-2xl max-w-lg w-full mx-4 p-6 shadow-[0_0_40px_rgba(83,252,24,0.3)]">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-white">مضاعف التعدين: {selectedMiningTier.label}</h3>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowMiningNftModal(false);
+                    setSelectedMiningTier(null);
+                  }}
+                  className="text-gray-400 hover:text-white text-sm px-2 py-1 rounded-lg hover:bg-white/10 transition-colors"
+                >
+                  إغلاق
+                </button>
+              </div>
+              <div className="flex items-center gap-4 mb-4">
+                <ProjectNFTIcon
+                  color={
+                    selectedMiningTier.id === 1
+                      ? '#A855F7'
+                      : selectedMiningTier.id === 2
+                      ? '#3B82F6'
+                      : selectedMiningTier.id === 3
+                      ? '#22C55E'
+                      : selectedMiningTier.id === 4
+                      ? '#EAB308'
+                      : '#53FC18'
+                  }
+                  tier={`${selectedMiningTier.id}x`}
+                />
+                <div>
+                  <p className="text-sm text-gray-300">
+                    هذا الـ NFT يعطيك Boost خاص في نظام التعدين. كل مستوى يضيف مضاعف على نقاطك
+                    في جلسات المشاهدة والتفاعل مع قناة Kick الرسمية.
+                  </p>
+                  <p className="text-sm text-[#53FC18] font-semibold mt-2">
+                    مستوى {selectedMiningTier.id} يمنحك تقريباً +{selectedMiningTier.bonusPoints} نقطة إضافية في الساعة
+                    فوق النقاط الأساسية للتعدين.
+                  </p>
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4 mt-4">
+                <button
+                  type="button"
+                  className="w-full flex flex-col items-start gap-2 px-4 py-3 rounded-xl border border-[#53FC18]/40 bg-[#041017] hover:bg-[#061b22] transition-all"
+                >
+                  <span className="text-sm font-bold text-white">شراء العملة كمستثمر</span>
+                  <span className="text-xs text-gray-300">
+                    امتلك توكن المشروع كمستثمر لتحصل على امتيازات خاصة، أولوية في المميزات الجديدة،
+                    وزيادة في العوائد على المدى البعيد حسب أداء المنظومة.
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  className="w-full flex flex-col items-start gap-2 px-4 py-3 rounded-xl border border-[#53FC18]/40 bg-[#020b06] hover:bg-[#041107] transition-all"
+                >
+                  <span className="text-sm font-bold text-white">اشتراك أو Gift Sub على Kick</span>
+                  <span className="text-xs text-gray-300">
+                    فعّل المستوى عن طريق Sub أو Gift Sub في قناة Kick. هذا الأسلوب مناسب إذا كنت
+                    تفضل دعم البث مباشرة مع الحصول على نفس مضاعف النقاط داخل نظام التعدين.
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 };

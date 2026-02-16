@@ -155,7 +155,7 @@ const Footer = () => (
           </a>
         ))}
       </div>
-      <div className="flex flex-col items-center gap-4 mb-8 opacity-90 hover:opacity-100 transition-opacity">
+      <div className="flex flex-col items-center gap-4 mb-4 opacity-90 hover:opacity-100 transition-opacity">
         <span className="text-gray-400 text-sm font-medium flex items-center gap-2">
            <span className="text-[#53FC18]">✔</span> Verified & Sponsored By
         </span>
@@ -173,6 +173,14 @@ const Footer = () => (
           </a>
         </div>
       </div>
+      <a
+        href="/whitepaper.txt"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-block mb-4 text-xs text-[#53FC18] hover:text-white transition-colors underline-offset-4 hover:underline"
+      >
+        Whitepaper
+      </a>
       <p className="text-gray-600 text-sm">
         © 2026 AKGS Empire. All rights reserved.
       </p>

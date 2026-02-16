@@ -323,12 +323,45 @@ export default {
     }
 
     if (url.pathname === "/api/stats") {
-        const payload = {
-            kick_stats: { is_live: false },
+        try {
+            const res = await fetch("https://kick.com/api/v1/channels/ghost_gamingtv", {
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                const followers = data.followersCount || data.followers_count || 0;
+                const isLive = !!data.livestream;
+                const viewers = isLive ? (data.livestream.viewer_count || 0) : 0;
+                const category =
+                    (isLive && data.livestream && data.livestream.categories && data.livestream.categories[0] && data.livestream.categories[0].name) ||
+                    (data.recent_categories && data.recent_categories[0] && data.recent_categories[0].name) ||
+                    "None";
+                const payload = {
+                    success: true,
+                    kick_followers: followers,
+                    kick_viewers: viewers,
+                    kick_is_live: isLive,
+                    kick_category: category,
+                    weekly_growth: 0,
+                    discord_members: 0,
+                    telegram_members: 0
+                };
+                return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
+            }
+        } catch (e) {}
+        const fallbackPayload = {
+            success: true,
+            kick_followers: 0,
+            kick_viewers: 0,
+            kick_is_live: false,
+            kick_category: "None",
+            weekly_growth: 0,
             discord_members: 0,
             telegram_members: 0
         };
-        return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
+        return new Response(JSON.stringify(fallbackPayload), { headers: { "Content-Type": "application/json" } });
     }
 
     if (url.pathname === "/api/genesis/stats") {
