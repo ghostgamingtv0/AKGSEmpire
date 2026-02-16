@@ -1697,9 +1697,18 @@ const Earn = () => {
             {/* Points Balance & Info */}
             <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-6 max-w-7xl mx-auto">
                 <div className="p-6 bg-[#53FC18]/5 border border-[#53FC18]/20 rounded-2xl flex-1 shadow-lg shadow-[#53FC18]/5 w-full">
-                   <h3 className="text-[#53FC18] font-bold text-base mb-3 flex items-center gap-2 uppercase tracking-wider font-heading">
-                     <Coins size={18} /> Earning & Conversion Rate
+                   <h3 className="mb-3 flex items-center gap-2 font-heading">
+                     <Coins size={18} className="text-[#D4AF37]" />
+                     <span
+                       className="uppercase tracking-[0.4em] text-sm md:text-base text-white"
+                       style={{ textShadow: '0 0 10px #D4AF37, 0 0 20px #D4AF37' }}
+                     >
+                       Earning & Conversion Rate
+                     </span>
                    </h3>
+                   <div className="bg-gradient-to-r from-[#D4AF37] to-[#fcf6ba] bg-clip-text text-transparent text-xs md:text-sm font-bold tracking-[0.3em] uppercase mb-2">
+                     AKGS Empire • Commanders Only
+                   </div>
                    <p className="text-gray-300 text-sm leading-relaxed font-arabic" dir="rtl">
                      <span className="text-[#53FC18] font-bold text-base font-sans">
                        كل 100 نقطة تساوي 1000 AKGS عملة AKGS (100 Points = 1,000 Coins).
