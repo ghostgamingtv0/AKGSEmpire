@@ -1,9 +1,14 @@
 const https = require('https');
 
-const accountId = 'f139034ef7924a1d387c88f394b535a2';
+const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
 const projectName = 'akgsempire';
 const domain = 'akgsempire.org';
-const token = 'R76B-1FQYEi6BDYPGw-yD4NB-tK2q50_iar4uacU';
+const token = process.env.CLOUDFLARE_API_TOKEN;
+
+if (!accountId || !token) {
+    console.error('Missing CLOUDFLARE_ACCOUNT_ID or CLOUDFLARE_API_TOKEN in environment.');
+    process.exit(1);
+}
 
 console.log(`Adding domain ${domain} to project ${projectName}...`);
 

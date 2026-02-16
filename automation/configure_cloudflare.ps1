@@ -1,8 +1,13 @@
 # Cloudflare Best Settings Script for AKGS Empire
 # Zone ID: dd6f87708289237323be906271272de6
 
-$zoneId = "dd6f87708289237323be906271272de6"
-$token = "cues1gVpytmIvY_TyYn4QqNwVY4pcGvwCdfiZ9w0"
+$zoneId = $env:CLOUDFLARE_ZONE_ID
+$token = $env:CLOUDFLARE_API_TOKEN
+
+if (-not $zoneId -or -not $token) {
+    Write-Host "Missing CLOUDFLARE_ZONE_ID or CLOUDFLARE_API_TOKEN environment variables." -ForegroundColor Red
+    exit 1
+}
 $headers = @{
     "Authorization" = "Bearer $token"
     "Content-Type" = "application/json"

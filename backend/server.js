@@ -589,11 +589,8 @@ const setSystemStat = async (key, value) => {
 
 
 // --- TikTok OAuth Flow ---
-const TIKTOK_CLIENT_KEY = process.env.TIKTOK_CLIENT_KEY || 'awyk8qjpedujjzz6';
-const TIKTOK_CLIENT_SECRET = process.env.TIKTOK_CLIENT_SECRET || 'FIPDCqZ7ahWnfm63Ve1oYUVkJfNTbKq9';
-
-const TIKTOK_CLIENT_KEY = process.env.TIKTOK_CLIENT_KEY || 'sbaw8q48mtdwkfigi3';
-const TIKTOK_CLIENT_SECRET = process.env.TIKTOK_CLIENT_SECRET || '7Z3CfRk2qI8nfoEqpczC96gZbvFaiOal';
+const TIKTOK_CLIENT_KEY = (process.env.TIKTOK_CLIENT_KEY || '').trim();
+const TIKTOK_CLIENT_SECRET = (process.env.TIKTOK_CLIENT_SECRET || '').trim();
 
 app.get('/api/tiktok/login', (req, res) => {
     const { visitor_id } = req.query;

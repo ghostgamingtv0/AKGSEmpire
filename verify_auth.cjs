@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const email = 'undercover00yt@gmail.com';
-const key = 'R76B-1FQYEi6BDYPGw-yD4NB-tK2q50_iar4uacU'; // New Token provided by user
+const key = process.env.CLOUDFLARE_API_TOKEN;
 const logFile = path.resolve('auth_result.txt');
 const logStream = fs.createWriteStream(logFile);
 
@@ -48,7 +48,11 @@ function testAuth(name, headers) {
     req.end();
 }
 
-// Test 1: As API Token (Bearer)
+if (!key) {
+    console.error('Missing CLOUDFLARE_API_TOKEN in environment.');
+    process.exit(1);
+}
+
 testAuth('API Token (Bearer)', {
     'Authorization': `Bearer ${key}`
 });
