@@ -547,8 +547,11 @@ const ComingSoon = () => {
                                 <Send size={24} />
                             </div>
                             <div className="flex-1">
-                                <h4 className="text-white font-bold text-xl mb-2 font-['Orbitron']">Referral Generator</h4>
-                                <p className="text-gray-100 text-sm md:text-base leading-relaxed mb-3">Create your personal invite link. Every verified signup through your link unlocks <span className="text-[#53FC18] font-bold">500 points</span> for your account.</p>
+                                <h4 className="text-white font-bold text-2xl mb-3 font-['Orbitron'] tracking-wide uppercase">Referral Command Link</h4>
+                                <p className="text-gray-100 text-base md:text-lg leading-relaxed mb-3">
+                                    Forge your personal invite link. Every verified signup through your link instantly grants you
+                                    <span className="text-[#53FC18] font-bold"> 500 points</span> and pushes your rank forward inside the empire.
+                                </p>
                                 <div className="flex items-center gap-2">
                                     <input 
                                         readOnly
@@ -593,9 +596,9 @@ const ComingSoon = () => {
         </div>
 
         {/* Footer */}
-        <div className="w-full border-t border-[#53FC18]/10 pt-8 pb-4">
-             <p className="text-gray-500 text-xs md:text-sm tracking-widest uppercase">
-                © 2026 AKGS Empire. Systems Online. Commanders Preparing For Launch.
+        <div className="w-full border-t border-[#53FC18]/10 pt-10 pb-6">
+             <p className="text-gray-200 text-sm md:text-base tracking-[0.25em] uppercase font-semibold">
+                2026 AKGS Empire · Systems Online · Commanders Preparing For Launch
              </p>
         </div>
       </div>
