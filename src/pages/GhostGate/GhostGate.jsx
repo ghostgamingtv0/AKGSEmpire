@@ -316,11 +316,11 @@ const GhostGate = () => {
                                     {/* Description */}
                                     <div className="space-y-3">
                                         <p className="text-gray-300 text-xs uppercase tracking-wider leading-relaxed">
-                                            Awaiting the <span className="text-white font-bold">Top 100 Commanders</span>. 
-                                            Prove your loyalty through engagement on Kick & Instagram.
+                                            Reserved for the <span className="text-white font-bold">Top 100 Commanders</span>. 
+                                            Prove your loyalty through consistent engagement on Kick & Instagram.
                                         </p>
                                         <p className="text-gray-400 font-['Cairo'] text-sm leading-relaxed font-bold border-t border-[#53FC18]/20 pt-2">
-                                            بانتظار أفضل 100 قائد. أثبت ولاءك واستحقاقك عبر التفاعل المستمر على منصات كيك وإنستغرام.
+                                            مخصصة لأفضل 100 قائد. أثبت ولاءك واستمراريتك عبر التفاعل القوي على منصات كيك وإنستغرام.
                                         </p>
                                     </div>
                                 </div>

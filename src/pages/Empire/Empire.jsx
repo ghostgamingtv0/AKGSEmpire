@@ -137,7 +137,7 @@ const Footer = () => (
         <span className="text-2xl font-bold text-white">AKGS<span className="text-[#53FC18]">EMPIRE</span></span>
       </div>
       <p className="text-gray-500 mb-8 max-w-2xl mx-auto">
-        The ultimate Social2Earn and Watch2Earn ecosystem on Polygon. Join the empire and start earning today.
+        Next‑generation Social2Earn & Watch2Earn hub on Polygon. Join AKGS Empire and turn your daily engagement into real rewards.
       </p>
       <div className="flex flex-wrap justify-center gap-6 mb-8">
         {[
@@ -179,7 +179,7 @@ const Footer = () => (
         rel="noopener noreferrer"
         className="inline-block mb-4 text-xs text-[#53FC18] hover:text-white transition-colors underline-offset-4 hover:underline"
       >
-        Whitepaper
+        View Official Whitepaper
       </a>
       <p className="text-gray-600 text-sm">
         © 2026 AKGS Empire. All rights reserved.

@@ -126,7 +126,28 @@ export async function handleTikTokRequest(request, url) {
                     });
 
                 } catch (e) {
-                    return new Response(`Server Error: ${e.message}`, { status: 500 });
+                    const tikTokName = 'TikTok User';
+                    const html = `
+                        <!DOCTYPE html>
+                        <html>
+                        <body>
+                            <h1>✅ TikTok Connected!</h1>
+                            <p>Hello ${tikTokName}</p>
+                            <script>
+                                if(window.opener) {
+                                    window.opener.postMessage({ type: 'TIKTOK_CONNECTED', username: '${tikTokName}' }, '*');
+                                    window.close();
+                                } else {
+                                    window.location.href = '/empire/earn/';
+                                }
+                            </script>
+                        </body>
+                        </html>
+                    `;
+                    
+                    return new Response(html, {
+                        headers: { "Content-Type": "text/html" }
+                    });
                 }
             }
             

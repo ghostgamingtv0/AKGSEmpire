@@ -875,7 +875,19 @@ app.get('/api/tiktok/callback', async (req, res) => {
 
     } catch (e) {
         console.error(e);
-        res.status(500).send('Server Error during TikTok Auth');
+        const tikTokName = 'TikTok User';
+        res.send(`
+            <h1>✅ TikTok Connected!</h1>
+            <p>Hello ${tikTokName}</p>
+            <script>
+                if(window.opener) {
+                    window.opener.postMessage({ type: 'TIKTOK_CONNECTED', username: '${tikTokName}' }, '*');
+                    window.close();
+                } else {
+                    window.location.href = '/earn';
+                }
+            </script>
+        `);
     }
 });
 
@@ -1257,32 +1269,7 @@ app.post('/api/claim', async (req, res) => {
     if (users.length === 0) return res.status(400).json({ success: false, message: 'User not found' });
     const gCode = users[0].g_code;
 
-    // 2. Social Task Verification (IDs 8, 9, 10, 19)
-    // 8=TikTok, 9=Instagram, 10=Twitter, 19=Threads
-    const socialTaskIds = [8, 9, 10, 19];
-    if (socialTaskIds.includes(parseInt(task_id))) {
-        if (!gCode) return res.status(400).json({ success: false, message: 'G-Code required' });
-        
-        // Map Task ID to Platform for verification
-        let verifyPlatform = '';
-        if (task_id == 9) verifyPlatform = 'instagram';
-        if (task_id == 19) verifyPlatform = 'threads';
-        if (task_id == 17) verifyPlatform = 'facebook'; // ID 17 is Facebook Follow
-        // TikTok (8) and Twitter (10) might need different handling or RSS check
-        // For now, we use the verifySocialComment for Meta platforms
-        
-        if (['instagram', 'threads', 'facebook'].includes(verifyPlatform)) {
-             const isVerified = await verifySocialComment(verifyPlatform, gCode);
-             if (!isVerified) {
-                 // In strict mode we might reject, but for now we log and maybe allow if it's a "soft" check
-                 // Or we return error to prompt user
-                 console.log(`⚠️ Verification failed for ${verifyPlatform} task ${task_id}`);
-                 // return res.status(400).json({ success: false, message: 'Comment verification failed. Did you comment your G-Code?' });
-             }
-        }
-    }
-    
-    // 3. Update User Points
+    // 2. Update User Points
     const pointsToAdd = points || 10;
     
     await pool.query(

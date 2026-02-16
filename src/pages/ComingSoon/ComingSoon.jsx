@@ -512,7 +512,7 @@ const ComingSoon = () => {
                             </div>
                             <div>
                                 <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Watch & Earn</h4>
-                                <p className="text-gray-400 text-sm leading-relaxed">Monetize your time by watching curated content. Every second counts towards your rewards.</p>
+                                <p className="text-gray-400 text-sm leading-relaxed">Earn while watching hand‑picked content. Every session strengthens your position inside the empire.</p>
                             </div>
                         </div>
                     </div>
@@ -524,7 +524,7 @@ const ComingSoon = () => {
                             </div>
                             <div>
                                 <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Social Growth</h4>
-                                <p className="text-gray-400 text-sm leading-relaxed">Boost your social presence while earning. Connect, engage, and grow with the community.</p>
+                                <p className="text-gray-400 text-sm leading-relaxed">Grow your social presence while stacking points. Connect, engage, and expand your reach with AKGS.</p>
                             </div>
                         </div>
                     </div>
@@ -536,7 +536,7 @@ const ComingSoon = () => {
                             </div>
                             <div>
                                 <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Community First</h4>
-                                <p className="text-gray-400 text-sm leading-relaxed">Built by the community, for the community. Fair rewards and transparent operations.</p>
+                                <p className="text-gray-400 text-sm leading-relaxed">Designed with the community at the core. Fair rewards, clear rules, and transparent tracking.</p>
                             </div>
                         </div>
                     </div>
@@ -548,7 +548,7 @@ const ComingSoon = () => {
                             </div>
                             <div className="flex-1">
                                 <h4 className="text-white font-bold text-lg mb-2 font-['Orbitron']">Referral Generator</h4>
-                                <p className="text-gray-400 text-sm leading-relaxed mb-3">Generate your referral link. Each successful signup via your link awards <span className="text-[#53FC18] font-bold">500 points</span>.</p>
+                                <p className="text-gray-400 text-sm leading-relaxed mb-3">Create your personal invite link. Every verified signup through your link unlocks <span className="text-[#53FC18] font-bold">500 points</span> for your account.</p>
                                 <div className="flex items-center gap-2">
                                     <input 
                                         readOnly
@@ -595,7 +595,7 @@ const ComingSoon = () => {
         {/* Footer */}
         <div className="w-full border-t border-[#53FC18]/10 pt-8 pb-4">
              <p className="text-gray-500 text-xs md:text-sm tracking-widest uppercase">
-                © 2026 AKGS Empire. All Systems Operational.
+                © 2026 AKGS Empire. Systems Online. Commanders Preparing For Launch.
              </p>
         </div>
       </div>
