@@ -1702,9 +1702,8 @@ const Earn = () => {
                    </h3>
                    <p className="text-gray-300 text-sm leading-relaxed font-arabic" dir="rtl">
                      <span className="text-[#53FC18] font-bold text-base font-sans">
-                       كل <span className="underline">100 نقطة</span> تساوي <span className="underline">1000 حبة</span> من عملة AKGS
-                       (100 Points = 1,000 Coins)
-                     </span>. 
+                       كل 100 نقطة تساوي 1000 AKGS عملة AKGS (100 Points = 1,000 Coins).
+                     </span>
                      كلما جمعت نقاط أكثر عبر المهام والتعدين، كلما تضاعفت حصتك الفعلية من العملة.
                    </p>
                 </div>
