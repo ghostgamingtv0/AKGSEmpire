@@ -347,10 +347,10 @@ const ComingSoon = () => {
                             target: link.url
                           })
                         }).catch(() => {});
-                            if (link.id === 'kick' || link.id === 'tiktok') {
+                            if (link.id === 'kick') {
                               e.preventDefault();
                               let targetUrl = link.url;
-                              if (link.id === 'kick' && hasGenesisSession) {
+                              if (hasGenesisSession) {
                                 targetUrl = '/api/kick/login';
                               }
                               setPendingPlatform(link.id);

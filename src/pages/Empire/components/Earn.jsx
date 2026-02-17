@@ -258,16 +258,6 @@ const Earn = () => {
   const handleConsentConfirm = () => {
     if (consentAction === 'kick-connect') {
       handleKickConnect();
-    } else if (consentAction === 'tiktok-task') {
-      const width = 600;
-      const height = 700;
-      const left = (window.innerWidth - width) / 2;
-      const top = (window.innerHeight - height) / 2;
-      window.open(
-        `/api/tiktok/login?visitor_id=${visitorId || '7606798368987351096'}`,
-        'TikTokAuth',
-        `width=${width},height=${height},top=${top},left=${left}`
-      );
     }
     setShowConsentModal(false);
     setConsentAction(null);
@@ -944,10 +934,13 @@ const Earn = () => {
         const left = (window.innerWidth - width) / 2;
         const top = (window.innerHeight - height) / 2;
         const platformKey = task.platform.toLowerCase();
-        
+
         if (task.platform === 'TikTok') {
-            setConsentAction('tiktok-task');
-            setShowConsentModal(true);
+            window.open(
+                `/api/tiktok/login?visitor_id=7606798368987351096`,
+                'TikTokAuth',
+                `width=${width},height=${height},top=${top},left=${left}`
+            );
         } else {
             window.open(
                 `/api/${platformKey}/login?visitor_id=${visitorId}`, 
