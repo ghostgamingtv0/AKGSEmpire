@@ -479,7 +479,7 @@ const Earn = () => {
       status: 'pending', 
       link: SOCIAL_LINKS.FACEBOOK,
       icon: (
-        <FaFacebook className="w-6 h-6 text-[#983695]" />
+        <FaFacebook className="w-6 h-6 text-[#1877F2]" />
       )
     },
     { 
@@ -493,7 +493,7 @@ const Earn = () => {
       icon: <ProjectNFTIcon color="#53FC18" tier="4x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
-      id: 19, 
+      id: 20, 
       type: 'nft', 
       platform: 'Kick', 
       action: '5x Subs or Gift Subs', 

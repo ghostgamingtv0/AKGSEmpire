@@ -46,7 +46,8 @@
   }
 
   .text-white {
-    @apply font-bold;
+    color: #c9a6f0 !important;
+    text-shadow: 0 0 6px rgba(195, 138, 255, 0.6);
   }
 
   .text-gray-50,
@@ -58,53 +59,14 @@
     color: inherit;
   }
 
-  .text-\[\#53FC18\],
-  .text-\[\#983695\] {
-    color: transparent;
-    background-image: linear-gradient(
-      90deg,
-      #c38aff 0%,
-      #983695 25%,
-      #53FC18 50%,
-      #983695 75%,
-      #c38aff 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    text-shadow:
-      0 0 6px rgba(195, 138, 255, 0.6),
-      0 0 12px rgba(83, 252, 24, 0.7);
+  .text-\[\#53FC18\] {
+    color: #53FC18;
+    text-shadow: 0 0 6px rgba(83, 252, 24, 0.6);
   }
 
-  .text-xs,
-  .text-sm,
-  .text-base,
-  .text-lg,
-  .text-xl,
-  .text-2xl,
-  .text-3xl,
-  .text-4xl,
-  .text-5xl,
-  .text-6xl,
-  .text-7xl,
-  .font-heading,
-  .font-arabic,
-  .font-sans,
-  .font-mono {
-    background-image: linear-gradient(
-      90deg,
-      #c38aff 0%,
-      #983695 25%,
-      #53FC18 50%,
-      #983695 75%,
-      #c38aff 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow:
-      0 0 6px rgba(195, 138, 255, 0.6),
-      0 0 12px rgba(83, 252, 24, 0.7);
+  .text-\[\#983695\] {
+    color: #983695;
+    text-shadow: 0 0 6px rgba(152, 54, 149, 0.6);
   }
 }
 
