@@ -212,32 +212,14 @@ const ComingSoon = () => {
       <BackgroundEffects />
 
       <div className="relative z-10 max-w-7xl w-full text-center flex flex-col items-center pt-10 pb-10">
-        {/* Logo centered above hero */}
-        <div className="mb-8 flex flex-col items-center">
-          <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-2 border-[#53FC18] shadow-[0_0_50px_rgba(83,252,24,0.3)] overflow-hidden p-1 bg-black group hover:scale-105 transition-transform duration-500">
-            <img 
-              src="https://i.ibb.co/Jjdm6v0J/fe58cfb14a674ec977bf157cdc091cfd.jpg" 
-              alt="AKGS Empire Logo" 
-              className="w-full h-full object-cover rounded-full"
-            />
-          </div>
-          <div className="text-[#53FC18] font-bold text-xl md:text-2xl tracking-[0.5em] mt-8 animate-pulse font-heading">
-            COMING SOON
-          </div>
-        </div>
-
-        {/* AKGS EMPIRE + Referral Card: نفس الصف */}
-        <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-center md:justify-between gap-6 mb-6">
-          {/* Main Title */}
-          <h1 className="text-4xl md:text-7xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#53FC18] to-white uppercase tracking-tighter font-heading">
+        <div className="w-full flex flex-col md:flex-row items-start justify-between gap-6 mb-10">
+          <h1 className="text-4xl md:text-7xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#53FC18] to-white uppercase tracking-tighter font-heading text-left">
             AKGS EMPIRE
           </h1>
-
-          {/* Compact G-Code + Referral Card محاذاة يمين العنوان */}
           {userSession?.gCode && (
-            <div className="w-full md:w-[320px] md:mt-4 bg-black/80 border border-[#53FC18]/40 rounded-3xl p-5 md:p-6 relative overflow-hidden shadow-[0_0_30px_rgba(83,252,24,0.3)] text-center">
+            <div className="w-full md:w-[320px] bg-black/80 border border-[#53FC18]/40 rounded-3xl p-5 md:p-6 relative overflow-hidden shadow-[0_0_30px_rgba(83,252,24,0.3)] text-center md:text-right md:self-start">
               <div className="absolute inset-0 bg-gradient-to-br from-[#53FC18]/10 via-transparent to-[#53FC18]/20 opacity-70 pointer-events-none"></div>
-              <div className="relative z-10 flex flex-col items-center gap-3">
+              <div className="relative z-10 flex flex-col items-center md:items-end gap-3">
                 <div className="w-12 h-12 rounded-full bg-[#53FC18]/10 flex items-center justify-center mb-1 border border-[#53FC18]/50 shadow-[0_0_30px_rgba(83,252,24,0.2)] relative">
                   <div className="absolute inset-0 rounded-full bg-[#53FC18] blur-xl opacity-20"></div>
                   <Crown size={28} className="text-[#53FC18] relative z-10" />
@@ -254,9 +236,8 @@ const ComingSoon = () => {
                 <p className="text-[9px] text-gray-500 uppercase tracking-[0.3em] font-bold">
                   Permanent ID • Non-Renewable
                 </p>
-
                 <div className="w-full pt-3 border-t border-white/10">
-                  <h3 className="text-[10px] font-bold text-gray-400 mb-2 flex items-center justify-center gap-2 uppercase tracking-wider">
+                  <h3 className="text-[10px] font-bold text-gray-400 mb-2 flex items-center justify-center md:justify-end gap-2 uppercase tracking-wider">
                     <Users size={12} className="text-[#53FC18]" />
                     Referral Program
                   </h3>
@@ -290,7 +271,19 @@ const ComingSoon = () => {
           )}
         </div>
 
-        {/* Subtitle / Theme Badges تحت AKGS EMPIRE */}
+        <div className="mb-8 flex flex-col items-center">
+          <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-2 border-[#53FC18] shadow-[0_0_50px_rgba(83,252,24,0.4)] overflow-hidden p-1 bg-black group hover:scale-105 transition-transform duration-500">
+            <img 
+              src="https://i.ibb.co/Jjdm6v0J/fe58cfb14a674ec977bf157cdc091cfd.jpg" 
+              alt="AKGS Empire Logo" 
+              className="w-full h-full object-cover rounded-full"
+            />
+          </div>
+          <div className="text-[#53FC18] font-bold text-xl md:text-2xl tracking-[0.5em] mt-8 font-heading uppercase drop-shadow-[0_0_14px_rgba(83,252,24,0.9)]">
+            COMING SOON
+          </div>
+        </div>
+
         <div className="relative flex flex-wrap justify-center gap-2 md:gap-4 mb-10">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[150%] bg-[#53FC18] rounded-full blur-[60px] opacity-15 -z-10"></div>
           {badges.map((badge, index) => (
@@ -403,28 +396,30 @@ const ComingSoon = () => {
           </p>
         </div>
 
-        <div className="w-full max-w-3xl mx-auto mb-12 bg-black/70 border border-[#53FC18]/40 rounded-3xl px-6 py-6 md:px-8 md:py-8 shadow-[0_0_35px_rgba(83,252,24,0.25)] space-y-5">
-          <div dir="rtl" className="space-y-2 text-right font-arabic">
-            <h2 className="text-[#53FC18] font-bold text-xl md:text-2xl">
-              حدث الجينيسيس – نهضة القادة الأوائل
-            </h2>
-            <p className="text-gray-200 text-sm md:text-base leading-relaxed">
-              خزينة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لـ أفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
-            </p>
-            <p className="text-gray-200 text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
-              الخطة الاستراتيجية: بمجرد انتهاء الأسبوع الأول، يُفعل "بروتوكول الاستمرارية". احصد 50 نقطة يومياً، لكن احذر؛ فاليوم الذي تغيب فيه يتصفر عدادك. أثبت ولاءك لـ 4 أيام متتالية لتفعيل مضاعف القوة x3.
-            </p>
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-[#53FC18] font-heading text-xs md:text-sm tracking-[0.3em] uppercase">
-              GENESIS EVENT: THE RISE OF COMMANDERS
-            </h2>
-            <p className="text-gray-200 text-sm md:text-base leading-relaxed">
-              A pool of 150,000,000 $AKGS & 50 Exclusive Genesis NFTs awaits the elite. This ultimate bounty is reserved strictly for the Top 100 Commanders who prove their dominance through relentless engagement on Kick & Instagram.
-            </p>
-            <p className="text-gray-200 text-sm md:text-base leading-relaxed">
-              The Strategy: After the Genesis week, the Daily Streak Protocol begins. Gain +50 points daily. Be warned: Missing a day resets your progress. Hold your ground for 4 consecutive days to trigger the x3 Multiplier.
-            </p>
+        <div className="w-full max-w-3xl mx-auto mb-12 bg-black/70 border border-[#53FC18]/40 rounded-3xl px-6 py-6 md:px-8 md:py-8 shadow-[0_0_35px_rgba(83,252,24,0.25)]">
+          <div className="grid md:grid-cols-2 gap-6 items-start">
+            <div dir="rtl" className="space-y-2 text-right font-arabic">
+              <h2 className="text-[#53FC18] font-bold text-xl md:text-2xl">
+                حدث الجينيسيس – نهضة القادة الأوائل
+              </h2>
+              <p className="text-gray-200 text-sm md:text-base leading-relaxed">
+                خزينة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لـ أفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
+              </p>
+              <p className="text-gray-200 text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
+                الخطة الاستراتيجية: بمجرد انتهاء الأسبوع الأول، يُفعل "بروتوكول الاستمرارية". احصد 50 نقطة يومياً، لكن احذر؛ فاليوم الذي تغيب فيه يتصفر عدادك. أثبت ولاءك لـ 4 أيام متتالية لتفعيل مضاعف القوة x3.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-[#53FC18] font-heading text-xs md:text-sm tracking-[0.3em] uppercase">
+                GENESIS EVENT: THE RISE OF COMMANDERS
+              </h2>
+              <p className="text-gray-200 text-sm md:text-base leading-relaxed">
+                A pool of 150,000,000 $AKGS & 50 Exclusive Genesis NFTs awaits the elite. This ultimate bounty is reserved strictly for the Top 100 Commanders who prove their dominance through relentless engagement on Kick & Instagram.
+              </p>
+              <p className="text-gray-200 text-sm md:text-base leading-relaxed">
+                The Strategy: After the Genesis week, the Daily Streak Protocol begins. Gain +50 points daily. Be warned: Missing a day resets your progress. Hold your ground for 4 consecutive days to trigger the x3 Multiplier.
+              </p>
+            </div>
           </div>
         </div>
 
