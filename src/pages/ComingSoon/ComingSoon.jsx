@@ -207,6 +207,14 @@ const ComingSoon = () => {
     { labelAr: 'ثواني', labelEn: 'Seconds', value: timeLeft?.seconds || 0 }
   ];
 
+  const hasGCode = !!userSession?.gCode;
+  const effectiveGCode = hasGCode ? userSession.gCode : 'GENESIS G-CODE PENDING';
+  const effectiveRefLink =
+    refLink ||
+    (hasGCode
+      ? `${window.location.origin}/?ref=${encodeURIComponent(userSession.gCode)}`
+      : 'Connect Genesis Gate to generate your referral link');
+
   return (
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4">
       <BackgroundEffects />
@@ -216,59 +224,57 @@ const ComingSoon = () => {
           <h1 className="text-4xl md:text-7xl font-black leading-tight font-heading text-center tracking-tighter brand-gradient-text">
             AKGS EMPIRE
           </h1>
-          {userSession?.gCode && (
-            <div className="w-full md:w-[320px] bg-black/80 border border-[#53FC18]/40 rounded-3xl p-5 md:p-6 relative overflow-hidden shadow-[0_0_30px_rgba(83,252,24,0.3)] text-center md:text-right md:self-start">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#53FC18]/10 via-transparent to-[#53FC18]/20 opacity-70 pointer-events-none"></div>
-              <div className="relative z-10 flex flex-col items-center md:items-end gap-3">
-                <div className="w-12 h-12 rounded-full bg-[#53FC18]/10 flex items-center justify-center mb-1 border border-[#53FC18]/50 shadow-[0_0_30px_rgba(83,252,24,0.2)] relative">
-                  <div className="absolute inset-0 rounded-full bg-[#53FC18] blur-xl opacity-20"></div>
-                  <Crown size={28} className="text-[#53FC18] relative z-10" />
-                </div>
-                <h2 className="text-[9px] md:text-[10px] font-bold text-gray-300 uppercase tracking-[0.35em]">
-                  Your Unique G-Code
-                </h2>
-                <div className="w-full bg-black/90 border border-[#53FC18] rounded-2xl px-4 py-3 shadow-inner shadow-[#53FC18]/15 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-soft-light pointer-events-none"></div>
-                  <span className="text-lg md:text-xl font-mono font-bold text-[#53FC18] tracking-widest relative z-10 select-all">
-                    {userSession.gCode}
-                  </span>
-                </div>
-                <p className="text-[9px] text-gray-500 uppercase tracking-[0.3em] font-bold">
-                  Permanent ID • Non-Renewable
-                </p>
-                <div className="w-full pt-3 border-t border-white/10">
-                  <h3 className="text-[10px] font-bold text-gray-400 mb-2 flex items-center justify-center md:justify-end gap-2 uppercase tracking-wider">
-                    <Users size={12} className="text-[#53FC18]" />
-                    Referral Program
-                  </h3>
-                  <div className="flex flex-col gap-2">
-                    <div className="bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-[10px] text-gray-200 font-mono overflow-x-auto">
-                      {refLink || `${window.location.origin}/?ref=${encodeURIComponent(userSession.gCode)}`}
-                    </div>
-                    <button
-                      disabled={!(refReady || userSession.gCode)}
-                      onClick={() => {
-                        const link = refLink || `${window.location.origin}/?ref=${encodeURIComponent(userSession.gCode)}`;
-                        try {
-                          navigator.clipboard.writeText(link);
-                        } catch {}
-                      }}
-                      className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wide shadow-[0_0_15px_rgba(83,252,24,0.3)] border ${
-                        refReady || userSession.gCode
-                          ? "bg-[#53FC18] text-black border-[#53FC18] hover:bg-[#45d612] transition-colors"
-                          : "bg-gray-700 text-gray-400 border-gray-600 cursor-not-allowed"
-                      }`}
-                    >
-                      Copy
-                    </button>
+          <div className="w-full md:w-[280px] bg-black/80 border border-[#53FC18]/40 rounded-3xl p-4 md:p-4 relative overflow-hidden shadow-[0_0_30px_rgba(83,252,24,0.3)] text-center md:text-right md:absolute md:right-[-80px] md:top-16">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#53FC18]/10 via-transparent to-[#53FC18]/20 opacity-70 pointer-events-none"></div>
+            <div className="relative z-10 flex flex-col items-center md:items-end gap-3">
+              <div className="w-12 h-12 rounded-full bg-[#53FC18]/10 flex items-center justify-center mb-1 border border-[#53FC18]/50 shadow-[0_0_30px_rgba(83,252,24,0.2)] relative">
+                <div className="absolute inset-0 rounded-full bg-[#53FC18] blur-xl opacity-20"></div>
+                <Crown size={28} className="text-[#53FC18] relative z-10" />
+              </div>
+              <h2 className="text-[9px] md:text-[10px] font-bold text-gray-300 uppercase tracking-[0.35em]">
+                Your Unique G-Code
+              </h2>
+              <div className="w-full bg-black/90 border border-[#53FC18] rounded-2xl px-4 py-3 shadow-inner shadow-[#53FC18]/15 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-soft-light pointer-events-none"></div>
+                <span className="text-lg md:text-xl font-mono font-bold text-[#53FC18] tracking-widest relative z-10 select-all">
+                  {effectiveGCode}
+                </span>
+              </div>
+              <p className="text-[9px] text-gray-500 uppercase tracking-[0.3em] font-bold">
+                Permanent ID • Non-Renewable
+              </p>
+              <div className="w-full pt-3 border-t border-white/10">
+                <h3 className="text-[10px] font-bold text-gray-400 mb-2 flex items-center justify-center md:justify-end gap-2 uppercase tracking-wider">
+                  <Users size={12} className="text-[#53FC18]" />
+                  Referral Program
+                </h3>
+                <div className="flex flex-col gap-2">
+                  <div className="bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-[10px] text-gray-200 font-mono overflow-x-auto">
+                    {effectiveRefLink}
                   </div>
-                  <p className="text-[9px] text-gray-500 mt-2">
-                    Earn <span className="text-[#53FC18] font-bold">5%</span> of your friends' points forever
-                  </p>
+                  <button
+                    disabled={!(refReady || hasGCode)}
+                    onClick={() => {
+                      const link = effectiveRefLink;
+                      try {
+                        navigator.clipboard.writeText(link);
+                      } catch {}
+                    }}
+                    className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wide shadow-[0_0_15px_rgba(83,252,24,0.3)] border ${
+                      refReady || hasGCode
+                        ? "bg-[#53FC18] text-black border-[#53FC18] hover:bg-[#45d612] transition-colors"
+                        : "bg-gray-700 text-gray-400 border-gray-600 cursor-not-allowed"
+                    }`}
+                  >
+                    Copy
+                  </button>
                 </div>
+                <p className="text-[9px] text-gray-500 mt-2">
+                  Earn <span className="text-[#53FC18] font-bold">5%</span> of your friends' points forever
+                </p>
               </div>
             </div>
-          )}
+          </div>
         </div>
 
         <div className="mb-8 flex flex-col items-center">
