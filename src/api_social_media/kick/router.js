@@ -3,8 +3,7 @@ export const KICK_CONFIG = {
     CLIENT_SECRET: 'c23959f212aca21f06584f80029291f71d4b26b537e21c1e1b8865737791f7ba',
     AUTH_URL: 'https://id.kick.com/oauth/authorize',
     TOKEN_URL: 'https://id.kick.com/oauth/token',
-    // Added channel:write for channel updates
-    SCOPES: 'user:read channel:read channel:write' 
+    SCOPES: 'chat:write channel:read user:read events:subscribe channel:write moderation:ban kicks:read channel:rewards:read channel:rewards:write'
 };
 
 // PKCE Helpers
@@ -71,8 +70,11 @@ export async function handleKickRequest(request, url) {
         }
     }
 
-    // 2. Kick Callback
-    if (url.pathname === "/api/kick/callback") {
+    // 2. Kick Callback (support both root and /empire/earn paths)
+    if (
+        url.pathname === "/api/kick/callback" ||
+        url.pathname === "/empire/earn/api/kick/callback"
+    ) {
         const code = url.searchParams.get("code");
         const state = url.searchParams.get("state");
         const error = url.searchParams.get("error");

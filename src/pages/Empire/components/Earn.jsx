@@ -865,8 +865,8 @@ const Earn = () => {
     
     // Use the hardcoded Client ID if env var is missing (fallback)
     const clientId = import.meta.env.VITE_KICK_CLIENT_ID || '01KH3T8WNDZ269403HKC17JN7X';
-    
-    const KICK_AUTH_URL = `https://id.kick.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=user:read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
+    const scopes = 'chat:write channel:read user:read events:subscribe channel:write moderation:ban kicks:read channel:rewards:read channel:rewards:write';
+    const KICK_AUTH_URL = `https://id.kick.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scopes)}&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
     
     // Redirect in same tab to ensure callback handles correctly in this context
     // or use _self to replace current page
