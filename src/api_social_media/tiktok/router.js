@@ -16,7 +16,7 @@ export async function handleTikTokRequest(request, url) {
         const csrfState = Math.random().toString(36).substring(7);
         // Force HTTPS for redirect URI
         const origin = url.origin.replace('http:', 'https:');
-        const redirectUri = `${origin}/api/tiktok/callback`;
+        const redirectUri = `${origin}/empire/api/tiktok/callback`;
         const isDev = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
         const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
         
@@ -31,7 +31,11 @@ export async function handleTikTokRequest(request, url) {
     }
 
     // 2. TikTok Callback (OAuth & Verification)
-    if (url.pathname === "/api/tiktok/callback" || url.pathname === "/tiktok_callback") {
+    if (
+        url.pathname === "/api/tiktok/callback" ||
+        url.pathname === "/tiktok_callback" ||
+        url.pathname === "/empire/api/tiktok/callback"
+    ) {
         // Handle OPTIONS (CORS)
         if (request.method === "OPTIONS") {
             return new Response(null, {
@@ -70,7 +74,7 @@ export async function handleTikTokRequest(request, url) {
             // OAuth Code Exchange
             if (code) {
                 try {
-                    const redirectUri = `${url.origin}/api/tiktok/callback`;
+                    const redirectUri = `${url.origin}/empire/api/tiktok/callback`;
                     const isDev = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
                     const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
                     const params = new URLSearchParams();

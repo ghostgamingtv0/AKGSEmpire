@@ -62,7 +62,7 @@ export default {
     // 1. TikTok Login Redirect
     if (url.pathname === "/api/tiktok/login") {
         const csrfState = Math.random().toString(36).substring(7);
-        const redirectUri = `${url.origin}/api/tiktok/callback`;
+        const redirectUri = `${url.origin}/empire/api/tiktok/callback`;
         
         let targetUrl = 'https://www.tiktok.com/v2/auth/authorize/';
         targetUrl += `?client_key=${TIKTOK_CLIENT_KEY}`;
@@ -75,7 +75,11 @@ export default {
     }
 
     // 2. TikTok Callback (OAuth & Verification)
-    if (url.pathname === "/api/tiktok/callback" || url.pathname === "/tiktok_callback") {
+    if (
+        url.pathname === "/api/tiktok/callback" ||
+        url.pathname === "/tiktok_callback" ||
+        url.pathname === "/empire/api/tiktok/callback"
+    ) {
         // Handle OPTIONS (CORS)
         if (request.method === "OPTIONS") {
             return new Response(null, {
@@ -114,7 +118,7 @@ export default {
             // OAuth Code Exchange
             if (code) {
                 try {
-                    const redirectUri = `${url.origin}/api/tiktok/callback`;
+                    const redirectUri = `${url.origin}/empire/api/tiktok/callback`;
                     const params = new URLSearchParams();
                     params.append('client_key', TIKTOK_CLIENT_KEY);
                     params.append('client_secret', TIKTOK_CLIENT_SECRET);

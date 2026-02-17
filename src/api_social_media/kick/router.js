@@ -181,7 +181,12 @@ export async function handleKickRequest(request, url) {
     }
     
     // 3. Kick Webhook
-    if (url.pathname === "/api/kick/webhook" || url.pathname === "/api/kick/webhook/") {
+    if (
+        url.pathname === "/api/kick/webhook" ||
+        url.pathname === "/api/kick/webhook/" ||
+        url.pathname === "/empire/earn/api/kick/webhook" ||
+        url.pathname === "/empire/earn/api/kick/webhook/"
+    ) {
         if (request.method === "POST") {
             try {
                 const body = await request.text();
