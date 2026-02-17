@@ -7,7 +7,7 @@ import { dirname, join } from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
 
-import { initDB, pool } from './db.js';
+import { initDB, pool, getSystemStat } from './db.js';
 import { updateKickStats, getKickStats } from './services/kickService.js';
 import { getDiscordStats } from './services/discordService.js';
 import { getTelegramStats } from './services/telegramService.js';
