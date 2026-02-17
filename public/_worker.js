@@ -60,7 +60,10 @@ export default {
     // =================================================================================
     
     // 1. TikTok Login Redirect
-    if (url.pathname === "/api/tiktok/login") {
+    if (
+        url.pathname === "/api/tiktok/login" ||
+        url.pathname === "/empire/api/tiktok/login"
+    ) {
         const csrfState = Math.random().toString(36).substring(7);
         const redirectUri = `${url.origin}/empire/api/tiktok/callback`;
         

@@ -95,8 +95,19 @@ export async function handleTikTokRequest(request, url) {
 
                     const tokenData = await tokenRes.json();
                     
-                    if (tokenData.error) {
-                        return new Response(`Error: ${JSON.stringify(tokenData)}`, { status: 400 });
+                    // TikTok v2 error struct: { code, message, log_id }
+                    if (!tokenRes.ok || tokenData.error || tokenData.code) {
+                        const errorPayload = {
+                            stage: 'token_exchange',
+                            status: tokenRes.status,
+                            error: tokenData.error || tokenData.code || 'unknown_error',
+                            message: tokenData.message || tokenData.description || 'TikTok token exchange failed',
+                            log_id: tokenData.log_id || null
+                        };
+                        return new Response(JSON.stringify(errorPayload, null, 2), {
+                            status: tokenRes.status || 400,
+                            headers: { "Content-Type": "application/json" }
+                        });
                     }
                     
                     const accessToken = tokenData.access_token;
@@ -107,6 +118,21 @@ export async function handleTikTokRequest(request, url) {
                     });
                     
                     const userData = await userRes.json();
+                    
+                    if (!userRes.ok || userData.code) {
+                        const errorPayload = {
+                            stage: 'user_info',
+                            status: userRes.status,
+                            error: userData.code || 'user_info_error',
+                            message: userData.message || 'Failed to fetch TikTok user info',
+                            log_id: userData.log_id || null
+                        };
+                        return new Response(JSON.stringify(errorPayload, null, 2), {
+                            status: userRes.status || 400,
+                            headers: { "Content-Type": "application/json" }
+                        });
+                    }
+
                     const tikTokName = userData.data?.user?.display_name || 'TikTok User';
 
                     // Return Success HTML
