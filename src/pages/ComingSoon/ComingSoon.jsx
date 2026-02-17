@@ -51,6 +51,9 @@ const ComingSoon = () => {
   const [refLink, setRefLink] = useState('');
   const [refReady, setRefReady] = useState(false);
   const [userSession, setUserSession] = useState(null);
+  const [showConsentModal, setShowConsentModal] = useState(false);
+  const [pendingPlatform, setPendingPlatform] = useState(null);
+  const [pendingTarget, setPendingTarget] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -215,6 +218,19 @@ const ComingSoon = () => {
       ? `${window.location.origin}/?ref=${encodeURIComponent(userSession.gCode)}`
       : 'Connect Genesis Gate to generate your referral link');
 
+  const handleConsentConfirm = () => {
+    if (pendingTarget && pendingPlatform) {
+      if (pendingTarget.startsWith('/api/')) {
+        window.location.href = pendingTarget;
+      } else {
+        window.open(pendingTarget, '_blank', 'noopener');
+      }
+    }
+    setShowConsentModal(false);
+    setPendingPlatform(null);
+    setPendingTarget(null);
+  };
+
   return (
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4 empire-gradient-page">
       <BackgroundEffects />
@@ -308,7 +324,7 @@ const ComingSoon = () => {
             {socialLinks.map((link) => (
                 <motion.a
                     key={link.id}
-                    onClick={() => {
+                    onClick={(e) => {
                       try {
                         const sessionRaw = localStorage.getItem('user_session');
                         let visitorId = null;
@@ -331,10 +347,17 @@ const ComingSoon = () => {
                             target: link.url
                           })
                         }).catch(() => {});
-                        if (link.id === 'kick' && hasGenesisSession) {
-                          window.location.href = '/api/kick/login';
-                          return;
-                        }
+                            if (link.id === 'kick' || link.id === 'tiktok') {
+                              e.preventDefault();
+                              let targetUrl = link.url;
+                              if (link.id === 'kick' && hasGenesisSession) {
+                                targetUrl = '/api/kick/login';
+                              }
+                              setPendingPlatform(link.id);
+                              setPendingTarget(targetUrl);
+                              setShowConsentModal(true);
+                              return;
+                            }
                         if (usernameForCheck && (link.id === 'instagram' || link.id === 'facebook' || link.id === 'threads')) {
                           fetch('/api/social/check-account', {
                             method: 'POST',
@@ -429,7 +452,6 @@ const ComingSoon = () => {
           </div>
         </div>
 
-        {/* Countdown Timer */}
         {timeLeft ? (
             <div className="relative grid grid-cols-4 gap-3 md:gap-6 mb-8 w-full max-w-3xl">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[#53FC18] rounded-full blur-[100px] opacity-20 -z-10"></div>
@@ -444,7 +466,6 @@ const ComingSoon = () => {
             </div>
         )}
 
-        {/* Main Content Grid: Roadmap & Winning Formula */}
         <div className="w-full grid md:grid-cols-2 gap-8 md:gap-16 px-4 mb-16 text-left">
             
             {/* Left Column: Roadmap */}
@@ -455,13 +476,9 @@ const ComingSoon = () => {
                 </div>
 
                 <div className="space-y-0 relative">
-                    {/* Vertical Line */}
                     <div className="absolute left-[19px] top-4 bottom-4 w-[2px] bg-[#53FC18]/20 z-0"></div>
 
-                    {/* Stage 1 */}
                     <div className="relative z-10 flex gap-6 pb-8">
-                        <div className="w-10 h-10 rounded-full bg-black border border-[#53FC18] flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(83,252,24,0.3)]">
-                            <CheckCircle2 size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
                             <h4 className="font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide brand-gradient-text">
@@ -473,7 +490,6 @@ const ComingSoon = () => {
                         </div>
                     </div>
 
-                    {/* Stage 2 */}
                     <div className="relative z-10 flex gap-6 pb-8">
                         <div className="w-10 h-10 rounded-full bg-black border border-[#53FC18] flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(83,252,24,0.3)]">
                             <ShieldCheck size={20} className="text-[#53FC18]" />
@@ -503,7 +519,6 @@ const ComingSoon = () => {
                         </div>
                     </div>
 
-                    {/* Stage 4 */}
                     <div className="relative z-10 flex gap-6">
                         <div className="w-10 h-10 rounded-full bg-black border border-gray-700 flex items-center justify-center shrink-0">
                             <Rocket size={20} className="text-gray-500" />
@@ -520,7 +535,6 @@ const ComingSoon = () => {
                 </div>
             </div>
 
-            {/* Right Column: Winning Formula */}
             <div>
                 <div className="flex items-center gap-3 mb-8">
                     <div className="h-[1px] w-12 bg-[#53FC18]"></div>
@@ -618,12 +632,48 @@ const ComingSoon = () => {
             </div>
         </div>
 
-        {/* Footer */}
         <div className="w-full border-t border-[#53FC18]/10 pt-10 pb-6">
              <p className="text-gray-200 text-sm md:text-base tracking-[0.25em] uppercase font-semibold">
                 2026 AKGS Empire · Systems Online · Commanders Preparing For Launch
              </p>
         </div>
+
+        {showConsentModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+            <div className="bg-[#050505] border border-[#53FC18]/40 rounded-2xl max-w-md w-full p-6 shadow-[0_0_30px_rgba(83,252,24,0.4)]">
+              <h3 className="text-xl font-bold text-white mb-3" dir="rtl">
+                موافقة على ربط حساب {pendingPlatform === 'kick' ? 'Kick' : 'TikTok'}
+              </h3>
+              <p className="text-sm text-gray-300 mb-3" dir="rtl">
+                بالضغط على «أوافق» فأنت تمنح AKGS Empire إذنًا لقراءة بيانات حسابك العامة
+                وربطها بهويتك داخل الإمبراطورية لأغراض التحقق، احتساب النقاط، وتحديث حالة المهام.
+              </p>
+              <p className="text-xs text-gray-500 mb-4" dir="rtl">
+                يمكن إلغاء الربط لاحقًا عن طريق حذف بيانات المتصفح أو طلب مسح البيانات من فريق الدعم.
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  className="px-4 py-2 rounded-xl border border-white/15 text-sm font-bold text-gray-300 hover:bg-white/5 transition-colors"
+                  onClick={() => {
+                    setShowConsentModal(false);
+                    setPendingPlatform(null);
+                    setPendingTarget(null);
+                  }}
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="button"
+                  className="px-4 py-2 rounded-xl bg-[#53FC18] text-black text-sm font-bold hover:bg-[#45d612] transition-colors shadow-[0_0_18px_rgba(83,252,24,0.45)]"
+                  onClick={handleConsentConfirm}
+                >
+                  أوافق
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

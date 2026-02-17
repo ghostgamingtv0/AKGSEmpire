@@ -49,6 +49,8 @@ const Earn = () => {
   const [points, setPoints] = useState(0); // User's Total Points
   const [showKickModal, setShowKickModal] = useState(false);
   const [tempKickUsername, setTempKickUsername] = useState('');
+  const [showConsentModal, setShowConsentModal] = useState(false);
+  const [consentAction, setConsentAction] = useState(null);
   
   const [showCopyCodeModal, setShowCopyCodeModal] = useState(false);
   const [currentTaskForModal, setCurrentTaskForModal] = useState(null);
@@ -248,23 +250,32 @@ const Earn = () => {
     }
   }, [activeTab]);
 
-  const handleConnect = (platform) => {
-    const isLocal = window.location.hostname === 'localhost';
-    const tiktokBasePath = isLocal ? '/api/tiktok/login' : '/empire/api/tiktok/login';
-    const effectiveVisitorId = visitorId || '7606798368987351096';
-    const tiktokEndpoint = `${tiktokBasePath}?visitor_id=${encodeURIComponent(effectiveVisitorId)}`;
+  const openKickConsent = () => {
+    setConsentAction('kick-connect');
+    setShowConsentModal(true);
+  };
 
-    const endpoints = {
-      'Kick': '/api/kick/login',
-      'Instagram': '/api/instagram/login',
-      'Facebook': '/api/facebook/login',
-      'TikTok': tiktokEndpoint,
-      'Discord': '/api/discord/login'
-    };
-    
-    if (endpoints[platform]) {
-      window.location.href = endpoints[platform];
+  const handleConsentConfirm = () => {
+    if (consentAction === 'kick-connect') {
+      handleKickConnect();
+    } else if (consentAction === 'tiktok-task') {
+      const width = 600;
+      const height = 700;
+      const left = (window.innerWidth - width) / 2;
+      const top = (window.innerHeight - height) / 2;
+      window.open(
+        `/api/tiktok/login?visitor_id=${visitorId || '7606798368987351096'}`,
+        'TikTokAuth',
+        `width=${width},height=${height},top=${top},left=${left}`
+      );
     }
+    setShowConsentModal(false);
+    setConsentAction(null);
+  };
+
+  const handleConsentCancel = () => {
+    setShowConsentModal(false);
+    setConsentAction(null);
   };
 
   const tasks = [
@@ -927,7 +938,6 @@ const Earn = () => {
         }
     }
 
-    // 2. API-Based Social Tasks (TikTok, Instagram, Facebook, Threads)
     if (['TikTok', 'Instagram', 'Facebook', 'Threads'].includes(task.platform) && task.type === 'social') {
         const width = 600;
         const height = 700;
@@ -935,11 +945,16 @@ const Earn = () => {
         const top = (window.innerHeight - height) / 2;
         const platformKey = task.platform.toLowerCase();
         
-        window.open(
-            `/api/${platformKey}/login?visitor_id=${visitorId}`, 
-            `${task.platform}Auth`, 
-            `width=${width},height=${height},top=${top},left=${left}`
-        );
+        if (task.platform === 'TikTok') {
+            setConsentAction('tiktok-task');
+            setShowConsentModal(true);
+        } else {
+            window.open(
+                `/api/${platformKey}/login?visitor_id=${visitorId}`, 
+                `${task.platform}Auth`, 
+                `width=${width},height=${height},top=${top},left=${left}`
+            );
+        }
         return;
     }
 
@@ -1351,50 +1366,38 @@ const Earn = () => {
       )}
 
 
-      {/* Kick Login Modal (REMOVED - Using OAuth) */}
-      {/* {showKickModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-[#0a0a0a] border border-[#53FC18]/30 rounded-2xl w-full max-w-sm p-6 relative shadow-[0_0_30px_rgba(83,252,24,0.1)]">
-            <button 
-              type="button"
-              onClick={() => setShowKickModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-[#53FC18]/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-[#53FC18]/20">
-                 <svg viewBox="0 0 24 24" className="w-8 h-8 fill-[#53FC18]"><path fillRule="evenodd" clipRule="evenodd" d="M3 0h18a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3zm5.7 6.6h2.7v3.6l3.3-3.6h3.6l-4.2 4.5 4.5 6.3h-3.6l-3-4.2v4.2H8.7V6.6z"/></svg>
-              </div>
-              <h3 className="text-xl font-bold text-white">Connect Kick Account</h3>
-              <p className="text-gray-400 text-sm mt-2">Enter your username to verify identity</p>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                 <input 
-                   type="text" 
-                   value={tempKickUsername}
-                   onChange={(e) => setTempKickUsername(e.target.value)}
-                   placeholder="Kick Username"
-                   className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 focus:border-[#53FC18] outline-none text-white text-center font-bold"
-                 />
-              </div>
+      {showConsentModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+          <div className="bg-[#050505] border border-[#53FC18]/40 rounded-2xl max-w-md w-full p-6 shadow-[0_0_30px_rgba(83,252,24,0.4)]">
+            <h3 className="text-xl font-bold text-white mb-3" dir="rtl">
+              موافقة على ربط حساب {consentAction === 'kick-connect' ? 'Kick' : 'TikTok'}
+            </h3>
+            <p className="text-sm text-gray-300 mb-3" dir="rtl">
+              بالضغط على «أوافق» فأنت تمنح AKGS Empire إذنًا لقراءة بيانات حسابك العامة
+              وربطها بهويتك داخل الإمبراطورية لأغراض التحقق، احتساب النقاط، وتوثيق تقدمك في المهام.
+            </p>
+            <p className="text-xs text-gray-500 mb-4" dir="rtl">
+              يمكن إلغاء الربط لاحقًا عن طريق حذف بيانات المتصفح أو طلب مسح البيانات من فريق الدعم.
+            </p>
+            <div className="flex justify-end gap-3">
               <button
                 type="button"
-                id="kick-login-btn"
-                onClick={submitKickLogin}
-                className="w-full bg-[#53FC18] hover:bg-[#45d612] text-black font-bold py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(83,252,24,0.3)] hover:shadow-[0_0_30px_rgba(83,252,24,0.5)]"
+                className="px-4 py-2 rounded-xl border border-white/15 text-sm font-bold text-gray-300 hover:bg-white/5 transition-colors"
+                onClick={handleConsentCancel}
               >
-                Connect Account
+                إلغاء
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 rounded-xl bg-[#53FC18] text-black text-sm font-bold hover:bg-[#45d612] transition-colors shadow-[0_0_18px_rgba(83,252,24,0.45)]"
+                onClick={handleConsentConfirm}
+              >
+                أوافق
               </button>
             </div>
           </div>
         </div>
-      )} */}
-
-
-
+      )}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1459,7 +1462,7 @@ const Earn = () => {
                     {!kickUsername && !isProfileLocked && (
                        <button
                          type="button"
-                         onClick={handleKickConnect}
+                         onClick={openKickConsent}
                          className="absolute right-1 top-1 bottom-1 bg-[#53FC18] text-black text-xs font-bold px-4 rounded-lg hover:bg-[#45d612] transition-colors flex items-center gap-1 uppercase tracking-wide"
                        >
                          Link Kick
