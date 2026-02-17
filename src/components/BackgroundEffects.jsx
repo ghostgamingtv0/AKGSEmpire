@@ -7,11 +7,15 @@ import MatrixBackground from './MatrixBackground';
 const CodeParticle = ({ x, delay, duration }) => {
   return (
     <motion.div
-      className="absolute text-[#53FC18] font-mono text-opacity-30 pointer-events-none select-none"
-      style={{ 
+      className="absolute font-mono text-opacity-30 pointer-events-none select-none"
+      style={{
         left: `${x}%`,
         fontSize: Math.random() > 0.5 ? '12px' : '16px',
-        textShadow: '0 0 4px rgba(83, 252, 24, 0.5)'
+        backgroundImage: 'linear-gradient(90deg,#c38aff 0%,#983695 25%,#53FC18 50%,#983695 75%,#c38aff 100%)',
+        WebkitBackgroundClip: 'text',
+        backgroundClip: 'text',
+        color: 'transparent',
+        textShadow: '0 0 4px rgba(195,138,255,0.5),0 0 8px rgba(83,252,24,0.6)'
       }}
       initial={{ y: "110vh", opacity: 0 }}
       animate={{ 
@@ -53,8 +57,8 @@ const Ghost = ({ className = "", size = 64, showEyes = false, isOverload = false
 
   // Determine colors based on isOverload state
   const bodyColors = isOverload 
-    ? ["#FF0000", "#FF4500", "#FFFF00", "#FF0000"] // Red/Orange/Yellow for overload
-    : ["#53FC18", "#FFFFFF", "#DFFF00", "#53FC18"]; // Standard Green/White
+    ? ["#983695", "#53FC18", "#983695"]
+    : ["#983695", "#53FC18", "#983695"]; // Purple-Green-Purple like logo
 
   // Desynchronize animations by adding random delays
   const randomDelay = useMemo(() => Math.random() * 5, []);
@@ -85,21 +89,25 @@ const Ghost = ({ className = "", size = 64, showEyes = false, isOverload = false
       <div className="relative">
         {/* Ghost Body - Cycling Colors */}
         <motion.div 
-          style={{ opacity: 0.6, color: bodyColors[0] }} // Increased opacity from 0.2 to 0.6
+          style={{ opacity: 0.85, color: bodyColors[0] }}
           animate={{
             color: bodyColors,
             filter: isOverload 
-                ? "drop-shadow(0 0 8px rgba(255, 0, 0, 0.8))" 
-                : "drop-shadow(0 0 5px rgba(83, 252, 24, 0.3))"
+              ? "drop-shadow(0 0 10px rgba(255, 0, 0, 0.85)) drop-shadow(0 0 18px rgba(255, 69, 0, 0.85))"
+              : [
+                  "drop-shadow(0 0 8px #53FC18) drop-shadow(0 0 16px #53FC18)",
+                  "drop-shadow(0 0 8px #983695) drop-shadow(0 0 16px #983695)",
+                  "drop-shadow(0 0 8px #53FC18) drop-shadow(0 0 16px #53FC18)"
+                ]
           }}
           transition={{
-            duration: isOverload ? 0.5 : 8, // Much faster flash on overload
+            duration: isOverload ? 0.8 : 5,
             repeat: Infinity,
             ease: "linear",
             delay: randomDelay // Desync colors
           }}
         >
-             <GhostIcon size={size} strokeWidth={1.5} color="currentColor" />
+          <GhostIcon size={size} strokeWidth={1.5} color="currentColor" />
         </motion.div>
         
         {/* Glowing Eyes */}
@@ -113,9 +121,9 @@ const Ghost = ({ className = "", size = 64, showEyes = false, isOverload = false
                        "drop-shadow(0 0 10px #FFFF00) drop-shadow(0 0 20px #FFFF00) drop-shadow(0 0 40px #FFFF00)" 
                      ]
                    : [
-                       "drop-shadow(0 0 10px #53FC18) drop-shadow(0 0 20px #53FC18) drop-shadow(0 0 40px #53FC18)", 
-                       "drop-shadow(0 0 10px #FFFFFF) drop-shadow(0 0 20px #FFFFFF) drop-shadow(0 0 40px #FFFFFF)", 
-                       "drop-shadow(0 0 10px #DFFF00) drop-shadow(0 0 20px #DFFF00) drop-shadow(0 0 40px #DFFF00)" 
+                       "drop-shadow(0 0 12px #53FC18) drop-shadow(0 0 24px #53FC18) drop-shadow(0 0 48px #53FC18)", 
+                       "drop-shadow(0 0 12px #983695) drop-shadow(0 0 24px #983695) drop-shadow(0 0 48px #983695)", 
+                       "drop-shadow(0 0 12px #53FC18) drop-shadow(0 0 24px #53FC18) drop-shadow(0 0 48px #53FC18)" 
                      ]
              }}
              transition={{
@@ -130,7 +138,7 @@ const Ghost = ({ className = "", size = 64, showEyes = false, isOverload = false
                 animate={{
                     backgroundColor: isOverload 
                       ? ["#FF0000", "#FF4500", "#FFFF00", "#FF0000"]
-                      : ["#53FC18", "#FFFFFF", "#DFFF00", "#53FC18"]
+                      : ["#53FC18", "#983695", "#53FC18"]
                 }}
                 transition={{
                     duration: isOverload ? 0.5 : 8,
@@ -144,7 +152,7 @@ const Ghost = ({ className = "", size = 64, showEyes = false, isOverload = false
                 animate={{
                     backgroundColor: isOverload 
                       ? ["#FF0000", "#FF4500", "#FFFF00", "#FF0000"]
-                      : ["#53FC18", "#FFFFFF", "#DFFF00", "#53FC18"]
+                      : ["#53FC18", "#983695", "#53FC18"]
                 }}
                 transition={{
                     duration: isOverload ? 0.5 : 8,

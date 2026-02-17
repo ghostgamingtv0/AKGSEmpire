@@ -140,7 +140,7 @@ const Tokenomics = () => {
             { icon: <Globe size={32} />, title: "Anti-Whale", desc: "Max transaction limits active" }
           ].map((item, i) => (
             <div key={i} className="glass-panel p-8 text-center hover:bg-white/5 transition-all duration-300 group">
-              <div className="inline-flex p-4 rounded-2xl bg-[#53FC18]/10 text-[#53FC18] mb-6 group-hover:scale-110 group-hover:bg-[#53FC18] group-hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(83,252,24,0.1)]">
+              <div className="inline-flex p-4 rounded-2xl bg-[#983695]/10 text-[#983695] mb-6 group-hover:scale-110 group-hover:bg-[#983695] group-hover:text-black transition-all duration-300 shadow-[0_0_25px_rgba(152,54,149,0.3)]">
                 {item.icon}
               </div>
               <h3 className="text-xl font-bold mb-2">{item.title}</h3>

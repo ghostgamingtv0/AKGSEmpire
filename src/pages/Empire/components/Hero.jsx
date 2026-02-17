@@ -151,16 +151,21 @@ const Hero = () => {
           </motion.div>
           
           {/* Main Title */}
-          <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-tight relative z-20 font-arabic" dir="rtl">
-            <span className="block text-white mb-4 drop-shadow-2xl opacity-90 hover:opacity-100 transition-opacity">مستقبل التفاعل الرقمي..</span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#53FC18] via-white to-[#53FC18] animate-gradient-x drop-shadow-[0_0_25px_rgba(83,252,24,0.4)] pb-4">
+          <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-tight relative z-20 font-arabic brand-gradient-text" dir="rtl">
+            <span className="block mb-4 drop-shadow-2xl opacity-90 hover:opacity-100 transition-opacity">
+              مستقبل التفاعل الرقمي..
+            </span>
+            <span className="block pb-4">
               حيث وقتك له ثمن في مجتمعنا
             </span>
           </motion.h1>
 
-          <motion.h2 variants={itemVariants} className="text-xl md:text-2xl font-bold text-gray-400 mb-12 relative z-20 max-w-3xl mx-auto leading-relaxed">
-            The Future of Digital Engagement.. <br className="hidden md:block" />
-            <span className="text-[#53FC18] drop-shadow-[0_0_10px_rgba(83,252,24,0.3)]">Where Your Time is Your Asset</span>
+          <motion.h2 variants={itemVariants} className="text-xl md:text-2xl font-bold text-gray-300 mb-12 relative z-20 max-w-3xl mx-auto leading-relaxed">
+            The Future of Digital Engagement.. Where Your Time is Your Asset.
+            <br className="hidden md:block" />
+            <span className="block mt-2 font-arabic text-base md:text-lg text-[#53FC18]">
+              مستقبل التفاعل الرقمي حيث يصبح وقتك أصلًا حقيقيًا.
+            </span>
           </motion.h2>
           
           {/* Stats/Vision Grid */}
@@ -187,8 +192,8 @@ const Hero = () => {
                 <div className="glass-panel p-8 border border-white/10 bg-black/40 backdrop-blur-md hover:bg-black/60 transition-colors">
                   <div className="flex flex-col md:flex-row gap-6">
                      <div className="flex-1">
-                         <h4 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                            <Globe size={24} /> The Vision
+                         <h4 className="text-2xl font-bold mb-2 flex items-center gap-2 brand-gradient-text">
+                            <Globe size={24} /> The Vision | الرؤية
                          </h4>
                          <p className="text-gray-300 text-base leading-relaxed">
                            We are redefining the rules of the digital content industry. Instead of the viewer being just a statistic, we transform them into a true partner in success.
@@ -196,8 +201,8 @@ const Hero = () => {
                      </div>
                      <div className="hidden md:block w-px h-auto bg-white/10"></div>
                      <div className="flex-1">
-                        <p className="text-gray-300 text-base leading-relaxed">
-                            Our project merges entertainment with real-world earnings through a profit-sharing system built entirely on meritocracy rather than luck.
+                        <p className="text-gray-300 text-base leading-relaxed font-arabic" dir="rtl">
+                            يعيد مشروعنا تشكيل قواعد صناعة المحتوى الرقمي، حيث لا يكون المشاهد مجرد رقم في الإحصائيات، بل شريك حقيقي في النجاح من خلال نظام ربح موزع بعدالة على أساس الجهد والتفاعل لا على الحظ.
                         </p>
                      </div>
                   </div>
@@ -207,7 +212,7 @@ const Hero = () => {
           
           {/* CTA Buttons */}
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12 relative z-20">
-            <Link to="/empire/earn" className="w-full sm:w-auto px-8 py-4 bg-[#53FC18] text-black text-lg font-bold rounded-xl hover:bg-[#45d415] transition-all hover:scale-105 shadow-[0_0_20px_rgba(83,252,24,0.3)] flex items-center justify-center gap-3 group relative overflow-hidden">
+            <Link to="/empire/earn" className="w-full sm:w-auto px-8 py-4 bg-[#53FC18] text-black text-lg font-bold rounded-xl hover:bg-[#3fd00f] transition-all hover:scale-105 shadow-[0_0_20px_rgba(83,252,24,0.3)] flex items-center justify-center gap-3 group relative overflow-hidden">
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
               <Zap className="relative z-10 group-hover:fill-black transition-colors" size={24} />
               <span className="relative z-10">Start Earning / ابدأ الربح</span>
@@ -216,19 +221,19 @@ const Hero = () => {
               href="https://drive.google.com/file/d/1EZtQ-iv2Q9OIiO8SN8Ew9C9WX_4v_FH8/view?usp=sharing" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="w-full sm:w-auto relative px-8 py-4 rounded-xl text-lg font-bold flex items-center justify-center gap-3 overflow-hidden group transition-all duration-300 border border-white/10 bg-white/5 hover:bg-[#53FC18]/10 hover:border-[#53FC18]/50 hover:shadow-[0_0_20px_rgba(83,252,24,0.15)]"
+              className="w-full sm:w-auto relative px-8 py-4 rounded-xl text-lg font-bold flex items-center justify-center gap-3 overflow-hidden group transition-all duration-300 border border-[#983695]/40 bg-[#983695]/10 hover:bg-[#983695]/20 hover:border-[#983695]/70 hover:shadow-[0_0_25px_rgba(152,54,149,0.4)]"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
-              <FileText className="text-gray-400 group-hover:text-[#53FC18] transition-colors duration-300" size={24} />
-              <span className="text-gray-200 group-hover:text-white transition-colors duration-300">Whitepaper / الورقة البيضاء</span>
+              <FileText className="text-[#983695] group-hover:text-[#53FC18] transition-colors duration-300" size={24} />
+              <span className="text-[#f5e6ff] group-hover:text-white transition-colors duration-300">Whitepaper / الورقة البيضاء</span>
             </motion.a>
           </motion.div>
 
           {/* Investment Options */}
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 relative z-20">
-             <a href="https://app.uniswap.org/explore/tokens/polygon/0xc291f63681cd76383c3bdabe0b8e4bb072b4df65" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-6 py-3 bg-[#FF007A]/10 border border-[#FF007A] rounded-xl text-[#FF007A] font-bold hover:bg-[#FF007A] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group">
+             <a href="https://app.uniswap.org/explore/tokens/polygon/0c291f63681cd76383c3bdabe0b8e4bb072b4df65" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-6 py-3 bg-[#983695]/10 border border-[#983695] rounded-xl text-[#983695] font-bold hover:bg-[#983695] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group">
                 <img src="https://uniswap.org/favicon.ico" alt="" className="w-5 h-5 rounded-full opacity-80" onError={(e) => e.target.style.display = 'none'} />
                 Buy on Uniswap
                 <ExternalLink size={16} />

@@ -38,7 +38,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
               alt="AKGS Empire Logo" 
               className="w-20 h-20 rounded-lg object-cover border border-[#53FC18]/50 group-hover:shadow-[0_0_20px_rgba(83,252,24,0.5)] transition-all duration-300"
             />
-            <span className="font-bold text-2xl tracking-wider text-white group-hover:text-[#53FC18] transition-colors">AKGS<span className="text-[#53FC18]">EMPIRE</span></span>
+            <span className="font-bold text-2xl tracking-wider brand-gradient-text transition-colors">AKGS EMPIRE</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -134,10 +134,14 @@ const Footer = () => (
   <footer className="bg-[#050505] border-t border-white/10 py-12 mt-20 relative z-10">
     <div className="max-w-7xl mx-auto px-4 text-center">
       <div className="mb-8 flex justify-center">
-        <span className="text-2xl font-bold text-white">AKGS<span className="text-[#53FC18]">EMPIRE</span></span>
+        <span className="text-2xl font-bold brand-gradient-text">AKGS EMPIRE</span>
       </div>
-      <p className="text-gray-500 mb-8 max-w-2xl mx-auto">
+      <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
         Next‑generation Social2Earn & Watch2Earn hub on Polygon. Join AKGS Empire and turn your daily engagement into real rewards.
+        <br />
+        <span className="font-arabic text-sm md:text-base text-[#53FC18]">
+          منصة الجيل القادم حيث يتحول تفاعلك اليومي ومشاهداتك إلى مكافآت حقيقية داخل إمبراطورية AKGS.
+        </span>
       </p>
       <div className="flex flex-wrap justify-center gap-6 mb-8">
         {[
@@ -157,19 +161,19 @@ const Footer = () => (
       </div>
       <div className="flex flex-col items-center gap-4 mb-4 opacity-90 hover:opacity-100 transition-opacity">
         <span className="text-gray-400 text-sm font-medium flex items-center gap-2">
-           <span className="text-[#53FC18]">✔</span> Verified & Sponsored By
+           <span className="text-[#53FC18]">✔</span> Verified & Sponsored By | برعاية وشراكة رسمية
         </span>
         <div className="flex items-center gap-8">
           <a href="https://www.geckoterminal.com/" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 group">
             <img src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png" alt="GeckoTerminal" className="h-8 group-hover:scale-105 transition-transform" />
-            <span className="text-xs text-gray-500 group-hover:text-[#53FC18] transition-colors">Official Strategic Partner</span>
+            <span className="text-xs text-gray-500 group-hover:text-[#53FC18] transition-colors">Official Strategic Partner | شريك استراتيجي رسمي</span>
           </a>
           <div className="w-px h-10 bg-white/10"></div>
           <a href="https://polygon.technology/" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 group">
             <div className="h-8 w-8 flex items-center justify-center">
                <img src="https://cryptologos.cc/logos/polygon-matic-logo.png" alt="Polygon" className="max-h-full max-w-full group-hover:scale-105 transition-transform" />
             </div>
-            <span className="text-xs text-gray-500 group-hover:text-[#8247E5] transition-colors">Built on Polygon</span>
+            <span className="text-xs text-gray-500 group-hover:text-[#983695] transition-colors">Built on Polygon | مبني على شبكة بوليغون</span>
           </a>
         </div>
       </div>
@@ -179,10 +183,10 @@ const Footer = () => (
         rel="noopener noreferrer"
         className="inline-block mb-4 text-xs text-[#53FC18] hover:text-white transition-colors underline-offset-4 hover:underline"
       >
-        View Official Whitepaper
+        View Official Whitepaper | عرض الوثيقة الرسمية
       </a>
-      <p className="text-gray-600 text-sm">
-        © 2026 AKGS Empire. All rights reserved.
+      <p className="text-gray-500 text-sm">
+        © 2026 AKGS Empire. All rights reserved. | جميع الحقوق محفوظة لإمبراطورية AKGS.
       </p>
     </div>
   </footer>

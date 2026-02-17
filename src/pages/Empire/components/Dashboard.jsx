@@ -507,7 +507,7 @@ const Dashboard = () => {
                 {/* Monthly Rewards Info & Countdown */}
                 <div className="bg-gradient-to-r from-[#53FC18]/10 via-black/40 to-transparent border-l-4 border-[#53FC18] p-5 rounded-r-xl relative z-10 flex flex-col md:flex-row justify-between items-center gap-6 shadow-[0_0_20px_rgba(83,252,24,0.05)]">
                     <div className="flex-1 space-y-2">
-                        <h3 className="font-black text-white text-lg flex items-center gap-2 uppercase tracking-wide">
+                        <h3 className="font-black text-lg flex items-center gap-2 uppercase tracking-wide brand-gradient-text">
                             <Flame className="text-[#53FC18] fill-[#53FC18]/20" size={20} />
                             Monthly Treasure Vault | خزانة الجوائز الشهرية
                         </h3>
@@ -567,8 +567,8 @@ const Dashboard = () => {
         {/* Weekly Leaderboard Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
-              <Activity className="text-red-500" size={24} />
-              <h2 className="text-xl font-bold">Weekly Leaderboard (Activity) | لوحة الصدارة الأسبوعية</h2>
+              <Activity className="text-[#983695]" size={24} />
+              <h2 className="text-xl font-bold brand-gradient-text">Weekly Leaderboard (Activity) | لوحة الصدارة الأسبوعية</h2>
             </div>
             <div className="flex items-center gap-2 text-xs font-mono text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
                 <Clock size={14} className="text-[#53FC18]" />

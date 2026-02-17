@@ -238,7 +238,7 @@ const GhostGate = () => {
                             className="w-full h-full object-cover rounded-full"
                         />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black text-[#53FC18] font-heading tracking-[0.35em] drop-shadow-[0_0_15px_rgba(83,252,24,0.5)]">
+                    <h1 className="text-4xl md:text-5xl font-black font-heading tracking-[0.35em] brand-gradient-text">
                         GHOST EMPIRE
                     </h1>
                     <div className="relative inline-block max-w-2xl mx-auto">
@@ -617,7 +617,7 @@ const GhostGate = () => {
                                     </div>
 
                                     {error && (
-                                        <div className="flex items-center gap-2 text-red-500 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/20">
+                                        <div className="flex items-center gap-2 text-[#983695] text-sm bg-[#983695]/10 p-3 rounded-lg border border-[#983695]/40">
                                             <AlertTriangle size={16} />
                                             {error}
                                         </div>

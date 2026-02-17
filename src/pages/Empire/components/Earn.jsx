@@ -448,7 +448,7 @@ const Earn = () => {
       reward: 'Tax: 4%', 
       status: 'pending', 
       link: SOCIAL_LINKS.KICK,
-      icon: <ProjectNFTIcon color="#A855F7" tier="1x" imageSrc={NFT_IMAGE_REWARD} />
+      icon: <ProjectNFTIcon color="#983695" tier="1x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
       id: 15, 
@@ -458,7 +458,7 @@ const Earn = () => {
       reward: 'Tax: 3%', 
       status: 'pending', 
       link: SOCIAL_LINKS.KICK,
-      icon: <ProjectNFTIcon color="#3B82F6" tier="2x" imageSrc={NFT_IMAGE_REWARD} />
+      icon: <ProjectNFTIcon color="#983695" tier="2x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
       id: 16, 
@@ -468,7 +468,7 @@ const Earn = () => {
       reward: 'Tax: 2%', 
       status: 'pending', 
       link: SOCIAL_LINKS.KICK,
-      icon: <ProjectNFTIcon color="#22C55E" tier="3x" imageSrc={NFT_IMAGE_REWARD} />
+      icon: <ProjectNFTIcon color="#53FC18" tier="3x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
       id: 17, 
@@ -479,7 +479,7 @@ const Earn = () => {
       status: 'pending', 
       link: SOCIAL_LINKS.FACEBOOK,
       icon: (
-        <FaFacebook className="w-6 h-6 text-blue-600" />
+        <FaFacebook className="w-6 h-6 text-[#983695]" />
       )
     },
     { 
@@ -490,7 +490,7 @@ const Earn = () => {
       reward: 'Tax: 1%', 
       status: 'pending', 
       link: SOCIAL_LINKS.KICK,
-      icon: <ProjectNFTIcon color="#EAB308" tier="4x" imageSrc={NFT_IMAGE_REWARD} />
+      icon: <ProjectNFTIcon color="#53FC18" tier="4x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
       id: 19, 
@@ -1532,7 +1532,7 @@ const Earn = () => {
                               window.location.reload();
                             }
                           }}
-                          className="text-[10px] text-red-500 hover:text-red-400 underline uppercase tracking-wider"
+                          className="text-[10px] text-[#983695] hover:text-[#53FC18] underline uppercase tracking-wider"
                         >
                           Reset Data (Dev)
                         </button>
@@ -1541,11 +1541,11 @@ const Earn = () => {
                   <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
                       <div className="flex justify-between text-sm mb-2">
                           <span className="text-gray-400 font-bold uppercase text-xs">G-Code Status</span>
-                          <span className="text-yellow-500 font-bold text-xs uppercase">Pending Tasks</span>
+                          <span className="text-[#983695] font-bold text-xs uppercase">Pending Tasks</span>
                       </div>
                       <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
                         <div 
-                           className="bg-gradient-to-r from-yellow-600 to-yellow-400 h-full transition-all duration-500"
+                           className="bg-gradient-to-r from-[#983695] via-[#53FC18] to-[#983695] h-full transition-all duration-500"
                            style={{ width: `${(claimedTasks.filter(id => tasks.find(t => t.id === id && t.type === 'social')).length / tasks.filter(t => t.type === 'social').length) * 100}%` }}
                         />
                       </div>
@@ -1665,7 +1665,7 @@ const Earn = () => {
                       </p>
                       <div className="pt-2">
                         <span className="text-white font-bold text-base flex items-center gap-2 mb-2">
-                          <Gem size={18} className="text-purple-400" /> 
+                          <Gem size={18} className="text-[#983695]" /> 
                           Loyalty Rewards Program
                         </span>
                         <p className="text-sm text-gray-400 leading-relaxed">
@@ -1682,7 +1682,7 @@ const Earn = () => {
                       <div className="pt-2">
                         <span className="text-white font-bold text-base flex items-center gap-2 mb-2 justify-end">
                           برنامج مكافآت الولاء 
-                          <Gem size={18} className="text-purple-400" />
+                          <Gem size={18} className="text-[#983695]" />
                         </span>
                         <p className="text-sm text-gray-400 leading-relaxed font-arabic">
                           سيتم توزيع NFTs حصرية وعالية القيمة كهدايا تقديرية لأعضاء مجتمعنا الأكثر ولاءً، مكافأةً لهم على عمق تفاعلهم ومدة تخزينهم للعملة.
@@ -1696,19 +1696,16 @@ const Earn = () => {
 
             {/* Points Balance & Info */}
             <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-6 max-w-7xl mx-auto">
-                <div className="p-6 bg-[#53FC18]/5 border border-[#53FC18]/20 rounded-2xl flex-1 shadow-lg shadow-[#53FC18]/5 w-full">
-                   <h3 className="mb-3 flex items-center gap-2 font-heading">
-                     <Coins size={18} className="text-[#D4AF37]" />
-                     <span
-                       className="uppercase tracking-[0.4em] text-sm md:text-base text-white"
-                       style={{ textShadow: '0 0 10px #D4AF37, 0 0 20px #D4AF37' }}
-                     >
-                       Earning & Conversion Rate
-                     </span>
-                   </h3>
-                   <div className="bg-gradient-to-r from-[#D4AF37] to-[#fcf6ba] bg-clip-text text-transparent text-xs md:text-sm font-bold tracking-[0.3em] uppercase mb-2">
-                     AKGS Empire • Commanders Only
-                   </div>
+                    <div className="p-6 bg-[#53FC18]/5 border border-[#53FC18]/20 rounded-2xl flex-1 shadow-lg shadow-[#53FC18]/20 w-full">
+                  <h3 className="mb-3 flex items-center gap-2 font-heading">
+                    <Coins size={18} className="text-[#983695]" />
+                    <span className="uppercase tracking-[0.4em] text-sm md:text-base">
+                      Earning & Conversion Rate
+                    </span>
+                  </h3>
+                  <div className="text-xs md:text-sm font-bold tracking-[0.3em] uppercase mb-2">
+                    AKGS Empire • Commanders Only
+                  </div>
                    <p className="text-gray-300 text-sm leading-relaxed font-arabic" dir="rtl">
                      <span className="text-[#53FC18] font-bold text-base font-sans">
                        كل 100 نقطة تساوي 1000 AKGS عملة AKGS (100 Points = 1,000 Coins).
@@ -1791,7 +1788,7 @@ const Earn = () => {
                 <div className="space-y-6">
                     <div>
                         <h3 className="text-white font-bold mb-2 flex items-center gap-2">
-                            <Info size={16} className="text-blue-400" />
+                            <Info size={16} className="text-[#983695]" />
                             Community Motto
                         </h3>
                         <p className="text-lg italic text-gray-300">
@@ -1820,7 +1817,7 @@ const Earn = () => {
                     <div>
                         <h3 className="text-white font-bold mb-2 flex items-center gap-2 justify-end font-arabic">
                             شعار المجتمع
-                            <Info size={16} className="text-blue-400" />
+                            <Info size={16} className="text-[#983695]" />
                         </h3>
                         <p className="text-lg text-[#53FC18] font-arabic">
                             "لا تبخل ابدع بشرط ان يكون حقيقي"
@@ -1856,22 +1853,22 @@ const Earn = () => {
                  const isTimerRunning = confirmState && confirmState.timeLeft > 0;
                  const isReadyToConfirm = confirmState && confirmState.readyToConfirm;
                  
-                 let statusText = isNew ? "OPEN & EARN" : "VIEW FEED";
-                 let statusColor = "text-white";
-                 let borderClass = isNew ? 'bg-gradient-to-br from-blue-900/20 to-black border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : 'bg-[#0A0A0A] border-white/5 hover:border-white/20';
+                let statusText = isNew ? "OPEN & EARN" : "VIEW FEED";
+                let statusColor = "text-white";
+                let borderClass = isNew ? 'bg-gradient-to-br from-[#983695]/20 to-black border-[#983695]/50 shadow-[0_0_30px_rgba(152,54,149,0.4)]' : 'bg-[#0A0A0A] border-white/5 hover:border-white/20';
                  
-                 if (isClaimed) {
-                     statusText = "COMPLETED";
-                     statusColor = "text-green-500";
-                     borderClass = "bg-[#0A0A0A] border-green-500/30 opacity-60";
+                if (isClaimed) {
+                    statusText = "COMPLETED";
+                    statusColor = "text-[#53FC18]";
+                    borderClass = "bg-[#0A0A0A] border-[#53FC18]/30 opacity-60";
                  } else if (isReadyToConfirm) {
                      statusText = "CLAIM REWARD";
                      statusColor = "text-[#53FC18] animate-pulse";
                      borderClass = "bg-[#0A0A0A] border-[#53FC18] shadow-[0_0_30px_rgba(83,252,24,0.4)]";
-                 } else if (isTimerRunning) {
-                     statusText = `WAIT ${confirmState.timeLeft}s`;
-                     statusColor = "text-yellow-500";
-                     borderClass = "bg-[#0A0A0A] border-yellow-500/30";
+                } else if (isTimerRunning) {
+                    statusText = `WAIT ${confirmState.timeLeft}s`;
+                    statusColor = "text-[#983695]";
+                    borderClass = "bg-[#0A0A0A] border-[#983695]/40";
                  }
 
                  return (
@@ -1890,16 +1887,16 @@ const Earn = () => {
                                <FaXTwitter />
                            </div>
                            {isNew && !isClaimed && !isReadyToConfirm && !isTimerRunning && (
-                               <span className="flex items-center gap-1 text-blue-400 bg-blue-400/10 px-3 py-1 rounded-full text-xs font-bold border border-blue-400/20 animate-pulse">
+                               <span className="flex items-center gap-1 text-[#983695] bg-[#983695]/10 px-3 py-1 rounded-full text-xs font-bold border border-[#983695]/20 animate-pulse">
                                    <Bell size={12} /> NEW POST
                                </span>
                            )}
                        </div>
                        
                        <div>
-                           <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-blue-400 transition-colors">Twitter (X)</h4>
+                           <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-[#983695] transition-colors">Twitter (X)</h4>
                            <p className="text-gray-400 text-sm max-w-[80%]">
-                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-red-400 font-bold">MANDATORY:</span> Comment your G-Code.</>
+                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
                            </p>
                        </div>
 
@@ -1920,22 +1917,22 @@ const Earn = () => {
                  const isTimerRunning = confirmState && confirmState.timeLeft > 0;
                  const isReadyToConfirm = confirmState && confirmState.readyToConfirm;
                  
-                 let statusText = isNew ? "OPEN & EARN" : "VIEW FEED";
-                 let statusColor = "text-white";
-                 let borderClass = isNew ? 'bg-gradient-to-br from-pink-900/20 to-black border-pink-500/50 shadow-[0_0_30px_rgba(236,72,153,0.2)]' : 'bg-[#0A0A0A] border-white/5 hover:border-white/20';
+                let statusText = isNew ? "OPEN & EARN" : "VIEW FEED";
+                let statusColor = "text-white";
+                let borderClass = isNew ? 'bg-gradient-to-br from-[#983695]/20 to-black border-[#983695]/50 shadow-[0_0_30px_rgba(152,54,149,0.4)]' : 'bg-[#0A0A0A] border-white/5 hover:border-white/20';
                  
-                 if (isClaimed) {
-                     statusText = "COMPLETED";
-                     statusColor = "text-green-500";
-                     borderClass = "bg-[#0A0A0A] border-green-500/30 opacity-60";
+                if (isClaimed) {
+                    statusText = "COMPLETED";
+                    statusColor = "text-[#53FC18]";
+                    borderClass = "bg-[#0A0A0A] border-[#53FC18]/30 opacity-60";
                  } else if (isReadyToConfirm) {
                      statusText = "CLAIM REWARD";
                      statusColor = "text-[#53FC18] animate-pulse";
                      borderClass = "bg-[#0A0A0A] border-[#53FC18] shadow-[0_0_30px_rgba(83,252,24,0.4)]";
-                 } else if (isTimerRunning) {
-                     statusText = `WAIT ${confirmState.timeLeft}s`;
-                     statusColor = "text-yellow-500";
-                     borderClass = "bg-[#0A0A0A] border-yellow-500/30";
+                } else if (isTimerRunning) {
+                    statusText = `WAIT ${confirmState.timeLeft}s`;
+                    statusColor = "text-[#983695]";
+                    borderClass = "bg-[#0A0A0A] border-[#983695]/40";
                  }
 
                  return (
@@ -1948,19 +1945,19 @@ const Earn = () => {
                     </div>
                     <div className="relative p-8 flex flex-col justify-between h-full">
                        <div className="flex justify-between items-start">
-                           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 flex items-center justify-center text-white text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#53FC18] via-[#983695] to-[#53FC18] flex items-center justify-center text-white text-3xl shadow-lg group-hover:scale-110 transition-transform">
                                <FaInstagram />
                            </div>
                            {isNew && !isClaimed && !isReadyToConfirm && !isTimerRunning && (
-                               <span className="flex items-center gap-1 text-pink-400 bg-pink-400/10 px-3 py-1 rounded-full text-xs font-bold border border-pink-400/20 animate-pulse">
+                               <span className="flex items-center gap-1 text-[#983695] bg-[#983695]/10 px-3 py-1 rounded-full text-xs font-bold border border-[#983695]/20 animate-pulse">
                                    <Bell size={12} /> NEW REEL
                                </span>
                            )}
                        </div>
                        <div>
-                           <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-pink-400 transition-colors">Instagram</h4>
+                           <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-[#983695] transition-colors">Instagram</h4>
                            <p className="text-gray-400 text-sm max-w-[80%]">
-                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-red-400 font-bold">MANDATORY:</span> Comment your G-Code.</>
+                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
                            </p>
                        </div>
                        <div className={`flex items-center gap-2 text-sm font-bold ${statusColor} group-hover:gap-4 transition-all`}>
@@ -1980,22 +1977,22 @@ const Earn = () => {
                  const isTimerRunning = confirmState && confirmState.timeLeft > 0;
                  const isReadyToConfirm = confirmState && confirmState.readyToConfirm;
                  
-                 let statusText = isNew ? "OPEN & EARN" : "VIEW FEED";
-                 let statusColor = "text-white";
-                 let borderClass = isNew ? 'bg-gradient-to-br from-[#00f2ea]/10 to-black border-[#ff0050]/50 shadow-[0_0_30px_rgba(255,0,80,0.2)]' : 'bg-[#0A0A0A] border-white/5 hover:border-white/20';
+                let statusText = isNew ? "OPEN & EARN" : "VIEW FEED";
+                let statusColor = "text-white";
+                let borderClass = isNew ? 'bg-gradient-to-br from-[#983695]/20 to-black border-[#983695]/50 shadow-[0_0_30px_rgba(152,54,149,0.4)]' : 'bg-[#0A0A0A] border-white/5 hover:border-white/20';
                  
-                 if (isClaimed) {
-                     statusText = "COMPLETED";
-                     statusColor = "text-green-500";
-                     borderClass = "bg-[#0A0A0A] border-green-500/30 opacity-60";
+                if (isClaimed) {
+                    statusText = "COMPLETED";
+                    statusColor = "text-[#53FC18]";
+                    borderClass = "bg-[#0A0A0A] border-[#53FC18]/30 opacity-60";
                  } else if (isReadyToConfirm) {
                      statusText = "CLAIM REWARD";
                      statusColor = "text-[#53FC18] animate-pulse";
                      borderClass = "bg-[#0A0A0A] border-[#53FC18] shadow-[0_0_30px_rgba(83,252,24,0.4)]";
-                 } else if (isTimerRunning) {
-                     statusText = `WAIT ${confirmState.timeLeft}s`;
-                     statusColor = "text-yellow-500";
-                     borderClass = "bg-[#0A0A0A] border-yellow-500/30";
+                } else if (isTimerRunning) {
+                    statusText = `WAIT ${confirmState.timeLeft}s`;
+                    statusColor = "text-[#983695]";
+                    borderClass = "bg-[#0A0A0A] border-[#983695]/40";
                  }
 
                  return (
@@ -2012,15 +2009,15 @@ const Earn = () => {
                                <FaTiktok />
                            </div>
                            {isNew && !isClaimed && !isReadyToConfirm && !isTimerRunning && (
-                               <span className="flex items-center gap-1 text-[#00f2ea] bg-[#00f2ea]/10 px-3 py-1 rounded-full text-xs font-bold border border-[#00f2ea]/20 animate-pulse">
+                               <span className="flex items-center gap-1 text-[#983695] bg-[#983695]/10 px-3 py-1 rounded-full text-xs font-bold border border-[#983695]/20 animate-pulse">
                                    <Bell size={12} /> NEW VIDEO
                                </span>
                            )}
                        </div>
                        <div>
-                           <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-[#00f2ea] transition-colors">TikTok</h4>
+                           <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-[#983695] transition-colors">TikTok</h4>
                            <p className="text-gray-400 text-sm max-w-[80%]">
-                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-red-400 font-bold">MANDATORY:</span> Comment your G-Code.</>
+                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
                            </p>
                        </div>
                        <div className={`flex items-center gap-2 text-sm font-bold ${statusColor} group-hover:gap-4 transition-all`}>
@@ -2040,22 +2037,22 @@ const Earn = () => {
                  const isTimerRunning = confirmState && confirmState.timeLeft > 0;
                  const isReadyToConfirm = confirmState && confirmState.readyToConfirm;
                  
-                 let statusText = isNew ? "OPEN & EARN" : "VIEW FEED";
-                 let statusColor = "text-white";
-                 let borderClass = isNew ? 'bg-gradient-to-br from-white/10 to-black border-white/50 shadow-[0_0_30px_rgba(255,255,255,0.1)]' : 'bg-[#0A0A0A] border-white/5 hover:border-white/20';
+                let statusText = isNew ? "OPEN & EARN" : "VIEW FEED";
+                let statusColor = "text-white";
+                let borderClass = isNew ? 'bg-gradient-to-br from-[#983695]/20 to-black border-[#983695]/50 shadow-[0_0_30px_rgba(152,54,149,0.4)]' : 'bg-[#0A0A0A] border-white/5 hover:border-white/20';
                  
-                 if (isClaimed) {
-                     statusText = "COMPLETED";
-                     statusColor = "text-green-500";
-                     borderClass = "bg-[#0A0A0A] border-green-500/30 opacity-60";
+                if (isClaimed) {
+                    statusText = "COMPLETED";
+                    statusColor = "text-[#53FC18]";
+                    borderClass = "bg-[#0A0A0A] border-[#53FC18]/30 opacity-60";
                  } else if (isReadyToConfirm) {
                      statusText = "CLAIM REWARD";
                      statusColor = "text-[#53FC18] animate-pulse";
                      borderClass = "bg-[#0A0A0A] border-[#53FC18] shadow-[0_0_30px_rgba(83,252,24,0.4)]";
-                 } else if (isTimerRunning) {
-                     statusText = `WAIT ${confirmState.timeLeft}s`;
-                     statusColor = "text-yellow-500";
-                     borderClass = "bg-[#0A0A0A] border-yellow-500/30";
+                } else if (isTimerRunning) {
+                    statusText = `WAIT ${confirmState.timeLeft}s`;
+                    statusColor = "text-[#983695]";
+                    borderClass = "bg-[#0A0A0A] border-[#983695]/40";
                  }
 
                  return (
@@ -2072,15 +2069,15 @@ const Earn = () => {
                                <FaThreads />
                            </div>
                            {isNew && !isClaimed && !isReadyToConfirm && !isTimerRunning && (
-                               <span className="flex items-center gap-1 text-white bg-white/10 px-3 py-1 rounded-full text-xs font-bold border border-white/20 animate-pulse">
+                               <span className="flex items-center gap-1 text-[#983695] bg-[#983695]/10 px-3 py-1 rounded-full text-xs font-bold border border-[#983695]/20 animate-pulse">
                                    <Bell size={12} /> NEW THREAD
                                </span>
                            )}
                        </div>
                        <div>
-                           <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-gray-300 transition-colors">Threads</h4>
+                           <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-[#983695] transition-colors">Threads</h4>
                            <p className="text-gray-400 text-sm max-w-[80%]">
-                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-red-400 font-bold">MANDATORY:</span> Comment your G-Code.</>
+                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
                            </p>
                        </div>
                        <div className={`flex items-center gap-2 text-sm font-bold ${statusColor} group-hover:gap-4 transition-all`}>
@@ -2118,14 +2115,8 @@ const Earn = () => {
                     <div className="mb-4">
                       <ProjectNFTIcon
                         color={
-                          tier.id === 1
-                            ? '#A855F7'
-                            : tier.id === 2
-                            ? '#3B82F6'
-                            : tier.id === 3
-                            ? '#22C55E'
-                            : tier.id === 4
-                            ? '#EAB308'
+                          tier.id === 1 || tier.id === 2
+                            ? '#983695'
                             : '#53FC18'
                         }
                         tier={`${tier.id}x`}
@@ -2192,7 +2183,7 @@ const Earn = () => {
                        <Bell size={12} /> New Post
                      </span>
                   ) : status === 'new_content' ? (
-                    <span className="flex items-center gap-1 text-blue-400 bg-blue-400/10 px-3 py-1 rounded-full text-xs font-medium border border-blue-400/20 animate-pulse">
+                    <span className="flex items-center gap-1 text-[#983695] bg-[#983695]/10 px-3 py-1 rounded-full text-xs font-medium border border-[#983695]/20 animate-pulse">
                       {task.contentType === 'Reel' && <Video size={12} />}
                       {task.contentType === 'Post' && <ImageIcon size={12} />}
                       {task.contentType === 'Video' && <PlayCircle size={12} />}
@@ -2201,16 +2192,16 @@ const Earn = () => {
                   ) : (
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                       status === 'completed' 
-                        ? 'bg-green-500/20 text-green-500' 
+                        ? 'bg-[#53FC18]/20 text-[#53FC18]' 
                         : status === 'disabled'
-                        ? 'bg-red-500/20 text-red-500'
+                        ? 'bg-[#983695]/20 text-[#983695]'
                         : status === 'locked'
                         ? 'bg-gray-500/20 text-gray-500'
                         : isProcessing
-                        ? 'bg-yellow-500/20 text-yellow-500'
+                        ? 'bg-[#983695]/20 text-[#983695]'
                         : task.type === 'mining'
-                        ? 'bg-green-500/20 text-green-500' // Green for Online Mining
-                        : 'bg-yellow-500/20 text-yellow-500'
+                        ? 'bg-[#53FC18]/20 text-[#53FC18]'
+                        : 'bg-[#53FC18]/20 text-[#53FC18]'
                     }`}>
                       {status === 'disabled' ? 'OFFLINE' : status === 'locked' ? 'LOCKED' : isProcessing ? `VERIFYING ${timeLeft}s` : task.type === 'mining' ? 'ONLINE' : status}
                     </span>
@@ -2223,7 +2214,7 @@ const Earn = () => {
                 </div>
 
                 {task.instruction && (
-                  <div className={`mb-4 p-3 rounded-lg text-xs md:text-sm font-bold border ${task.instruction.includes('MANDATORY') ? 'bg-red-500/15 border-red-400 text-red-300' : 'bg-yellow-500/10 border-yellow-400 text-yellow-200'}`}>
+                  <div className={`mb-4 p-3 rounded-lg text-xs md:text-sm font-bold border ${task.instruction.includes('MANDATORY') ? 'bg-[#983695]/15 border-[#983695] text-[#f3d9ff]' : 'bg-[#53FC18]/10 border-[#53FC18]/40 text-[#e8ffe9]'}`}>
                     {task.instruction}
                   </div>
                 )}
@@ -2243,7 +2234,7 @@ const Earn = () => {
               : isVerifying || isReadyToConfirm
               ? 'bg-[#53FC18] text-black hover:bg-[#45d612] animate-pulse'
               : isTimerRunning
-              ? 'bg-yellow-500/20 text-yellow-500 cursor-wait'
+              ? 'bg-[#983695]/20 text-[#983695] cursor-wait'
               : 'bg-[#53FC18] text-black hover:bg-[#45d612]'
           }`}>
             {status === 'completed' 
@@ -2293,14 +2284,8 @@ const Earn = () => {
               <div className="flex items-center gap-4 mb-4">
                 <ProjectNFTIcon
                   color={
-                    selectedMiningTier.id === 1
-                      ? '#A855F7'
-                      : selectedMiningTier.id === 2
-                      ? '#3B82F6'
-                      : selectedMiningTier.id === 3
-                      ? '#22C55E'
-                      : selectedMiningTier.id === 4
-                      ? '#EAB308'
+                    selectedMiningTier.id === 1 || selectedMiningTier.id === 2
+                      ? '#983695'
                       : '#53FC18'
                   }
                   tier={`${selectedMiningTier.id}x`}

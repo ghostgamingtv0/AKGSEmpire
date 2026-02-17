@@ -105,17 +105,17 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen text-white font-sans relative overflow-hidden flex items-center justify-center bg-gradient-to-b from-[#020308] via-[#050816] to-[#020308]">
       <BackgroundEffects forceVisible={true} />
       
       <div className="relative z-10 w-full max-w-md p-6">
         <div className="text-center mb-10">
-            <h1 className="text-5xl font-bold mb-4">AKGS <span className="text-[#53FC18]">EMPIRE</span></h1>
+            <h1 className="text-5xl font-bold mb-4 brand-gradient-text">AKGS EMPIRE</h1>
             <p className="text-xl text-gray-400 tracking-wider">Join the Elite Ranks</p>
         </div>
 
         {error && (
-            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/50 rounded-lg flex items-center gap-2 text-red-400 text-sm">
+            <div className="mb-4 p-3 bg-[#983695]/10 border border-[#983695]/60 rounded-lg flex items-center gap-2 text-[#f3d0ff] text-sm">
                 <AlertCircle size={16} />
                 {error}
             </div>

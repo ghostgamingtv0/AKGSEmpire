@@ -212,8 +212,8 @@ const ComingSoon = () => {
       <BackgroundEffects />
 
       <div className="relative z-10 max-w-7xl w-full text-center flex flex-col items-center pt-10 pb-10">
-        <div className="w-full flex flex-col md:flex-row items-start justify-between gap-6 mb-10">
-          <h1 className="text-4xl md:text-7xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#53FC18] to-white uppercase tracking-tighter font-heading text-left">
+        <div className="w-full flex flex-col items-center gap-6 mb-10">
+          <h1 className="text-4xl md:text-7xl font-black leading-tight font-heading text-center tracking-tighter brand-gradient-text">
             AKGS EMPIRE
           </h1>
           {userSession?.gCode && (
@@ -279,7 +279,7 @@ const ComingSoon = () => {
               className="w-full h-full object-cover rounded-full"
             />
           </div>
-          <div className="text-[#53FC18] font-bold text-xl md:text-2xl tracking-[0.5em] mt-8 font-heading uppercase drop-shadow-[0_0_14px_rgba(83,252,24,0.9)]">
+          <div className="font-bold text-xl md:text-2xl tracking-[0.5em] mt-8 font-heading uppercase brand-gradient-text">
             COMING SOON
           </div>
         </div>
@@ -378,7 +378,7 @@ const ComingSoon = () => {
                     
                     {/* Count badge for Telegram/Discord */}
                     {link.count > 0 && (
-                        <span className="absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full border border-black shadow-lg">
+                        <span className="absolute -top-3 -right-3 bg-[#983695] text-white text-xs font-bold px-2 py-1 rounded-full border border-black shadow-lg">
                             {link.count.toLocaleString()}
                         </span>
                     )}
@@ -399,7 +399,7 @@ const ComingSoon = () => {
         <div className="w-full max-w-3xl mx-auto mb-12 bg-black/70 border border-[#53FC18]/40 rounded-3xl px-6 py-6 md:px-8 md:py-8 shadow-[0_0_35px_rgba(83,252,24,0.25)]">
           <div className="grid grid-cols-2 gap-6 items-start">
             <div dir="rtl" className="space-y-2 text-right font-arabic">
-              <h2 className="text-[#53FC18] font-bold text-xl md:text-2xl">
+              <h2 className="font-bold text-xl md:text-2xl brand-gradient-text">
                 حدث الجينيسيس – نهضة القادة الأوائل
               </h2>
               <p className="text-gray-200 text-sm md:text-base leading-relaxed">
@@ -410,7 +410,7 @@ const ComingSoon = () => {
               </p>
             </div>
             <div className="space-y-2">
-              <h2 className="text-[#53FC18] font-heading text-xs md:text-sm tracking-[0.3em] uppercase">
+              <h2 className="font-heading text-xs md:text-sm tracking-[0.3em] uppercase brand-gradient-text">
                 GENESIS EVENT: THE RISE OF COMMANDERS
               </h2>
               <p className="text-gray-200 text-sm md:text-base leading-relaxed">
@@ -445,7 +445,7 @@ const ComingSoon = () => {
             <div>
                 <div className="flex items-center gap-3 mb-8">
                     <div className="h-[1px] w-12 bg-[#53FC18]"></div>
-                    <h3 className="text-[#53FC18] font-bold text-sm tracking-[0.2em] uppercase font-heading">Development Roadmap</h3>
+                    <h3 className="font-bold text-sm tracking-[0.2em] uppercase font-heading brand-gradient-text">Development Roadmap</h3>
                 </div>
 
                 <div className="space-y-0 relative">
@@ -518,7 +518,7 @@ const ComingSoon = () => {
             <div>
                 <div className="flex items-center gap-3 mb-8">
                     <div className="h-[1px] w-12 bg-[#53FC18]"></div>
-                    <h3 className="text-[#53FC18] font-bold text-base md:text-lg tracking-[0.2em] uppercase font-heading">The Winning Formula</h3>
+                    <h3 className="font-bold text-base md:text-lg tracking-[0.2em] uppercase font-heading brand-gradient-text">The Winning Formula</h3>
                 </div>
 
                 <div className="grid gap-6">
