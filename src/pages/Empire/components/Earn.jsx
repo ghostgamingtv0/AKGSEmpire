@@ -251,9 +251,8 @@ const Earn = () => {
   const handleConnect = (platform) => {
     const isLocal = window.location.hostname === 'localhost';
     const tiktokBasePath = isLocal ? '/api/tiktok/login' : '/empire/api/tiktok/login';
-    const tiktokEndpoint = visitorId
-      ? `${tiktokBasePath}?visitor_id=${encodeURIComponent(visitorId)}`
-      : tiktokBasePath;
+    const effectiveVisitorId = visitorId || '7606798368987351096';
+    const tiktokEndpoint = `${tiktokBasePath}?visitor_id=${encodeURIComponent(effectiveVisitorId)}`;
 
     const endpoints = {
       'Kick': '/api/kick/login',
