@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, ShieldCheck, Lock, Wallet, User, CheckCircle2, AlertTriangle, Key, Copy, Clock, Globe, Instagram, Gamepad2, Tv, ChevronDown, LogIn, ArrowRight, Facebook } from 'lucide-react';
 import SceneOneBackground from './components/UnifiedBackground';
-import { CONTRACTS, API_ENDPOINTS } from '../../config/constants';
+import { CONTRACTS, API_ENDPOINTS, ASSETS } from '../../config/constants';
 
 const TOKEN_CONTRACT = CONTRACTS.AKGS_TOKEN;
 // Using a placeholder SVG for now to ensure visibility if the external link is broken
@@ -229,12 +229,16 @@ const GhostGate = () => {
             <SceneOneBackground />
 
             {/* Content Container */}
-            <div className={`relative z-10 w-full p-6 transition-all duration-500 ${step === 'register' || step === 'success' ? 'max-w-5xl' : 'max-w-md'}`}>
-                {/* Glow Blob Removed for Pure Black Theme */}
-                
-                {/* Header */}
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl md:text-5xl font-black text-[#53FC18] font-heading mb-4 tracking-[0.35em] drop-shadow-[0_0_15px_rgba(83,252,24,0.5)]">
+            <div className={`relative z-10 w-full p-6 transition-all duration-500 ${step === 'gate' || step === 'register' || step === 'success' ? 'max-w-5xl' : 'max-w-md'}`}>
+                <div className="text-center mb-8 flex flex-col items-center gap-6">
+                    <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-2 border-[#53FC18] shadow-[0_0_50px_rgba(83,252,24,0.4)] overflow-hidden p-1 bg-black">
+                        <img 
+                            src={ASSETS.LOGO_URL} 
+                            alt="AKGS Empire Logo" 
+                            className="w-full h-full object-cover rounded-full"
+                        />
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-black text-[#53FC18] font-heading tracking-[0.35em] drop-shadow-[0_0_15px_rgba(83,252,24,0.5)]">
                         GHOST EMPIRE
                     </h1>
                     <div className="relative inline-block max-w-2xl mx-auto">
@@ -291,52 +295,52 @@ const GhostGate = () => {
                                 {/* Background Pulse */}
                                 <div className="absolute inset-0 bg-[#53FC18]/5 animate-pulse"></div>
 
-                                {/* Header */}
-                                <div className="relative z-10 flex flex-col items-center mb-6">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <Globe className="text-[#53FC18] animate-[spin_10s_linear_infinite]" size={24} />
-                                        <h3 className="text-xl md:text-2xl font-black text-white tracking-[0.5em] font-heading">
-                                            GENESIS EVENT
-                                        </h3>
-                                        <Globe className="text-[#53FC18] animate-[spin_10s_linear_infinite_reverse]" size={24} />
-                                    </div>
-                                    <div className="h-0.5 w-40 bg-gradient-to-r from-transparent via-[#53FC18] to-transparent"></div>
-                                </div>
-
-                                {/* Content Body */}
-                                <div className="relative z-10 flex flex-col gap-4 text-center">
-                                    {/* Reward Box */}
-                                    <div className="bg-[#53FC18]/10 border border-[#53FC18]/30 rounded-xl p-5 md:p-6 backdrop-blur-sm">
-                                        <p className="text-[#53FC18] font-extrabold text-xl md:text-2xl mb-2 drop-shadow-[0_0_6px_rgba(83,252,24,0.7)]">
-                                            150,000,000 $AKGS
-                                        </p>
-                                        <p className="text-white font-arabic font-bold text-base md:text-lg">
-                                            + 50 GENESIS NFTs
-                                        </p>
-                                    </div>
-
-                                    {/* Description: Arabic and English side-by-side */}
-                                    <div className="grid md:grid-cols-2 gap-6 text-left">
-                                        <div dir="rtl" className="space-y-2 text-right font-arabic">
-                                            <p className="text-[#53FC18] font-bold text-sm md:text-base">
-                                                حدث الجينيسيس – نهضة القادة الأوائل
+                                {/* Horizontal Content Body: Header + Reward + Text */}
+                                <div className="relative z-10 flex flex-col gap-6 text-left">
+                                    {/* Top: Header + Reward */}
+                                    <div className="flex flex-col items-center gap-4 text-center">
+                                        <div>
+                                            <div className="flex items-center justify-center gap-3 mb-3">
+                                                <Globe className="text-[#53FC18] animate-[spin_10s_linear_infinite]" size={24} />
+                                                <h3 className="text-xl md:text-2xl font-black text-white tracking-[0.5em] font-heading">
+                                                    EMPIRE VAULT
+                                                </h3>
+                                                <Globe className="text-[#53FC18] animate-[spin_10s_linear_infinite_reverse]" size={24} />
+                                            </div>
+                                            <div className="h-0.5 w-40 bg-gradient-to-r from-transparent via-[#53FC18] to-transparent mx-auto"></div>
+                                        </div>
+                                        <div className="bg-[#53FC18]/10 border border-[#53FC18]/30 rounded-xl px-5 py-4 md:py-5 backdrop-blur-sm w-full max-w-md">
+                                            <p className="text-[#53FC18] font-extrabold text-lg md:text-xl mb-1 drop-shadow-[0_0_6px_rgba(83,252,24,0.7)]">
+                                                150,000,000 $AKGS
                                             </p>
-                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed">
-                                                خزينة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لـ أفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
-                                            </p>
-                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
-                                                الخطة الاستراتيجية: بمجرد انتهاء الأسبوع الأول، يُفعل "بروتوكول الاستمرارية". احصد 50 نقطة يومياً، لكن احذر؛ فاليوم الذي تغيب فيه يتصفر عدادك. أثبت ولاءك لـ 4 أيام متتالية لتفعيل مضاعف القوة x3.
+                                            <p className="text-white font-arabic font-bold text-sm md:text-base">
+                                                + 50 NFT ملكي للإمبراطورية
                                             </p>
                                         </div>
+                                    </div>
+
+                                    {/* Bottom: English left, Arabic right */}
+                                    <div className="grid grid-cols-2 gap-6 w-full">
                                         <div className="space-y-2">
                                             <p className="text-[#53FC18] font-heading text-xs md:text-sm tracking-[0.25em] uppercase">
-                                                GENESIS EVENT: THE RISE OF COMMANDERS
+                                                EMPIRE VAULT: COMMANDERS' REWARD
                                             </p>
                                             <p className="text-gray-100 text-sm md:text-base leading-relaxed">
-                                                A pool of 150,000,000 $AKGS & 50 Exclusive Genesis NFTs awaits the elite. This ultimate bounty is reserved strictly for the Top 100 Commanders who prove their dominance through relentless engagement on Kick & Instagram.
+                                                At the heart of the Empire sits a vault holding 150,000,000 $AKGS and 50 Royal NFTs. This ultimate bounty is reserved strictly for the Top 100 Commanders who prove their dominance through relentless engagement on Kick & Instagram.
                                             </p>
                                             <p className="text-gray-100 text-sm md:text-base leading-relaxed">
-                                                The Strategy: After the Genesis week, the Daily Streak Protocol begins. Gain +50 points daily. Be warned: Missing a day resets your progress. Hold your ground for 4 consecutive days to trigger the x3 Multiplier.
+                                                The Strategy: After the launch phase, the Daily Streak Protocol begins. Gain +50 points daily. Be warned: Missing a day resets your progress. Hold your ground for 4 consecutive days to trigger the x3 Multiplier.
+                                            </p>
+                                        </div>
+                                        <div dir="rtl" className="space-y-2 text-right font-arabic">
+                                            <p className="text-[#53FC18] font-bold text-sm md:text-base">
+                                                خزانة الإمبراطورية – مكافأة القادة الأوائل
+                                            </p>
+                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed">
+                                                في قلب الإمبراطورية خزانة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لأفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
+                                            </p>
+                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
+                                                الخطة الاستراتيجية: بعد انتهاء مرحلة الإطلاق، يُفعّل بروتوكول الاستمرارية. احصد 50 نقطة يومياً، لكن احذر؛ فاليوم الذي تغيب فيه يتصفر عدادك. أثبت ولاءك لـ 4 أيام متتالية لتفعيل مضاعف القوة x3.
                                             </p>
                                         </div>
                                     </div>

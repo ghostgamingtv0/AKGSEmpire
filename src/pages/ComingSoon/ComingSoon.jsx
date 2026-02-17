@@ -397,7 +397,7 @@ const ComingSoon = () => {
         </div>
 
         <div className="w-full max-w-3xl mx-auto mb-12 bg-black/70 border border-[#53FC18]/40 rounded-3xl px-6 py-6 md:px-8 md:py-8 shadow-[0_0_35px_rgba(83,252,24,0.25)]">
-          <div className="grid md:grid-cols-2 gap-6 items-start">
+          <div className="grid grid-cols-2 gap-6 items-start">
             <div dir="rtl" className="space-y-2 text-right font-arabic">
               <h2 className="text-[#53FC18] font-bold text-xl md:text-2xl">
                 حدث الجينيسيس – نهضة القادة الأوائل
