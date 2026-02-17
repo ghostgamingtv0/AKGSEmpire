@@ -479,6 +479,8 @@ const ComingSoon = () => {
                     <div className="absolute left-[19px] top-4 bottom-4 w-[2px] bg-[#53FC18]/20 z-0"></div>
 
                     <div className="relative z-10 flex gap-6 pb-8">
+                        <div className="w-10 h-10 rounded-full bg-black border border-[#53FC18] flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(83,252,24,0.3)]">
+                            <CheckCircle2 size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
                             <h4 className="font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide brand-gradient-text">
