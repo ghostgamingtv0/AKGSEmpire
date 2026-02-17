@@ -249,12 +249,18 @@ const Earn = () => {
   }, [activeTab]);
 
   const handleConnect = (platform) => {
+    const isLocal = window.location.hostname === 'localhost';
+    const tiktokBasePath = isLocal ? '/api/tiktok/login' : '/empire/api/tiktok/login';
+    const tiktokEndpoint = visitorId
+      ? `${tiktokBasePath}?visitor_id=${encodeURIComponent(visitorId)}`
+      : tiktokBasePath;
+
     const endpoints = {
       'Kick': '/api/kick/login',
       'Instagram': '/api/instagram/login',
       'Facebook': '/api/facebook/login',
-      'TikTok': '/api/tiktok/login',
-      'Discord': '/api/discord/login' // Assuming this exists or will exist
+      'TikTok': tiktokEndpoint,
+      'Discord': '/api/discord/login'
     };
     
     if (endpoints[platform]) {
