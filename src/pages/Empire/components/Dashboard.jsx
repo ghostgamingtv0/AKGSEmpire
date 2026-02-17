@@ -242,7 +242,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white pt-24 pb-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#050505] text-white pt-24 pb-12 px-4 relative overflow-hidden empire-gradient-page">
       <MatrixBackground />
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
@@ -251,7 +251,9 @@ const Dashboard = () => {
           className="mb-12 flex justify-between items-end"
         >
           <div>
-            <h1 className="text-5xl md:text-6xl font-black mb-6 tracking-tight">Dashboard</h1>
+            <h1 className="text-5xl md:text-6xl font-black mb-6 tracking-tight brand-gradient-text">
+              Dashboard
+            </h1>
             <p className="text-gray-300 text-lg">Track your progress and ecosystem stats</p>
           </div>
         </motion.div>
@@ -498,7 +500,7 @@ const Dashboard = () => {
                     <div className="flex items-center gap-3 relative z-10">
                         <Trophy className="text-yellow-400" size={28} />
                         <div>
-                            <h2 className="text-2xl font-bold tracking-tight">Monthly Global Elite | نخبة التصنيف الشهري</h2>
+                            <h2 className="text-2xl font-bold tracking-tight brand-gradient-text">Monthly Global Elite | نخبة التصنيف الشهري</h2>
                             <p className="text-xs text-gray-400 uppercase tracking-widest">Ascend the Ranks & Claim Glory | اصعد في التصنيف وسيطر على القمة</p>
                         </div>
                     </div>

@@ -146,12 +146,18 @@ const Hero = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#53FC18] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-[#53FC18]"></span>
               </span>
-              <span className="text-sm font-bold text-gray-200 tracking-wide font-arabic group-hover:text-white transition-colors">مستقبل التفاعل الرقمي</span>
+              <span className="text-sm font-bold tracking-wide font-arabic group-hover:text-white transition-colors neon-green-heading">
+                مستقبل التفاعل الرقمي
+              </span>
             </div>
           </motion.div>
           
           {/* Main Title */}
-          <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-tight relative z-20 font-arabic brand-gradient-text" dir="rtl">
+          <motion.h1
+            variants={itemVariants}
+            className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-tight relative z-20 font-arabic brand-gradient-text"
+            dir="rtl"
+          >
             <span className="block mb-4 drop-shadow-2xl opacity-90 hover:opacity-100 transition-opacity">
               مستقبل التفاعل الرقمي..
             </span>
@@ -160,10 +166,10 @@ const Hero = () => {
             </span>
           </motion.h1>
 
-          <motion.h2 variants={itemVariants} className="text-xl md:text-2xl font-bold text-gray-300 mb-12 relative z-20 max-w-3xl mx-auto leading-relaxed">
+          <motion.h2 variants={itemVariants} className="text-xl md:text-2xl font-bold mb-12 relative z-20 max-w-3xl mx-auto leading-relaxed brand-gradient-text">
             The Future of Digital Engagement.. Where Your Time is Your Asset.
             <br className="hidden md:block" />
-            <span className="block mt-2 font-arabic text-base md:text-lg text-[#53FC18]">
+            <span className="block mt-2 font-arabic text-base md:text-lg">
               مستقبل التفاعل الرقمي حيث يصبح وقتك أصلًا حقيقيًا.
             </span>
           </motion.h2>
@@ -178,10 +184,10 @@ const Hero = () => {
                         <TrendingUp className="text-[#53FC18]" size={32} />
                      </div>
                      <div>
-                         <h4 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                            <span className="text-[#53FC18]">300%</span> Growth
+                         <h4 className="text-2xl font-bold mb-2 flex items-center gap-2 brand-gradient-text">
+                            <span className="font-black">300%</span> Growth
                          </h4>
-                         <p className="text-gray-300 text-base leading-relaxed">
+                         <p className="text-base leading-relaxed brand-gradient-text">
                            Projected ecosystem growth through our unique Watch-to-Earn mechanism and strategic token burns.
                          </p>
                      </div>
@@ -195,13 +201,13 @@ const Hero = () => {
                          <h4 className="text-2xl font-bold mb-2 flex items-center gap-2 brand-gradient-text">
                             <Globe size={24} /> The Vision | الرؤية
                          </h4>
-                         <p className="text-gray-300 text-base leading-relaxed">
+                         <p className="text-base leading-relaxed brand-gradient-text">
                            We are redefining the rules of the digital content industry. Instead of the viewer being just a statistic, we transform them into a true partner in success.
                          </p>
                      </div>
                      <div className="hidden md:block w-px h-auto bg-white/10"></div>
                      <div className="flex-1">
-                        <p className="text-gray-300 text-base leading-relaxed font-arabic" dir="rtl">
+                        <p className="text-base leading-relaxed font-arabic brand-gradient-text" dir="rtl">
                             يعيد مشروعنا تشكيل قواعد صناعة المحتوى الرقمي، حيث لا يكون المشاهد مجرد رقم في الإحصائيات، بل شريك حقيقي في النجاح من خلال نظام ربح موزع بعدالة على أساس الجهد والتفاعل لا على الحظ.
                         </p>
                      </div>
@@ -259,8 +265,10 @@ const Hero = () => {
 
           {/* How It Works Grid */}
           <motion.div variants={itemVariants}>
-             <h3 className="text-3xl font-bold mb-10 text-center relative z-20">
-               <span className="block text-[#53FC18] text-sm tracking-widest uppercase mb-2">How It Works</span>
+             <h3 className="text-3xl font-bold mb-10 text-center relative z-20 brand-gradient-text">
+               <span className="block text-sm tracking-widest uppercase mb-2">
+                 How It Works
+               </span>
                كيف يعمل النظام؟
              </h3>
              

@@ -105,7 +105,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen text-white font-sans relative overflow-hidden flex items-center justify-center bg-gradient-to-b from-[#020308] via-[#050816] to-[#020308]">
+    <div className="min-h-screen text-white font-sans relative overflow-hidden flex items-center justify-center bg-gradient-to-b from-[#020308] via-[#050816] to-[#020308] empire-gradient-page">
       <BackgroundEffects forceVisible={true} />
       
       <div className="relative z-10 w-full max-w-md p-6">

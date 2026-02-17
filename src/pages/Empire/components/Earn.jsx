@@ -1288,7 +1288,7 @@ const Earn = () => {
   const isProfileLocked = kickUsername && walletAddress && isProfileSaved;
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 lg:p-8 pt-24">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 pt-24 empire-gradient-page">
       {/* Copy Code Modal */}
       {showCopyCodeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
@@ -1390,13 +1390,15 @@ const Earn = () => {
 
 
 
-      <motion.div
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">Earn Points</h1>
-          <p className="text-gray-300 text-xl max-w-2xl mx-auto leading-relaxed">
+          <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight brand-gradient-text">
+            Earn Points
+          </h1>
+          <p className="text-xl max-w-2xl mx-auto leading-relaxed brand-gradient-text">
             Complete tasks to earn points and climb the leaderboard.
             Choose a category below to get started.
           </p>
@@ -1772,7 +1774,7 @@ const Earn = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-3">
                     <Shield className="text-[#53FC18]" />
-                    <h2 className="text-xl font-bold">Fair Play & Transparency Rules</h2>
+                    <h2 className="text-xl font-bold brand-gradient-text">Fair Play & Transparency Rules</h2>
                 </div>
                 <div className="flex items-center gap-3 md:flex-row-reverse text-right" dir="rtl">
                     <Shield className="text-[#53FC18] md:hidden" />
@@ -1787,7 +1789,7 @@ const Earn = () => {
                 {/* English Section */}
                 <div className="space-y-6">
                     <div>
-                        <h3 className="text-white font-bold mb-2 flex items-center gap-2">
+                        <h3 className="font-bold mb-2 flex items-center gap-2 brand-gradient-text">
                             <Info size={16} className="text-[#983695]" />
                             Community Motto
                         </h3>
@@ -1815,7 +1817,7 @@ const Earn = () => {
                 {/* Arabic Section */}
                 <div className="space-y-6 text-right" dir="rtl">
                     <div>
-                        <h3 className="text-white font-bold mb-2 flex items-center gap-2 justify-end font-arabic">
+                        <h3 className="font-bold mb-2 flex items-center gap-2 justify-end font-arabic brand-gradient-text">
                             شعار المجتمع
                             <Info size={16} className="text-[#983695]" />
                         </h3>

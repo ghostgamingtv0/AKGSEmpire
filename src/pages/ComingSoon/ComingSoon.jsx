@@ -216,7 +216,7 @@ const ComingSoon = () => {
       : 'Connect Genesis Gate to generate your referral link');
 
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4">
+    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4 empire-gradient-page">
       <BackgroundEffects />
 
       <div className="relative z-10 max-w-7xl w-full text-center flex flex-col items-center pt-10 pb-10">
@@ -404,26 +404,26 @@ const ComingSoon = () => {
 
         <div className="w-full max-w-3xl mx-auto mb-12 bg-black/70 border border-[#53FC18]/40 rounded-3xl px-6 py-6 md:px-8 md:py-8 shadow-[0_0_35px_rgba(83,252,24,0.25)]">
           <div className="grid grid-cols-2 gap-6 items-start">
-            <div dir="rtl" className="space-y-2 text-right font-arabic">
-              <h2 className="font-bold text-xl md:text-2xl brand-gradient-text">
-                حدث الجينيسيس – نهضة القادة الأوائل
-              </h2>
-              <p className="text-gray-200 text-sm md:text-base leading-relaxed">
-                خزينة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لـ أفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
-              </p>
-              <p className="text-gray-200 text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
-                الخطة الاستراتيجية: بمجرد انتهاء الأسبوع الأول، يُفعل "بروتوكول الاستمرارية". احصد 50 نقطة يومياً، لكن احذر؛ فاليوم الذي تغيب فيه يتصفر عدادك. أثبت ولاءك لـ 4 أيام متتالية لتفعيل مضاعف القوة x3.
-              </p>
-            </div>
             <div className="space-y-2">
               <h2 className="font-heading text-xs md:text-sm tracking-[0.3em] uppercase brand-gradient-text">
-                GENESIS EVENT: THE RISE OF COMMANDERS
+                INSIDE THE EMPIRE: GENESIS COMMANDERS
               </h2>
               <p className="text-gray-200 text-sm md:text-base leading-relaxed">
-                A pool of 150,000,000 $AKGS & 50 Exclusive Genesis NFTs awaits the elite. This ultimate bounty is reserved strictly for the Top 100 Commanders who prove their dominance through relentless engagement on Kick & Instagram.
+                Inside the AKGS Empire, a dedicated vault of 150,000,000 $AKGS and 50 royal Genesis NFTs is reserved for the earliest commanders. Every meaningful action across our linked platforms pushes you closer to that inner circle.
               </p>
               <p className="text-gray-200 text-sm md:text-base leading-relaxed">
-                The Strategy: After the Genesis week, the Daily Streak Protocol begins. Gain +50 points daily. Be warned: Missing a day resets your progress. Hold your ground for 4 consecutive days to trigger the x3 Multiplier.
+                Within this system, the Daily Continuity Protocol governs your progress: earn +50 points for each active day, but going silent resets your streak. Hold your position for 4 consecutive days to trigger the x3 power multiplier and secure your status inside the Empire.
+              </p>
+            </div>
+            <div dir="rtl" className="space-y-2 text-right font-arabic">
+              <h2 className="font-bold text-xl md:text-2xl brand-gradient-text">
+                داخل الإمبراطورية – مرحلة الجينيسيس للقادة الأوائل
+              </h2>
+              <p className="text-gray-200 text-sm md:text-base leading-relaxed">
+                داخل إمبراطورية AKGS توجد خزينة مخصّصة تحتوي على 150,000,000 ‎$AKGS‎ و 50 ‎NFT‎ ملكي، محجوزة للقادة الأوائل فقط. كل تفاعل حقيقي داخل المنصات المرتبطة بالإمبراطورية يقرّبك خطوة نحو دائرة النخبة.
+              </p>
+              <p className="text-gray-200 text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
+                داخل النظام يعمل بروتوكول الاستمرارية اليومية؛ احصد ‎50‎ نقطة عن كل يوم حضور وتفاعل، لكن احذر.. أي يوم تغيب فيه يصفر عدّادك. حافظ على استمراريتك لـ 4 أيام متتالية لتفعيل مضاعف القوة ×3 وترسيخ مكانتك داخل الإمبراطورية.
               </p>
             </div>
           </div>
@@ -464,7 +464,7 @@ const ComingSoon = () => {
                             <CheckCircle2 size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide">
+                            <h4 className="font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide brand-gradient-text">
                                 Strategic Feasibility Study
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold">DONE</span>
                             </h4>
@@ -479,7 +479,7 @@ const ComingSoon = () => {
                             <ShieldCheck size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide">
+                            <h4 className="font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide brand-gradient-text">
                                 Legal & IP Protection
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold">DONE</span>
                             </h4>
@@ -494,7 +494,7 @@ const ComingSoon = () => {
                             <MonitorCheck size={20} className="text-[#53FC18]" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-white font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide">
+                            <h4 className="font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide brand-gradient-text">
                                 Platform Development
                                 <span className="text-[#53FC18] text-[10px] px-1.5 py-0.5 rounded bg-[#53FC18]/10 border border-[#53FC18]/30 font-sans font-bold animate-pulse">IN PROGRESS</span>
                             </h4>
@@ -509,7 +509,7 @@ const ComingSoon = () => {
                             <Rocket size={20} className="text-gray-500" />
                         </div>
                         <div className="flex-1 pt-1">
-                            <h4 className="text-gray-400 font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide">
+                            <h4 className="font-bold flex items-center gap-2 text-base md:text-lg font-heading tracking-wide brand-gradient-text">
                                 Global Launch
                                 <span className="text-gray-500 text-[10px] px-1.5 py-0.5 rounded bg-gray-500/10 border border-gray-500/30 font-sans font-bold">UPCOMING</span>
                             </h4>
@@ -534,7 +534,7 @@ const ComingSoon = () => {
                                 <Zap size={24} />
                             </div>
                             <div>
-                                <h4 className="text-white font-bold text-xl mb-2 font-heading">Watch & Earn</h4>
+                                <h4 className="font-bold text-xl mb-2 font-heading brand-gradient-text">Watch & Earn</h4>
                                 <p className="text-gray-100 text-sm md:text-base leading-relaxed">Earn while watching hand‑picked content. Every session strengthens your position inside the empire.</p>
                             </div>
                         </div>
@@ -546,7 +546,7 @@ const ComingSoon = () => {
                                 <TrendingUp size={24} />
                             </div>
                             <div>
-                                <h4 className="text-white font-bold text-xl mb-2 font-heading">Social Growth</h4>
+                                <h4 className="font-bold text-xl mb-2 font-heading brand-gradient-text">Social Growth</h4>
                                 <p className="text-gray-100 text-sm md:text-base leading-relaxed">Grow your social presence while stacking points. Connect, engage, and expand your reach with AKGS.</p>
                             </div>
                         </div>
@@ -558,7 +558,7 @@ const ComingSoon = () => {
                                 <HeartHandshake size={24} />
                             </div>
                             <div>
-                                <h4 className="text-white font-bold text-xl mb-2 font-heading">Community First</h4>
+                                <h4 className="font-bold text-xl mb-2 font-heading brand-gradient-text">Community First</h4>
                                 <p className="text-gray-100 text-sm md:text-base leading-relaxed">Designed with the community at the core. Fair rewards, clear rules, and transparent tracking.</p>
                             </div>
                         </div>
@@ -570,7 +570,7 @@ const ComingSoon = () => {
                                 <Send size={24} />
                             </div>
                             <div className="flex-1">
-                                <h4 className="text-white font-bold text-2xl mb-3 font-heading tracking-wide uppercase">Referral Command Link</h4>
+                                <h4 className="font-bold text-2xl mb-3 font-heading tracking-wide uppercase brand-gradient-text">Referral Command Link</h4>
                                 <p className="text-gray-100 text-base md:text-lg leading-relaxed mb-3">
                                     Forge your personal invite link. Every verified signup through your link instantly grants you
                                     <span className="text-[#53FC18] font-bold"> 500 points</span> and pushes your rank forward inside the empire.
@@ -600,7 +600,7 @@ const ComingSoon = () => {
                                 <Tv size={24} />
                             </div>
                             <div className="flex-1">
-                                <h4 className="text-white font-bold text-lg mb-2 font-heading">Contracts</h4>
+                                <h4 className="font-bold text-lg mb-2 font-heading brand-gradient-text">Contracts</h4>
                                 <div className="text-gray-400 text-sm leading-relaxed space-y-2">
                                     <div className="flex items-center gap-2">
                                         <span className="text-[#53FC18] font-bold">Token</span>

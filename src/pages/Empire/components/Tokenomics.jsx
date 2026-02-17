@@ -14,14 +14,16 @@ const Tokenomics = () => {
   ];
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden empire-gradient-page">
       <div className="max-w-7xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">TOKENOMICS</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 brand-gradient-text">
+            TOKENOMICS
+          </h2>
           <div className="h-1 w-24 bg-[#53FC18] mx-auto rounded-full"></div>
         </motion.div>
 
@@ -143,8 +145,8 @@ const Tokenomics = () => {
               <div className="inline-flex p-4 rounded-2xl bg-[#983695]/10 text-[#983695] mb-6 group-hover:scale-110 group-hover:bg-[#983695] group-hover:text-black transition-all duration-300 shadow-[0_0_25px_rgba(152,54,149,0.3)]">
                 {item.icon}
               </div>
-              <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-              <p className="text-gray-400 text-sm">{item.desc}</p>
+              <h3 className="text-xl font-bold mb-2 brand-gradient-text">{item.title}</h3>
+              <p className="text-sm brand-gradient-text">{item.desc}</p>
             </div>
           ))}
         </div>

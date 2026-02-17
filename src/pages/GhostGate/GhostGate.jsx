@@ -224,7 +224,7 @@ const GhostGate = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden flex items-center justify-center">
+        <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden flex items-center justify-center empire-gradient-page">
             {/* Background Layers */}
             <SceneOneBackground />
 
@@ -302,7 +302,7 @@ const GhostGate = () => {
                                         <div>
                                             <div className="flex items-center justify-center gap-3 mb-3">
                                                 <Globe className="text-[#53FC18] animate-[spin_10s_linear_infinite]" size={24} />
-                                                <h3 className="text-xl md:text-2xl font-black text-white tracking-[0.5em] font-heading">
+                                                <h3 className="text-xl md:text-2xl font-black tracking-[0.5em] font-heading brand-gradient-text">
                                                     EMPIRE VAULT
                                                 </h3>
                                                 <Globe className="text-[#53FC18] animate-[spin_10s_linear_infinite_reverse]" size={24} />

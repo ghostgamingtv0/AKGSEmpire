@@ -53,7 +53,7 @@ const AKGsannance = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4">
+    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4 empire-gradient-page">
       {/* Background Effects */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(83,252,24,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(83,252,24,0.03)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
@@ -73,7 +73,7 @@ const AKGsannance = () => {
         </div>
 
         {/* Main Title */}
-        <h1 className="text-4xl md:text-7xl font-black mb-2 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#53FC18] to-white uppercase tracking-tighter font-heading">
+        <h1 className="text-4xl md:text-7xl font-black mb-2 leading-tight uppercase tracking-tighter font-heading brand-gradient-text">
           AKGS EMPIRE
         </h1>
         

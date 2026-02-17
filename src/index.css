@@ -5,27 +5,9 @@
 @layer base {
   body {
     @apply overflow-x-hidden;
-    color: #983695;
+    color: #e5e7eb;
     background: radial-gradient(circle at top, #050816 0%, #020308 40%, #010104 100%);
     text-shadow: 0 0 6px rgba(152, 54, 149, 0.5);
-  }
-
-  h1, h2, h3, h4, h5, h6,
-  p, span, a, li, label, button {
-    background-image: linear-gradient(
-      90deg,
-      #c38aff 0%,
-      #983695 25%,
-      #53FC18 50%,
-      #983695 75%,
-      #c38aff 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow:
-      0 0 6px rgba(195, 138, 255, 0.6),
-      0 0 12px rgba(83, 252, 24, 0.7);
   }
 }
 
@@ -45,20 +27,6 @@
     text-shadow: 0 0 5px rgba(152, 54, 149, 0.45);
   }
 
-  .text-white {
-    color: #c9a6f0 !important;
-    text-shadow: 0 0 6px rgba(195, 138, 255, 0.6);
-  }
-
-  .text-gray-50,
-  .text-gray-100,
-  .text-gray-200,
-  .text-gray-300,
-  .text-gray-400,
-  .text-gray-500 {
-    color: inherit;
-  }
-
   .text-\[\#53FC18\] {
     color: #53FC18;
     text-shadow: 0 0 6px rgba(83, 252, 24, 0.6);
@@ -68,6 +36,19 @@
     color: #983695;
     text-shadow: 0 0 6px rgba(152, 54, 149, 0.6);
   }
+
+  svg.text-brand-purple { color: #983695; }
+  svg.text-brand-green { color: #53FC18; }
+  svg.text-brand-soft { color: #c9a6f0; }
+  svg.text-white { color: #ffffff; }
+  svg.text-gray-50,
+  svg.text-gray-100,
+  svg.text-gray-200,
+  svg.text-gray-300,
+  svg.text-gray-400,
+  svg.text-gray-500 { color: #d1d5db; }
+  svg.text-\[\#53FC18\] { color: #53FC18; }
+  svg.text-\[\#983695\] { color: #983695; }
 }
 
 @layer components {
@@ -92,8 +73,44 @@
       #8a5cff 100%
     );
     text-shadow:
-      0 0 8px rgba(83, 252, 24, 0.6),
-      0 0 16px rgba(83, 252, 24, 0.8);
+      0 0 12px rgba(152, 54, 149, 0.75),
+      0 0 12px rgba(83, 252, 24, 0.75);
+  }
+
+  .neon-green-heading {
+    color: #53FC18;
+    text-shadow:
+      0 0 10px rgba(83, 252, 24, 0.9),
+      0 0 20px rgba(83, 252, 24, 0.7),
+      0 0 40px rgba(83, 252, 24, 0.5);
+  }
+
+  .empire-gradient-page h1,
+  .empire-gradient-page h2,
+  .empire-gradient-page h3,
+  .empire-gradient-page h4,
+  .empire-gradient-page h5,
+  .empire-gradient-page h6,
+  .empire-gradient-page p,
+  .empire-gradient-page span,
+  .empire-gradient-page li,
+  .empire-gradient-page label,
+  .empire-gradient-page strong,
+  .empire-gradient-page em,
+  .empire-gradient-page i,
+  .empire-gradient-page small {
+    background-image: linear-gradient(
+      90deg,
+      #8a5cff 0%,
+      #53FC18 50%,
+      #8a5cff 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow:
+      0 0 12px rgba(152, 54, 149, 0.75),
+      0 0 12px rgba(83, 252, 24, 0.75);
   }
   
   .btn-primary {
