@@ -12,7 +12,10 @@ export const TIKTOK_CONFIG = {
 
 export async function handleTikTokRequest(request, url) {
     // 1. TikTok Login Redirect
-    if (url.pathname === "/api/tiktok/login") {
+    if (
+        url.pathname === "/api/tiktok/login" ||
+        url.pathname === "/empire/api/tiktok/login"
+    ) {
         const csrfState = Math.random().toString(36).substring(7);
         // Force HTTPS for redirect URI
         const origin = url.origin.replace('http:', 'https:');
