@@ -246,7 +246,9 @@ const Dashboard = () => {
             <h1 className="text-5xl md:text-6xl font-black mb-6 tracking-tight brand-gradient-text">
               Dashboard
             </h1>
-            <p className="text-gray-300 text-lg">Track your progress and ecosystem stats</p>
+            <p className="text-gray-200 text-xl md:text-2xl leading-relaxed">
+              Track your progress and ecosystem stats
+            </p>
           </div>
         </motion.div>
 

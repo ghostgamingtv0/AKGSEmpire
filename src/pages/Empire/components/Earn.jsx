@@ -1370,16 +1370,16 @@ const Earn = () => {
 
 
       {showConsentModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-          <div className="bg-[#050505] border border-[#53FC18]/40 rounded-2xl max-w-md w-full p-6 shadow-[0_0_30px_rgba(83,252,24,0.4)]">
-            <h3 className="text-xl font-bold text-white mb-3" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md px-4">
+          <div className="bg-[#050505] border border-[#53FC18]/50 rounded-2xl max-w-lg w-full p-7 shadow-[0_0_40px_rgba(83,252,24,0.5)]">
+            <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-4 tracking-wide" dir="rtl">
               موافقة على ربط حساب {consentAction === 'kick-connect' ? 'Kick' : 'TikTok'}
             </h3>
-            <p className="text-sm text-gray-300 mb-3" dir="rtl">
+            <p className="text-base md:text-lg text-gray-200 mb-3 leading-relaxed" dir="rtl">
               بالضغط على «أوافق» فأنت تمنح AKGS Empire إذنًا لقراءة بيانات حسابك العامة
               وربطها بهويتك داخل الإمبراطورية لأغراض التحقق، احتساب النقاط، وتوثيق تقدمك في المهام.
             </p>
-            <p className="text-xs text-gray-500 mb-4" dir="rtl">
+            <p className="text-sm text-gray-400 mb-5 leading-relaxed" dir="rtl">
               يمكن إلغاء الربط لاحقًا عن طريق حذف بيانات المتصفح أو طلب مسح البيانات من فريق الدعم.
             </p>
             <div className="flex justify-end gap-3">
