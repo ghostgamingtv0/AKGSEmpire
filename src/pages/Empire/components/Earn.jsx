@@ -463,18 +463,6 @@ const Earn = () => {
       icon: <ProjectNFTIcon color="#53FC18" tier="3x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
-      id: 17, 
-      type: 'social', 
-      platform: 'Facebook', 
-      action: 'Follow on Facebook', 
-      reward: '5 Points', 
-      status: 'pending', 
-      link: SOCIAL_LINKS.FACEBOOK,
-      icon: (
-        <FaFacebook className="w-6 h-6 text-[#1877F2]" />
-      )
-    },
-    { 
       id: 18, 
       type: 'nft', 
       platform: 'Kick', 
@@ -813,7 +801,6 @@ const Earn = () => {
         'Telegram': SOCIAL_LINKS.TELEGRAM,
         'TikTok': SOCIAL_LINKS.TIKTOK,
         'Threads': SOCIAL_LINKS.THREADS,
-        'Facebook': SOCIAL_LINKS.FACEBOOK,
         'Instagram': SOCIAL_LINKS.INSTAGRAM,
         'Discord': SOCIAL_LINKS.DISCORD,
         'YouTube': 'https://www.youtube.com/@ghostgamingtvGhost.gamingtv'

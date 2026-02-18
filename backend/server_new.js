@@ -200,23 +200,9 @@ app.post('/api/social/check-account', async (req, res) => {
     if (!cleanUsername) {
         return res.status(400).json({ success: false, error: 'Empty username' });
     }
-    let url;
-    if (platform === 'instagram') {
-        url = `https://www.instagram.com/${encodeURIComponent(cleanUsername)}/`;
-    } else if (platform === 'facebook') {
-        url = `https://www.facebook.com/${encodeURIComponent(cleanUsername)}`;
-    } else if (platform === 'threads') {
-        url = `https://www.threads.net/@${encodeURIComponent(cleanUsername)}`;
-    } else {
-        return res.status(400).json({ success: false, error: 'Unsupported platform' });
-    }
     try {
-        const axios = (await import('axios')).default;
-        const response = await axios.get(url, { validateStatus: () => true, timeout: 5000 });
-        const status = response.status || 0;
-        const exists = status >= 200 && status < 400 && status !== 404;
-        appendEventLog('social_account_check', req, { platform, username: cleanUsername, url, status, exists });
-        return res.json({ success: true, exists });
+        appendEventLog('social_account_check_disabled', req, { platform, username: cleanUsername });
+        return res.json({ success: true, exists: true });
     } catch (e) {
         appendEventLog('social_account_check_error', req, { platform, username: cleanUsername, error: e.message });
         return res.json({ success: true, exists: false });

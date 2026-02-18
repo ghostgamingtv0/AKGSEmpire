@@ -136,13 +136,6 @@ const ComingSoon = () => {
         color: '#ffffff' 
       },
       { 
-        id: 'facebook',
-        label: 'Facebook', 
-        url: SOCIAL_LINKS.FACEBOOK, 
-        icon: FaFacebook, 
-        color: '#1877F2' 
-      },
-      { 
         id: 'instagram',
         label: 'Instagram', 
         url: SOCIAL_LINKS.INSTAGRAM, 
@@ -345,7 +338,7 @@ const ComingSoon = () => {
                           }
                           return;
                         }
-                        if (usernameForCheck && (link.id === 'instagram' || link.id === 'facebook' || link.id === 'threads')) {
+                        if (usernameForCheck && (link.id === 'instagram' || link.id === 'threads')) {
                           fetch('/api/social/check-account', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },

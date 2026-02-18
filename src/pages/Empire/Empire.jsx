@@ -148,7 +148,6 @@ const Footer = () => (
           { name: 'Twitter', url: SOCIAL_LINKS.TWITTER },
           { name: 'Telegram', url: SOCIAL_LINKS.TELEGRAM },
           { name: 'Discord', url: SOCIAL_LINKS.DISCORD },
-          { name: 'Facebook', url: SOCIAL_LINKS.FACEBOOK },
           { name: 'Instagram', url: SOCIAL_LINKS.INSTAGRAM },
           { name: 'TikTok', url: SOCIAL_LINKS.TIKTOK },
           { name: 'Threads', url: SOCIAL_LINKS.THREADS },

@@ -1,6 +1,4 @@
 import { handleTikTokRequest } from './api_social_media/tiktok/router.js';
-import { handleFacebookRequest } from './api_social_media/facebook/router.js';
-import { handleInstagramRequest } from './api_social_media/instagram/router.js';
 import { handleKickRequest, KICK_CONFIG } from './api_social_media/kick/router.js';
 
 export default {
@@ -377,8 +375,6 @@ export default {
     let response = null;
 
     if (!response) response = await handleTikTokRequest(request, url);
-    if (!response) response = await handleFacebookRequest(request, url);
-    if (!response) response = await handleInstagramRequest(request, url);
     if (!response) response = await handleKickRequest(request, url);
     
     // If no API handled it, fetch assets
