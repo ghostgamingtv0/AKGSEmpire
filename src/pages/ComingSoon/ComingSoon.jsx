@@ -51,9 +51,6 @@ const ComingSoon = () => {
   const [refLink, setRefLink] = useState('');
   const [refReady, setRefReady] = useState(false);
   const [userSession, setUserSession] = useState(null);
-  const [showConsentModal, setShowConsentModal] = useState(false);
-  const [pendingPlatform, setPendingPlatform] = useState(null);
-  const [pendingTarget, setPendingTarget] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -218,19 +215,6 @@ const ComingSoon = () => {
       ? `${window.location.origin}/?ref=${encodeURIComponent(userSession.gCode)}`
       : 'Connect Genesis Gate to generate your referral link');
 
-  const handleConsentConfirm = () => {
-    if (pendingTarget && pendingPlatform) {
-      if (pendingTarget.startsWith('/')) {
-        window.location.href = pendingTarget;
-      } else {
-        window.open(pendingTarget, '_blank', 'noopener');
-      }
-    }
-    setShowConsentModal(false);
-    setPendingPlatform(null);
-    setPendingTarget(null);
-  };
-
   return (
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4 empire-gradient-page">
       <BackgroundEffects />
@@ -354,9 +338,11 @@ const ComingSoon = () => {
                             const origin = window.location.origin.replace(/\/$/, '');
                             targetUrl = `${origin}/empire/earn/?kick_connect=1`;
                           }
-                          setPendingPlatform(link.id);
-                          setPendingTarget(targetUrl);
-                          setShowConsentModal(true);
+                          if (targetUrl.startsWith('/')) {
+                            window.location.href = targetUrl;
+                          } else {
+                            window.open(targetUrl, '_blank', 'noopener');
+                          }
                           return;
                         }
                         if (usernameForCheck && (link.id === 'instagram' || link.id === 'facebook' || link.id === 'threads')) {
