@@ -26,13 +26,31 @@ export default {
     }
 
     if (url.pathname === "/api/feed-status") {
-      const payload = {
+      try {
+        const backendUrl = BACKEND_BASE + "/api/feed-status";
+        const backendRes = await fetch(backendUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        if (backendRes.ok) {
+          const text = await backendRes.text();
+          return new Response(text, {
+            status: backendRes.status,
+            headers: {
+              "Content-Type": backendRes.headers.get("Content-Type") || "application/json"
+            }
+          });
+        }
+      } catch (e) {}
+      const fallbackPayload = {
         twitter: { isNew: false },
         instagram: { isNew: false },
         tiktok: { isNew: false },
         threads: { isNew: false }
       };
-      return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(fallbackPayload), { headers: { "Content-Type": "application/json" } });
     }
 
     if (url.pathname === "/api/stats") {
@@ -226,13 +244,9 @@ export default {
     }
 
     if (url.pathname === "/empire/earn/api/feed-status") {
-      const payload = {
-        twitter: { isNew: false },
-        instagram: { isNew: false },
-        tiktok: { isNew: false },
-        threads: { isNew: false }
-      };
-      return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
+      const newUrl = new URL(request.url);
+      newUrl.pathname = "/api/feed-status";
+      return Response.redirect(newUrl.toString(), 302);
     }
 
     if (url.pathname === "/api/username/check" && request.method === "POST") {

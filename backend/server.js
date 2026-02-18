@@ -1349,7 +1349,7 @@ const checkNewContent = async () => {
                 const isNew = pubDate > twentyFourHoursAgo;
                 
                 feedCache[platform] = {
-                    isNew: isNew,
+                    isNew,
                     date: pubDate,
                     link: latestItem.link
                 };
@@ -1366,6 +1366,11 @@ const checkNewContent = async () => {
 setInterval(checkNewContent, 15 * 60 * 1000);
 // Initial check after 5 seconds
 setTimeout(checkNewContent, 5000);
+
+// Public endpoint to expose feed status to frontend / worker
+app.get('/api/feed-status', (req, res) => {
+    res.json(feedCache);
+});
 
 // --- Social Verification (Graph API) ---
 const verifySocialComment = async (platform, gCode) => {
@@ -1515,10 +1520,10 @@ const myFeeds = {
 };
 
 let feedCache = {
-    instagram: { isNew: false, date: null },
-    tiktok: { isNew: false, date: null },
-    threads: { isNew: false, date: null },
-    twitter: { isNew: false, date: null }
+    instagram: { isNew: false, date: null, link: null },
+    tiktok: { isNew: false, date: null, link: null },
+    threads: { isNew: false, date: null, link: null },
+    twitter: { isNew: false, date: null, link: null }
 };
 
 // Kick Stats Management
