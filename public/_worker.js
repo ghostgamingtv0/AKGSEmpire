@@ -547,11 +547,81 @@ export default {
     if (url.pathname === "/api/kick/exchange-token" && request.method === "POST") {
         try {
             const body = await request.json();
+            const code = body?.code || null;
             const visitorId = body?.visitor_id || null;
-            const username = "Anonymous User";
+            const codeVerifier = body?.code_verifier || null;
+            const redirectUri = body?.redirect_uri || `${url.origin}/empire/earn/`;
+            if (!code || !codeVerifier) {
+                return new Response(JSON.stringify({ success: false, error: "Missing code or code_verifier" }), { status: 400, headers: { "Content-Type": "application/json" } });
+            }
+            const tokenParams = new URLSearchParams();
+            tokenParams.append("grant_type", "authorization_code");
+            tokenParams.append("client_id", KICK_CLIENT_ID);
+            tokenParams.append("client_secret", KICK_CLIENT_SECRET);
+            tokenParams.append("redirect_uri", redirectUri);
+            tokenParams.append("code", code);
+            tokenParams.append("code_verifier", codeVerifier);
+            const tokenRes = await fetch("https://id.kick.com/oauth/token", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: tokenParams
+            });
+            const tokenData = await tokenRes.json();
+            if (!tokenRes.ok || !tokenData.access_token) {
+                return new Response(JSON.stringify({ success: false, error: "Token exchange failed", details: tokenData }), { status: 400, headers: { "Content-Type": "application/json" } });
+            }
+            const accessToken = tokenData.access_token;
+            let username = null;
+            let profilePic = null;
+            try {
+                const userRes = await fetch("https://id.kick.com/oauth/userinfo", {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        Accept: "application/json"
+                    }
+                });
+                if (userRes.ok) {
+                    const userData = await userRes.json();
+                    const u = userData.data || userData;
+                    username = u.username || u.slug || u.preferred_username || u.name || null;
+                    profilePic = u.profile_pic || u.picture || null;
+                }
+            } catch (e) {}
+            if (!username) {
+                try {
+                    const altRes = await fetch("https://api.kick.com/api/v1/me", {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                            Accept: "application/json"
+                        }
+                    });
+                    if (altRes.ok) {
+                        const altData = await altRes.json();
+                        const u = altData.data || altData;
+                        username = u.username || u.slug || username;
+                        profilePic = profilePic || u.profile_pic || null;
+                    }
+                } catch (e) {}
+            }
+            let followers = null;
+            try {
+                const chRes = await fetch("https://api.kick.com/public/v1/channels", {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        Accept: "application/json"
+                    }
+                });
+                if (chRes.ok) {
+                    const chData = await chRes.json();
+                    const c = chData.data || chData;
+                    followers = c.followersCount || c.followers_count || (Array.isArray(c.followers) ? c.followers.length : null);
+                }
+            } catch (e) {}
             const resp = {
                 success: true,
-                username,
+                username: username || null,
+                profile_pic: profilePic || null,
+                followers: followers || null,
                 following: false,
                 is_profile_complete: false,
                 visitor_id: visitorId

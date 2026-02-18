@@ -167,17 +167,9 @@ const Dashboard = () => {
     }
   };
 
-  const handleKickSync = async () => {
-    // Generate PKCE
-    const codeVerifier = generateRandomString(128);
-    const codeChallenge = await generateCodeChallenge(codeVerifier);
-    
-    // Store verifier in localStorage for later verification
-    localStorage.setItem('kick_code_verifier', codeVerifier);
-    
-    const KICK_AUTH_URL = `https://id.kick.com/oauth/authorize?client_id=${import.meta.env.VITE_KICK_CLIENT_ID}&redirect_uri=${window.location.origin}&response_type=code&scope=user:read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-    
-    window.location.href = KICK_AUTH_URL;
+  const handleKickSync = () => {
+    const origin = window.location.origin.replace(/\/$/, '');
+    window.location.href = `${origin}/empire/earn/?kick_connect=1`;
   };
 
   const isStreamLive = globalStats.kick_is_live;

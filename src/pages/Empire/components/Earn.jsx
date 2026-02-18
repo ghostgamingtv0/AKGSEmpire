@@ -1137,7 +1137,17 @@ const Earn = () => {
     }
   };
 
-
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const trigger = params.get('kick_connect');
+    if (trigger === '1') {
+      params.delete('kick_connect');
+      const search = params.toString();
+      const newUrl = window.location.pathname + (search ? `?${search}` : '');
+      window.history.replaceState({}, document.title, newUrl);
+      handleKickConnect();
+    }
+  }, []);
 
   // Handle OAuth Callback Messages (Popup)
   useEffect(() => {

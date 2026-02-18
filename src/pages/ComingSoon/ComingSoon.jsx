@@ -220,7 +220,7 @@ const ComingSoon = () => {
 
   const handleConsentConfirm = () => {
     if (pendingTarget && pendingPlatform) {
-      if (pendingTarget.startsWith('/api/')) {
+      if (pendingTarget.startsWith('/')) {
         window.location.href = pendingTarget;
       } else {
         window.open(pendingTarget, '_blank', 'noopener');
@@ -347,17 +347,18 @@ const ComingSoon = () => {
                             target: link.url
                           })
                         }).catch(() => {});
-                            if (link.id === 'kick') {
-                              e.preventDefault();
-                              let targetUrl = link.url;
-                              if (hasGenesisSession) {
-                                targetUrl = '/api/kick/login';
-                              }
-                              setPendingPlatform(link.id);
-                              setPendingTarget(targetUrl);
-                              setShowConsentModal(true);
-                              return;
-                            }
+                        if (link.id === 'kick') {
+                          e.preventDefault();
+                          let targetUrl = link.url;
+                          if (hasGenesisSession) {
+                            const origin = window.location.origin.replace(/\/$/, '');
+                            targetUrl = `${origin}/empire/earn/?kick_connect=1`;
+                          }
+                          setPendingPlatform(link.id);
+                          setPendingTarget(targetUrl);
+                          setShowConsentModal(true);
+                          return;
+                        }
                         if (usernameForCheck && (link.id === 'instagram' || link.id === 'facebook' || link.id === 'threads')) {
                           fetch('/api/social/check-account', {
                             method: 'POST',
