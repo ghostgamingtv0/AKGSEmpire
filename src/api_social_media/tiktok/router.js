@@ -18,7 +18,7 @@ export async function handleTikTokRequest(request, url) {
     ) {
         const csrfState = Math.random().toString(36).substring(7);
         const origin = url.origin.replace('http:', 'https:');
-        const redirectUri = `${origin}/api/tiktok/callback`;
+        const redirectUri = `${origin}/empire/api/tiktok/callback`;
         const isDev = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
         const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
         
@@ -77,7 +77,7 @@ export async function handleTikTokRequest(request, url) {
             if (code) {
                 try {
                     const origin = url.origin.replace('http:', 'https:');
-                    const redirectUri = `${origin}/api/tiktok/callback`;
+                    const redirectUri = `${origin}/empire/api/tiktok/callback`;
                     const isDev = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
                     const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
                     const params = new URLSearchParams();
