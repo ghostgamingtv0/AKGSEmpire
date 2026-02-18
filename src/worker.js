@@ -160,6 +160,8 @@ export default {
 
     if (url.pathname.startsWith("/empire")) {
       const allowedExact = new Set([
+        "/empire",
+        "/empire/",
         "/empire/tiktok-developers-site-verification.txt",
         "/empire/terms.html",
         "/empire/privacy.html",
