@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap, Clock } from 'lucide-react';
 import { FaPlay, FaPowerOff } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
+import { SOCIAL_LINKS } from '../../../config/constants';
 
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 import MatrixBackground from '../../../components/MatrixBackground';
@@ -369,8 +370,8 @@ const Dashboard = () => {
                     </div>
                  </div>
                  
-                 <a 
-                   href="https://kick.com/ghost_gamingtv" 
+                <a 
+                  href={SOCIAL_LINKS.KICK} 
                    target="_blank" 
                    rel="noreferrer"
                    className="flex items-center gap-3 px-6 py-3 rounded-full font-bold bg-[#53FC18] text-black hover:bg-white hover:scale-105 shadow-[0_0_20px_rgba(83,252,24,0.4)] transition-all"

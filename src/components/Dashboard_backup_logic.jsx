@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap } from 'lucide-react';
 import { FaInstagram, FaShareNodes, FaPlay, FaPowerOff } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
+import { SOCIAL_LINKS } from '../config/constants';
 
 import { generateRandomString, generateCodeChallenge } from '../pkce';
 
@@ -353,8 +354,8 @@ const Dashboard = () => {
                 </div>
              </div>
              
-             <a 
-               href="https://kick.com/ghost_gamingtv" 
+            <a 
+              href={SOCIAL_LINKS.KICK} 
                target="_blank" 
                rel="noreferrer"
                className={`flex items-center gap-3 px-6 py-3 rounded-full font-bold transition-all ${
@@ -419,7 +420,7 @@ const Dashboard = () => {
                     data-theme="dark" 
                     data-height="600"
                     data-chrome="noheader,noborders,transparent"
-                    href="https://twitter.com/tv_ghostgaming"
+                    href={SOCIAL_LINKS.TWITTER}
                   >
                     Loading Tweets...
                   </a>
@@ -428,7 +429,7 @@ const Dashboard = () => {
              
              {/* Instagram Link */}
              <a 
-               href="https://www.instagram.com/ghost.gamingtv/" 
+               href={SOCIAL_LINKS.INSTAGRAM} 
                target="_blank" 
                rel="noreferrer"
                className="block relative overflow-hidden bg-gradient-to-r from-purple-900/20 to-pink-900/20 border border-white/10 rounded-2xl hover:border-pink-500/50 transition-all group h-[600px]"
