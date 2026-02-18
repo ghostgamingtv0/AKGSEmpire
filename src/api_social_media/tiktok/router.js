@@ -17,9 +17,8 @@ export async function handleTikTokRequest(request, url) {
         url.pathname === "/empire/api/tiktok/login"
     ) {
         const csrfState = Math.random().toString(36).substring(7);
-        // Force HTTPS for redirect URI
         const origin = url.origin.replace('http:', 'https:');
-        const redirectUri = `${origin}/empire/api/tiktok/callback`;
+        const redirectUri = `${origin}/api/tiktok/callback`;
         const isDev = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
         const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
         
@@ -74,10 +73,11 @@ export async function handleTikTokRequest(request, url) {
                 });
             }
             
-            // OAuth Code Exchange
+            // OAuth Code Exchange (must use the SAME redirect_uri as login)
             if (code) {
                 try {
-                    const redirectUri = `${url.origin}/empire/api/tiktok/callback`;
+                    const origin = url.origin.replace('http:', 'https:');
+                    const redirectUri = `${origin}/api/tiktok/callback`;
                     const isDev = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
                     const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
                     const params = new URLSearchParams();
