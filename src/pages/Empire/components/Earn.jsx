@@ -1145,7 +1145,8 @@ const Earn = () => {
       const search = params.toString();
       const newUrl = window.location.pathname + (search ? `?${search}` : '');
       window.history.replaceState({}, document.title, newUrl);
-      handleKickConnect();
+      setConsentAction('kick-connect');
+      setShowConsentModal(true);
     }
   }, []);
 
