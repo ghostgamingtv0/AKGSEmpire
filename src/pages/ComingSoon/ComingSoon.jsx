@@ -326,16 +326,9 @@ const ComingSoon = () => {
                         }).catch(() => {});
                         if (link.id === 'kick') {
                           e.preventDefault();
-                          let targetUrl = link.url;
-                          if (hasGenesisSession) {
-                            const origin = window.location.origin.replace(/\/$/, '');
-                            targetUrl = `${origin}/empire/earn/?kick_connect=1`;
-                          }
-                          if (targetUrl.startsWith('/')) {
-                            window.location.href = targetUrl;
-                          } else {
-                            window.open(targetUrl, '_blank', 'noopener');
-                          }
+                          const origin = window.location.origin.replace(/\/$/, '');
+                          const targetUrl = `${origin}/empire/earn/?kick_connect=1`;
+                          window.location.href = targetUrl;
                           return;
                         }
                         if (usernameForCheck && (link.id === 'instagram' || link.id === 'threads')) {
