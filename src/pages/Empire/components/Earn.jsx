@@ -910,7 +910,7 @@ const Earn = () => {
 
         if (task.platform === 'TikTok') {
             window.open(
-                `/empire/api/tiktok/login?visitor_id=7606798368987351096`,
+                SOCIAL_LINKS.TIKTOK,
                 'TikTokAuth',
                 `width=${width},height=${height},top=${top},left=${left}`
             );
