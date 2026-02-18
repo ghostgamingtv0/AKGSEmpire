@@ -30,11 +30,9 @@ export default {
     const FACEBOOK_CLIENT_SECRET = '861a257c043c1499e5e9aa77081a5769';
     const FACEBOOK_VERIFY_TOKEN = '2e68281baaf661cf70cad6e819f0070c';
 
-    // =================================================================================
-    // 4. KICK CONFIGURATION (INDEPENDENT)
-    // =================================================================================
     const KICK_CLIENT_ID = '01KH3T8WNDZ269403HKC17JN7X';
     const KICK_CLIENT_SECRET = 'c23959f212aca21f06584f80029291f71d4b26b537e21c1e1b8865737791f7ba';
+    const BACKEND_BASE = (env && env.BACKEND_BASE) ? env.BACKEND_BASE : 'https://akgs-empire.onrender.com';
 
     // =================================================================================
     // STATIC VERIFICATION FILES (Bypass SPA Routing)
@@ -49,8 +47,8 @@ export default {
             headers: { "Content-Type": "text/html" }
         });
     }
-    if (url.pathname === "/tiktok1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1.txt") {
-        return new Response("tiktok-developers-site-verification=1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1", {
+    if (url.pathname === "/tiktokLBOhRmLGMJ0y3f2BvRyYIXaLkNNKlRB7.txt") {
+        return new Response("tiktok-developers-site-verification=LBOhRmLGMJ0y3f2BvRyYIXaLkNNKlRB7", {
             headers: { "Content-Type": "text/plain" }
         });
     }
@@ -331,6 +329,24 @@ export default {
 
     if (url.pathname === "/api/stats") {
         try {
+            const backendUrl = BACKEND_BASE + "/api/stats" + url.search;
+            const backendRes = await fetch(backendUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            if (backendRes.ok) {
+                const text = await backendRes.text();
+                return new Response(text, {
+                    status: backendRes.status,
+                    headers: {
+                        "Content-Type": backendRes.headers.get("Content-Type") || "application/json"
+                    }
+                });
+            }
+        } catch (e) {}
+        try {
             const res = await fetch("https://kick.com/api/v1/channels/ghost_gamingtv", {
                 headers: {
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -357,7 +373,7 @@ export default {
                 };
                 return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
             }
-        } catch (e) {}
+        } catch (e2) {}
         const fallbackPayload = {
             success: true,
             kick_followers: 0,
@@ -381,34 +397,47 @@ export default {
 
     if (url.pathname === "/api/init-user" && request.method === "POST") {
         try {
-            const body = await request.json();
-            const visitor = body?.visitor_id || "visitor_unknown";
-            const gcode = "G-" + btoa(visitor).substring(0, 6).toUpperCase().replace(/[^A-Z0-9]/g, "X");
-            const resp = {
-                success: true,
-                visitor_id: visitor,
-                kick_username: body?.kick_username || null,
-                wallet_address: body?.wallet_address || null,
-                total_points: 0,
-                g_code: gcode
-            };
-            return new Response(JSON.stringify(resp), { headers: { "Content-Type": "application/json" } });
+            const backendUrl = BACKEND_BASE + "/api/init-user";
+            const bodyText = await request.text();
+            const backendRes = await fetch(backendUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: bodyText
+            });
+            const text = await backendRes.text();
+            return new Response(text, {
+                status: backendRes.status,
+                headers: {
+                    "Content-Type": backendRes.headers.get("Content-Type") || "application/json"
+                }
+            });
         } catch (e) {
-            return new Response(JSON.stringify({ error: "Init failed" }), { status: 400, headers: { "Content-Type": "application/json" } });
+            return new Response(JSON.stringify({ success: false, error: "Init backend unreachable" }), { status: 502, headers: { "Content-Type": "application/json" } });
         }
     }
 
     if (url.pathname === "/api/claim" && request.method === "POST") {
         try {
-            const body = await request.json();
-            const resp = {
-                success: true,
-                message: "Claim recorded",
-                points_added: body?.points || 5
-            };
-            return new Response(JSON.stringify(resp), { headers: { "Content-Type": "application/json" } });
+            const backendUrl = BACKEND_BASE + "/api/claim";
+            const bodyText = await request.text();
+            const backendRes = await fetch(backendUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: bodyText
+            });
+            const text = await backendRes.text();
+            return new Response(text, {
+                status: backendRes.status,
+                headers: {
+                    "Content-Type": backendRes.headers.get("Content-Type") || "application/json"
+                }
+            });
         } catch (e) {
-            return new Response(JSON.stringify({ success: false, message: "Invalid payload" }), { status: 400, headers: { "Content-Type": "application/json" } });
+            return new Response(JSON.stringify({ success: false, message: "Claim backend unreachable" }), { status: 502, headers: { "Content-Type": "application/json" } });
         }
     }
 
@@ -523,6 +552,24 @@ export default {
     }
     // Lightweight fallbacks to avoid JSON parse errors in Dashboard
     if (url.pathname === "/api/leaderboard") {
+        try {
+            const backendUrl = BACKEND_BASE + "/api/leaderboard" + url.search;
+            const backendRes = await fetch(backendUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            if (backendRes.ok) {
+                const text = await backendRes.text();
+                return new Response(text, {
+                    status: backendRes.status,
+                    headers: {
+                        "Content-Type": backendRes.headers.get("Content-Type") || "application/json"
+                    }
+                });
+            }
+        } catch (e) {}
         return new Response(JSON.stringify({ success: true, leaderboard: [] }), { headers: { "Content-Type": "application/json" } });
     }
     if (url.pathname === "/api/leaderboards") {
@@ -530,19 +577,6 @@ export default {
     }
     if (url.pathname === "/api/top-comments") {
         return new Response(JSON.stringify({ success: true, topComments: [] }), { headers: { "Content-Type": "application/json" } });
-    }
-    if (url.pathname === "/api/stats") {
-        const payload = {
-            success: true,
-            total_users: 0,
-            total_distributed: 0,
-            kick_followers: 0,
-            kick_viewers: 0,
-            kick_is_live: false,
-            weekly_growth: "+0",
-            kick_category: ""
-        };
-        return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } });
     }
     if (url.pathname === "/api/kick/exchange-token" && request.method === "POST") {
         try {

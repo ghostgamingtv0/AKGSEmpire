@@ -641,42 +641,7 @@ const ComingSoon = () => {
              </p>
         </div>
 
-        {showConsentModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md px-4">
-            <div className="bg-[#050505] border border-[#53FC18]/50 rounded-2xl max-w-lg w-full p-7 shadow-[0_0_40px_rgba(83,252,24,0.5)]">
-              <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-4 tracking-wide" dir="rtl">
-                موافقة على ربط حساب {pendingPlatform === 'kick' ? 'Kick' : 'TikTok'}
-              </h3>
-              <p className="text-base md:text-lg text-gray-200 mb-3 leading-relaxed" dir="rtl">
-                بالضغط على «أوافق» فأنت تمنح AKGS Empire إذنًا لقراءة بيانات حسابك العامة
-                وربطها بهويتك داخل الإمبراطورية لأغراض التحقق، احتساب النقاط، وتحديث حالة المهام.
-              </p>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed" dir="rtl">
-                يمكن إلغاء الربط لاحقًا عن طريق حذف بيانات المتصفح أو طلب مسح البيانات من فريق الدعم.
-              </p>
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  className="px-4 py-2 rounded-xl border border-white/15 text-sm font-bold text-gray-300 hover:bg-white/5 transition-colors"
-                  onClick={() => {
-                    setShowConsentModal(false);
-                    setPendingPlatform(null);
-                    setPendingTarget(null);
-                  }}
-                >
-                  إلغاء
-                </button>
-                <button
-                  type="button"
-                  className="px-4 py-2 rounded-xl bg-[#53FC18] text-black text-sm font-bold hover:bg-[#45d612] transition-colors shadow-[0_0_18px_rgba(83,252,24,0.45)]"
-                  onClick={handleConsentConfirm}
-                >
-                  أوافق
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Kick consent modal removed per latest requirements */}
       </div>
     </div>
   );
