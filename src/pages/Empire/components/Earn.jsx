@@ -905,6 +905,13 @@ const Earn = () => {
     }
 
     if (['TikTok', 'Instagram', 'Facebook', 'Threads'].includes(task.platform) && task.type === 'social') {
+        const isVerifying = verifyingTasks.includes(task.id);
+        if (isVerifying) {
+          await claimTask(task);
+          setVerifyingTasks(prev => prev.filter(id => id !== task.id));
+          return;
+        }
+
         const link = task.link || (() => {
             const map = {
                 'TikTok': SOCIAL_LINKS.TIKTOK,
