@@ -900,24 +900,17 @@ const Earn = () => {
     }
 
     if (['TikTok', 'Instagram', 'Facebook', 'Threads'].includes(task.platform) && task.type === 'social') {
-        const width = 600;
-        const height = 700;
-        const left = (window.innerWidth - width) / 2;
-        const top = (window.innerHeight - height) / 2;
-        const platformKey = task.platform.toLowerCase();
-
-        if (task.platform === 'TikTok') {
-            window.open(
-                SOCIAL_LINKS.TIKTOK,
-                'TikTokAuth',
-                `width=${width},height=${height},top=${top},left=${left}`
-            );
-        } else {
-            window.open(
-                `/api/${platformKey}/login?visitor_id=${visitorId}`, 
-                `${task.platform}Auth`, 
-                `width=${width},height=${height},top=${top},left=${left}`
-            );
+        const link = task.link || (() => {
+            const map = {
+                'TikTok': SOCIAL_LINKS.TIKTOK,
+                'Instagram': SOCIAL_LINKS.INSTAGRAM,
+                'Facebook': SOCIAL_LINKS.FACEBOOK,
+                'Threads': SOCIAL_LINKS.THREADS
+            };
+            return map[task.platform];
+        })();
+        if (link) {
+            window.open(link, '_blank');
         }
         return;
     }
