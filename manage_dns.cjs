@@ -4,7 +4,7 @@ const email = 'undercover00yt@gmail.com';
 const apiKey = '8a5ff10d5b679261be550f5daab0720d31520'; // Global API Key
 const zoneId = 'dd6f87708289237323be906271272de6';
 // We don't hardcode record ID here because we'll search for it first
-const txtValue = 'tiktok-developers-site-verification=OsbbaMIa84FaBVlSXk5yijKiexW8J6Pn';
+const txtValue = 'tiktok-developers-site-verification=LBOhRmLGMJ0y3f2BvRyYIXaLkNNKlRB7';
 
 function request(path, method = 'GET', body = null) {
     return new Promise((resolve, reject) => {

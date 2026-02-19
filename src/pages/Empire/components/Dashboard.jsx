@@ -125,11 +125,66 @@ const Dashboard = () => {
           setLeaderboard(lbData.leaderboard);
         }
 
-        // 5. Fetch Global Stats
-        const statsRes = await fetch(`${API_BASE}/api/stats`);
-        const statsData = await statsRes.json();
-        if (statsData.success) {
-          setGlobalStats(statsData);
+        // 5. Fetch Global Stats (Kick + Others)
+        try {
+          const statsRes = await fetch(`${API_BASE}/api/stats`);
+          if (statsRes.ok) {
+            const statsData = await statsRes.json();
+            if (statsData && (statsData.success || typeof statsData.kick_followers === 'number')) {
+              setGlobalStats(prev => ({
+                ...prev,
+                ...statsData
+              }));
+            }
+          }
+        } catch (e) {
+          console.error('Failed to fetch /api/stats, falling back to direct Kick API', e);
+        }
+
+        // 5b. Fallback: Always ensure Kick stats are fresh from Kick API
+        try {
+          const kickRes = await fetch('https://kick.com/api/v1/channels/ghost_gamingtv', {
+            headers: {
+              'User-Agent': 'Mozilla/5.0'
+            }
+          });
+          if (kickRes.ok) {
+            const kickData = await kickRes.json();
+            const followers =
+              kickData.followersCount ||
+              kickData.followers_count ||
+              0;
+            const isLive = !!kickData.livestream;
+            const viewers = isLive ? (kickData.livestream.viewer_count || 0) : 0;
+            const category =
+              (isLive && kickData.livestream && kickData.livestream.categories && kickData.livestream.categories[0]?.name) ||
+              (kickData.recent_categories && kickData.recent_categories[0]?.name) ||
+              'None';
+
+            setGlobalStats(prev => ({
+              ...prev,
+              kick_followers: followers,
+              kick_viewers: viewers,
+              kick_is_live: isLive,
+              kick_category: category
+            }));
+
+            try {
+              await fetch(`${API_BASE}/api/update-kick-stats`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  followers,
+                  viewers,
+                  is_live: isLive
+                })
+              });
+            } catch (e) {
+              console.error('Failed to sync Kick stats to backend', e);
+            }
+          }
+        } catch (e) {
+          console.error('Direct Kick API fetch failed', e);
         }
 
         // 6. Fetch Top Comments

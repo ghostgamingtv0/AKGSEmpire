@@ -694,40 +694,41 @@ const Earn = () => {
   };
 
   const proceedWithTask = async (task) => {
-    // Check New Post Flow
     let platformKey = task.platform.toLowerCase();
     if (platformKey.includes('twitter')) platformKey = 'twitter';
-    
+
     const feedData = feedStatus[platformKey];
     const isNewPost = feedData?.isNew;
     const targetLink = (isNewPost && feedData?.link) ? feedData.link : task.link;
 
-    if (isNewPost) {
-        if (confirmationTasks[task.id]?.readyToConfirm) {
-             await claimTask(task);
-             setConfirmationTasks(prev => {
-                 const next = { ...prev };
-                 delete next[task.id];
-                 return next;
-             });
-             return;
-        }
-        
-        if (!confirmationTasks[task.id]) {
-            // Start Timer & Open Link
-            window.open(targetLink, '_blank');
-            setConfirmationTasks(prev => ({ ...prev, [task.id]: { timeLeft: 60, readyToConfirm: false } }));
-             try {
-                fetch('/api/track-click', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ visitor_id: visitorId, wallet_address: walletAddress, task_url: targetLink })
-                });
-            } catch (e) { }
-            return;
-        }
-        // Timer running
-        return;
+    if (confirmationTasks[task.id]?.readyToConfirm) {
+      await claimTask(task);
+      setConfirmationTasks(prev => {
+        const next = { ...prev };
+        delete next[task.id];
+        return next;
+      });
+      return;
+    }
+
+    if (!confirmationTasks[task.id]) {
+      window.open(targetLink, '_blank');
+      setConfirmationTasks(prev => ({
+        ...prev,
+        [task.id]: { timeLeft: 60, readyToConfirm: false }
+      }));
+      try {
+        fetch('/api/track-click', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            visitor_id: visitorId,
+            wallet_address: walletAddress,
+            task_url: targetLink
+          })
+        });
+      } catch (e) {}
+      return;
     }
 
     if (verifyingTasks.includes(task.id)) {

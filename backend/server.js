@@ -1687,7 +1687,7 @@ app.get('/tiktok_callback.html', (req, res) => {
 
 app.get('/tiktok-developers-site-verification.txt', (req, res) => {
     res.type('text/plain');
-    res.send('tiktok-developers-site-verification=1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1');
+    res.send('tiktok-developers-site-verification=LBOhRmLGMJ0y3f2BvRyYIXaLkNNKlRB7');
 });
 
 // The "catchall" handler: for any request that doesn't

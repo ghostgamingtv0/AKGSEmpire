@@ -87,7 +87,7 @@ export async function handleTikTokRequest(request, url) {
                     params.append('grant_type', 'authorization_code');
                     params.append('redirect_uri', redirectUri);
 
-                    const tokenRes = await fetch('https://open.tiktokapis.com/v2/oauth/token/', {
+                    const tokenRes = await fetch('https://open.tiktok/apis.com/v2/oauth/token/', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: params
