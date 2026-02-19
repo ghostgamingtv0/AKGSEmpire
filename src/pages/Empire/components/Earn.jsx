@@ -470,7 +470,6 @@ const Earn = () => {
       icon: <ProjectNFTIcon color="#53FC18" tier="4x" imageSrc={NFT_IMAGE_REWARD} />
     },
     { 
-      id: 20, 
       type: 'nft', 
       platform: 'Kick', 
       action: '5x Subs or Gift Subs', 
@@ -480,6 +479,12 @@ const Earn = () => {
       icon: <ProjectNFTIcon color="#53FC18" tier="5x" imageSrc={NFT_IMAGE_REWARD} />
     },
   ];
+
+  const socialTasksList = tasks.filter(t => t.type === 'social' || t.type === 'watch');
+  const completedSocialTasks = socialTasksList.filter(t => claimedTasks.includes(t.id)).length;
+  const socialTasksCompletionPercent = socialTasksList.length > 0
+    ? Math.round((completedSocialTasks / socialTasksList.length) * 100)
+    : 0;
 
 
   // Listen for Kick connection from other tabs
@@ -1536,7 +1541,7 @@ const Earn = () => {
                     </div>
                     <div className="text-right">
                         <div className="text-gray-400 text-xs font-bold uppercase mb-1">Social Tasks</div>
-                        <div className="text-[#53FC18] font-bold">100% Completed</div>
+                        <div className="text-[#53FC18] font-bold">{socialTasksCompletionPercent}% Completed</div>
                     </div>
                 </div>
               </div>
@@ -1678,7 +1683,10 @@ const Earn = () => {
                 <div className="glass-panel px-8 py-6 flex items-center gap-6 border border-[#53FC18]/30 bg-[#53FC18]/5 rounded-2xl w-full md:w-auto min-w-[300px] justify-between md:justify-start">
                     <div className="text-right">
                       <div className="text-xs text-gray-400 uppercase mb-1 tracking-widest font-bold">All Points Balance</div>
-                      <div className="text-4xl font-bold text-[#53FC18] drop-shadow-[0_0_15px_rgba(83,252,24,0.5)] font-heading">{points.toLocaleString()}</div>
+                      <div className="text-4xl font-bold text-[#53FC18] drop-shadow-[0_0_15px_rgba(83,252,24,0.5)] font-heading">
+                        {points.toLocaleString()}
+                        <span className="ml-1 text-sm text-white/60">PTS</span>
+                      </div>
                       <div className="text-xs text-gray-500 font-mono mt-1">
                         Resets in: <span className="text-[#53FC18]">{timeLeft}</span>
                       </div>

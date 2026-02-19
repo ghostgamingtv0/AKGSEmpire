@@ -456,7 +456,7 @@ const Dashboard = () => {
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                {userData?.kick_username || 'Guest User'}
+                                {userData?.kick_username || 'Anonymous User'}
                                 {userData?.kick_username && <CheckCircle size={16} className="text-[#53FC18]" />}
                             </h3>
                             <div className="flex items-center gap-2 text-xs text-gray-500 font-mono mt-1">
