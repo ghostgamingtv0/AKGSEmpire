@@ -911,6 +911,21 @@ const Earn = () => {
         })();
         if (link) {
             window.open(link, '_blank');
+            try {
+              fetch('/api/track-click', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  visitor_id: visitorId,
+                  wallet_address: walletAddress,
+                  task_url: link
+                })
+              });
+            } catch (e) {}
+            setProcessingTasks(prev => ({
+              ...prev,
+              [task.id]: { timeLeft: 20 }
+            }));
         }
         return;
     }
