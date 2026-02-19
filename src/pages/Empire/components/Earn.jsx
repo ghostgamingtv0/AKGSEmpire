@@ -110,9 +110,7 @@ const Earn = () => {
 
       // Start Verification Process
       try {
-          // Register verification attempt in backend
-          const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:5000';
-          await fetch(`${API_BASE}/api/verify-task`, {
+          await fetch(`/api/verify-task`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -173,8 +171,7 @@ const Earn = () => {
       if (!task) return;
 
       try {
-          const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:5000';
-          const res = await fetch(`${API_BASE}/api/verify-task`, {
+          const res = await fetch(`/api/verify-task`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({

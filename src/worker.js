@@ -26,31 +26,78 @@ export default {
     }
 
     if (url.pathname === "/api/feed-status") {
+      const FEEDS = {
+        instagram: "https://rss.app/feeds/TI0LGIRM3exwbPIT.xml",
+        tiktok: "https://rss.app/feeds/zCraR8juic5yl9sT.xml",
+        threads: "https://rss.app/feeds/lWdvL5EjEU3wODIt.xml",
+        twitter: "https://rss.app/feeds/x7YxHPY0B5j4Pyqq.xml"
+      };
+      const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
+      const result = {};
+      for (const [platform, feedUrl] of Object.entries(FEEDS)) {
+        try {
+          const res = await fetch(feedUrl);
+          if (!res.ok) {
+            result[platform] = { isNew: false };
+            continue;
+          }
+          const xml = await res.text();
+          const itemMatch = xml.match(/<item[\s\S]*?<\/item>/i);
+          if (!itemMatch) {
+            result[platform] = { isNew: false };
+            continue;
+          }
+          const item = itemMatch[0];
+          const linkMatch = item.match(/<link>([^<]+)<\/link>/i);
+          const dateMatch =
+            item.match(/<pubDate>([^<]+)<\/pubDate>/i) ||
+            item.match(/<updated>([^<]+)<\/updated>/i) ||
+            item.match(/<dc:date>([^<]+)<\/dc:date>/i);
+          let link = linkMatch ? linkMatch[1].trim() : null;
+          let isoDate = null;
+          let isNew = false;
+          if (dateMatch) {
+            const parsed = Date.parse(dateMatch[1]);
+            if (!isNaN(parsed)) {
+              isoDate = new Date(parsed).toISOString();
+              isNew = parsed > twentyFourHoursAgo;
+            }
+          }
+          result[platform] = {
+            isNew,
+            link,
+            date: isoDate
+          };
+        } catch (e) {
+          result[platform] = { isNew: false };
+        }
+      }
+      return new Response(JSON.stringify(result), { headers: { "Content-Type": "application/json" } });
+    }
+
+    if (url.pathname === "/api/verify-task" && request.method === "POST") {
       try {
-        const backendUrl = BACKEND_BASE + "/api/feed-status";
+        const backendUrl = BACKEND_BASE + "/api/verify-task";
         const backendRes = await fetch(backendUrl, {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json"
+          },
+          body: await request.text()
+        });
+        const text = await backendRes.text();
+        return new Response(text, {
+          status: backendRes.status,
+          headers: {
+            "Content-Type": backendRes.headers.get("Content-Type") || "application/json"
           }
         });
-        if (backendRes.ok) {
-          const text = await backendRes.text();
-          return new Response(text, {
-            status: backendRes.status,
-            headers: {
-              "Content-Type": backendRes.headers.get("Content-Type") || "application/json"
-            }
-          });
-        }
-      } catch (e) {}
-      const fallbackPayload = {
-        twitter: { isNew: false },
-        instagram: { isNew: false },
-        tiktok: { isNew: false },
-        threads: { isNew: false }
-      };
-      return new Response(JSON.stringify(fallbackPayload), { headers: { "Content-Type": "application/json" } });
+      } catch (e) {
+        return new Response(JSON.stringify({ success: false, error: "verify-task failed" }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
     }
 
     if (url.pathname === "/api/stats") {
