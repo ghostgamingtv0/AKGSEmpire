@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://akgsempire.org https://i.ibb.co https://raw.githubusercontent.com; connect-src 'self'; frame-ancestors 'self'; base-uri 'self';" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://akgsempire.org https://i.ibb.co https://raw.githubusercontent.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://www.googletagmanager.com; frame-ancestors 'self'; base-uri 'self';" />
     <link rel="icon" type="image/png" href="https://i.ibb.co/Jjdm6v0J/fe58cfb14a674ec977bf157cdc091cfd.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="tiktok-developers-site-verification" content="7606798368987351096" />
@@ -12,6 +12,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Michroma&family=Syncopate:wght@400;700&family=Exo+2:wght@400;500;600;700;800&family=Cairo:wght@400;700;800&family=Changa:wght@400;700;800&family=Kufam:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-M8CX26RC');
+    </script>
+    <!-- End Google Tag Manager -->
 
     
     <!-- Google Tag Manager (gtag.js) -->
@@ -64,6 +74,10 @@
     </script>
   </head>
   <body class="bg-[#050505] text-white">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M8CX26RC"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
