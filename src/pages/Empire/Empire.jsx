@@ -32,37 +32,31 @@ const Navbar = ({ onConnect, walletAddress }) => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5">
             <div className="flex items-center gap-2">
               <a
                 href="https://www.geckoterminal.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-xl bg-black/40 border border-white/10 px-3 py-1 hover:border-[#53FC18] hover:bg-black/70 transition-all"
+                className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#53FC18] hover:bg-black/70 transition-all"
               >
                 <img
                   src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
                   alt="GeckoTerminal"
                   className="h-6 w-auto object-contain"
                 />
-                <span className="text-xs font-semibold text-gray-300 tracking-wide">
-                  GeckoTerminal
-                </span>
               </a>
               <a
                 href="https://polygon.technology/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-xl bg-black/40 border border-white/10 px-3 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
+                className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
               >
                 <img
                   src="https://i.ibb.co/svK14S9h/Polygon-blockchain-logo.png"
                   alt="Polygon"
                   className="h-6 w-auto object-contain"
                 />
-                <span className="text-xs font-semibold text-gray-300 tracking-wide">
-                  Polygon
-                </span>
               </a>
             </div>
             <Link to="/empire" className="flex items-center gap-3 group">
@@ -71,17 +65,17 @@ const Navbar = ({ onConnect, walletAddress }) => {
                 alt="AKGS Empire Logo" 
                 className="w-14 h-14 md:w-16 md:h-16 rounded-lg object-cover border border-[#53FC18]/50 group-hover:shadow-[0_0_20px_rgba(83,252,24,0.5)] transition-all duration-300"
               />
-              <span className="font-bold text-xl md:text-2xl tracking-wider brand-gradient-text transition-colors">AKGS EMPIRE</span>
+              <span className="font-bold text-xl md:text-2xl tracking-wide brand-gradient-text transition-colors">AKGS EMPIRE</span>
             </Link>
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-10">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`flex items-center gap-2 text-lg font-bold px-4 py-2 rounded-lg transition-all duration-300 ${
+                className={`flex items-center gap-2 text-base md:text-lg font-bold px-4 py-2 rounded-lg transition-all duration-300 ${
                   location.pathname === item.path 
                     ? 'text-[#53FC18] bg-[#53FC18]/10 shadow-[0_0_15px_rgba(83,252,24,0.3)]' 
                     : 'text-gray-300 hover:text-white hover:bg-white/5 hover:scale-105'
