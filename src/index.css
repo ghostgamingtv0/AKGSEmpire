@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply overflow-x-hidden text-[15px] md:text-[16px];
+    @apply overflow-x-hidden;
     color: #e5e7eb;
     background: radial-gradient(circle at top, #050816 0%, #020308 40%, #010104 100%);
     text-shadow: 0 0 6px rgba(152, 54, 149, 0.5);
