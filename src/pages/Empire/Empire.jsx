@@ -35,24 +35,24 @@ const Navbar = ({ onConnect, walletAddress }) => {
           href="https://www.geckoterminal.com/"
           target="_blank"
           rel="noopener noreferrer"
-        className="flex items-center"
+          className="flex items-center"
         >
           <img
             src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
             alt="GeckoTerminal"
-          className="h-8 w-auto object-contain"
+            className="h-8 w-auto object-contain"
           />
         </a>
         <a
           href="https://polygon.technology/"
           target="_blank"
           rel="noopener noreferrer"
-        className="flex items-center"
+          className="flex items-center"
         >
           <img
             src="https://i.ibb.co/BHxKNLwv/Polygon-Logo-Modifi.png"
             alt="Polygon"
-          className="h-8 w-auto object-contain"
+            className="h-10 w-auto object-contain"
           />
         </a>
       </div>
@@ -71,7 +71,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
           </div>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-10 ml-16">
+        <div className="hidden md:flex items-center gap-10 ml-24">
             {navItems.map((item) => (
               <Link
                 key={item.name}
