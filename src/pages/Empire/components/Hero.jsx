@@ -177,20 +177,19 @@ const Hero = () => {
           {/* Stats/Vision Grid */}
           <motion.div variants={itemVariants} className="max-w-5xl mx-auto mb-16 relative z-20">
             <div className="grid md:grid-cols-2 gap-6">
-                {/* Stat Card */}
+                {/* Stat / Vision Short Card */}
                 <div className="glass-panel p-8 border border-[#53FC18]/20 bg-black/40 backdrop-blur-md hover:bg-black/60 transition-colors">
-                  <div className="flex items-start gap-4">
-                     <div className="p-3 bg-[#53FC18]/10 rounded-lg">
-                        <TrendingUp className="text-[#53FC18]" size={32} />
-                     </div>
-                     <div>
-                         <h4 className="text-2xl font-bold mb-2 flex items-center gap-2 brand-gradient-text">
-                            <span className="font-black">300%</span> Growth
-                         </h4>
-                         <p className="text-base leading-relaxed brand-gradient-text">
-                           Projected ecosystem growth through our unique Watch-to-Earn mechanism and strategic token burns.
-                         </p>
-                     </div>
+                  <div className="flex flex-col gap-3">
+                    <h4 className="text-2xl font-bold mb-1 flex items-center gap-2 brand-gradient-text">
+                      <TrendingUp className="text-[#53FC18]" size={28} />
+                      <span>الرؤية باختصار | The Vision in Short</span>
+                    </h4>
+                    <p className="text-base leading-relaxed font-arabic brand-gradient-text" dir="rtl">
+                      نحن لا ننتظر السوق ليتحرك، بل صممنا نظاماً يتحرك من أجلنا. مشروعنا يعتمد على بروتوكول ذكي يضمن السيولة المستمرة والحرق التلقائي، مما يخلق توازناً مثالياً بين النمو والاستقرار.
+                    </p>
+                    <p className="text-sm md:text-base leading-relaxed text-gray-300">
+                      The vision in short: We don't wait for the market to move; we've designed a system that moves for us. Our project relies on an intelligent protocol that ensures continuous liquidity and automatic burning, creating an ideal balance between growth and stability.
+                    </p>
                   </div>
                 </div>
 
