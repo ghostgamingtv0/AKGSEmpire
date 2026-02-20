@@ -40,7 +40,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
           <img
             src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
             alt="GeckoTerminal"
-            className="h-8 w-auto object-contain"
+            className="h-6 w-auto object-contain"
           />
         </a>
         <a
