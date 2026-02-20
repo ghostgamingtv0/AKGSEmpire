@@ -212,27 +212,31 @@ const ComingSoon = () => {
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4 empire-gradient-page">
       <BackgroundEffects />
 
-      <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
-        <div className="flex items-center gap-2 bg-black/60 border border-white/10 rounded-xl px-3 py-1">
+      <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+        <a
+          href="https://www.geckoterminal.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#53FC18] hover:bg-black/70 transition-all"
+        >
           <img
             src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
             alt="GeckoTerminal"
-            className="h-5 w-auto object-contain"
+            className="h-6 w-auto object-contain"
           />
-          <span className="text-[10px] font-semibold text-gray-300 tracking-wide">
-            GeckoTerminal
-          </span>
-        </div>
-        <div className="flex items-center gap-2 bg-black/60 border border-white/10 rounded-xl px-3 py-1">
+        </a>
+        <a
+          href="https://polygon.technology/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
+        >
           <img
             src="https://i.ibb.co/svK14S9h/Polygon-blockchain-logo.png"
             alt="Polygon"
-            className="h-5 w-auto object-contain"
+            className="h-6 w-auto object-contain"
           />
-          <span className="text-[10px] font-semibold text-gray-300 tracking-wide">
-            Polygon
-          </span>
-        </div>
+        </a>
       </div>
 
       <div className="relative z-10 max-w-7xl w-full text-center flex flex-col items-center pt-10 pb-10">
