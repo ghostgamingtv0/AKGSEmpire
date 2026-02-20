@@ -212,6 +212,29 @@ const ComingSoon = () => {
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white p-4 empire-gradient-page">
       <BackgroundEffects />
 
+      <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+        <div className="flex items-center gap-2 bg-black/60 border border-white/10 rounded-xl px-3 py-1">
+          <img
+            src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
+            alt="GeckoTerminal"
+            className="h-5 w-auto object-contain"
+          />
+          <span className="text-[10px] font-semibold text-gray-300 tracking-wide">
+            GeckoTerminal
+          </span>
+        </div>
+        <div className="flex items-center gap-2 bg-black/60 border border-white/10 rounded-xl px-3 py-1">
+          <img
+            src="https://cryptologos.cc/logos/polygon-matic-logo.png"
+            alt="Polygon"
+            className="h-5 w-auto object-contain"
+          />
+          <span className="text-[10px] font-semibold text-gray-300 tracking-wide">
+            Polygon
+          </span>
+        </div>
+      </div>
+
       <div className="relative z-10 max-w-7xl w-full text-center flex flex-col items-center pt-10 pb-10">
         <div className="w-full flex flex-col items-center gap-6 mb-10">
           <h1 className="text-4xl md:text-7xl font-black leading-tight font-heading text-center tracking-tighter brand-gradient-text">

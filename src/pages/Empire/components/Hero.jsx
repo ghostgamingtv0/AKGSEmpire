@@ -239,7 +239,7 @@ const Hero = () => {
 
           {/* Investment Options */}
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 relative z-20">
-             <a href="https://app.uniswap.org/explore/tokens/polygon/0c291f63681cd76383c3bdabe0b8e4bb072b4df65" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-6 py-3 bg-[#983695]/10 border border-[#983695] rounded-xl text-[#983695] font-bold hover:bg-[#983695] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group">
+             <a href="https://app.uniswap.org/swap?outputChain=polygon&outputCurrency=0xc291f63681cd76383c3bdabe0b8e4bb072b4df65" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-6 py-3 bg-[#983695]/10 border border-[#983695] rounded-xl text-[#983695] font-bold hover:bg-[#983695] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group">
                 <img src="https://uniswap.org/favicon.ico" alt="" className="w-5 h-5 rounded-full opacity-80" onError={(e) => e.target.style.display = 'none'} />
                 Buy on Uniswap
                 <ExternalLink size={16} />

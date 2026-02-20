@@ -225,10 +225,31 @@ const GhostGate = () => {
 
     return (
         <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden flex items-center justify-center empire-gradient-page">
-            {/* Background Layers */}
             <SceneOneBackground />
 
-            {/* Content Container */}
+            <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+                <div className="flex items-center gap-2 bg-black/60 border border-white/10 rounded-xl px-3 py-1">
+                    <img
+                        src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
+                        alt="GeckoTerminal"
+                        className="h-5 w-auto object-contain"
+                    />
+                    <span className="text-[10px] font-semibold text-gray-300 tracking-wide">
+                        GeckoTerminal
+                    </span>
+                </div>
+                <div className="flex items-center gap-2 bg-black/60 border border-white/10 rounded-xl px-3 py-1">
+                    <img
+                        src="https://cryptologos.cc/logos/polygon-matic-logo.png"
+                        alt="Polygon"
+                        className="h-5 w-auto object-contain"
+                    />
+                    <span className="text-[10px] font-semibold text-gray-300 tracking-wide">
+                        Polygon
+                    </span>
+                </div>
+            </div>
+
             <div className={`relative z-10 w-full p-6 transition-all duration-500 ${step === 'gate' || step === 'register' || step === 'success' ? 'max-w-5xl' : 'max-w-md'}`}>
                 <div className="text-center mb-8 flex flex-col items-center gap-6">
                     <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-2 border-[#53FC18] shadow-[0_0_50px_rgba(83,252,24,0.4)] overflow-hidden p-1 bg-black">
