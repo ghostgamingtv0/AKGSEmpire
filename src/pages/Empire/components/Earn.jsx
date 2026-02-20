@@ -62,6 +62,12 @@ const Earn = () => {
   const [gCodeExpiresAt, setGCodeExpiresAt] = useState(() => parseInt(localStorage.getItem('kick_gcode_expires_at') || '0', 10));
   const [gCodeInput, setGCodeInput] = useState('');
   const [gCodeDigits, setGCodeDigits] = useState(() => localStorage.getItem('kick_gcode_digits') || '');
+  const [viewCodes, setViewCodes] = useState(() => {
+    const saved = localStorage.getItem('viewCodes');
+    return saved ? JSON.parse(saved) : {};
+  });
+  const [currentViewCode, setCurrentViewCode] = useState(null);
+  const [showViewCodeModal, setShowViewCodeModal] = useState(false);
 
   // Generate G-Code
   const generateGCode = (platform) => {
@@ -84,6 +90,42 @@ const Earn = () => {
       const random = Math.floor(100000 + Math.random() * 900000); // 6 digits
       
       return `👻${prefix}-${username}-${walletPart}-${random}👻`;
+  };
+
+  const getPlatformTag = (platform) => {
+    const key = platform.toLowerCase();
+    if (key.includes('tiktok')) return 'GSt';
+    if (key.includes('twitter') || key.includes('x')) return 'GSx';
+    if (key.includes('threads')) return 'GSr';
+    if (key.includes('instagram')) return 'GSi';
+    if (key.includes('kick')) return 'GSk';
+    return 'GSg';
+  };
+
+  const generateViewCode = (platform) => {
+    const baseUsername = (username || 'anonymous').toLowerCase();
+    const baseIdSource = walletAddress || visitorId || '';
+    const baseId = typeof baseIdSource === 'string' ? baseIdSource.slice(0, 8) : 'noWallet';
+    const tag = getPlatformTag(platform);
+
+    let digits;
+    do {
+      digits = String(Math.floor(100000 + Math.random() * 900000));
+    } while (digits === String(gCodeDigits));
+
+    return `👻${baseUsername}-${baseId}-${tag}-${digits}👻`;
+  };
+
+  const getOrCreateViewCode = (platform) => {
+    const key = platform.toLowerCase();
+    if (viewCodes[key]) return viewCodes[key];
+    const code = generateViewCode(platform);
+    setViewCodes(prev => {
+      const next = { ...prev, [key]: code };
+      localStorage.setItem('viewCodes', JSON.stringify(next));
+      return next;
+    });
+    return code;
   };
 
   const handleOpenTaskModal = (task) => {
@@ -942,11 +984,14 @@ const Earn = () => {
         return;
     }
 
-    // 3. G-Code Requirement
-    // Mandatory if instruction contains "MANDATORY" - ONLY for Watch Tasks
+    if (task.type === 'watch') {
+      const code = getOrCreateViewCode(task.platform);
+      setCurrentViewCode({ platform: task.platform, code });
+      setShowViewCodeModal(true);
+    }
+
     const isMandatory = task.type === 'watch' && task.instruction && task.instruction.includes('MANDATORY');
 
-    // Check if we need to show the modal (only if not already in confirmation/verifying state)
     let platformKey = task.platform.toLowerCase();
     if (platformKey.includes('twitter')) platformKey = 'twitter';
     const isTimerRunning = confirmationTasks[task.id];
@@ -1303,7 +1348,6 @@ const Earn = () => {
 
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-8 pt-24 empire-gradient-page">
-      {/* Copy Code Modal */}
       {showCopyCodeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-[#0a0a0a] border border-[#53FC18]/30 rounded-2xl w-full max-w-sm p-6 relative shadow-[0_0_30px_rgba(83,252,24,0.1)]">
@@ -1359,6 +1403,53 @@ const Earn = () => {
         </div>
       )}
 
+      {showViewCodeModal && currentViewCode && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-[#0a0a0a] border border-[#53FC18]/30 rounded-2xl w-full max-w-sm p-6 relative shadow-[0_0_30px_rgba(83,252,24,0.1)]">
+            <button 
+              onClick={() => setShowViewCodeModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-[#53FC18]/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-[#53FC18]/20">
+                <span className="text-2xl">👻</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Watch Code</h3>
+              <p className="text-gray-300 text-sm mb-4">
+                هذا الكود خاص بجلسة المشاهدة على منصة {currentViewCode.platform}.
+              </p>
+              <div className="bg-[#53FC18]/10 border border-[#53FC18]/30 p-3 rounded-lg mb-4">
+                <span className="text-sm md:text-base font-mono font-bold text-[#53FC18] tracking-widest break-all">
+                  {currentViewCode.code}
+                </span>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      navigator.clipboard.writeText(currentViewCode.code);
+                    } catch (e) {}
+                    setShowViewCodeModal(false);
+                  }}
+                  className="flex-1 bg-[#53FC18] hover:bg-[#45d612] text-black font-bold py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(83,252,24,0.3)] hover:shadow-[0_0_30px_rgba(83,252,24,0.5)] flex items-center justify-center gap-2"
+                >
+                  <span>Copy & Close</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowViewCodeModal(false)}
+                  className="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Kick consent modal removed per latest requirements */}
         <motion.div
