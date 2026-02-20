@@ -988,9 +988,11 @@ const Earn = () => {
       const code = getOrCreateViewCode(task.platform);
       setCurrentViewCode({ platform: task.platform, code });
       setShowViewCodeModal(true);
+      proceedWithTask(task);
+      return;
     }
 
-    const isMandatory = task.type === 'watch' && task.instruction && task.instruction.includes('MANDATORY');
+    const isMandatory = task.instruction && task.instruction.includes('MANDATORY');
 
     let platformKey = task.platform.toLowerCase();
     if (platformKey.includes('twitter')) platformKey = 'twitter';
