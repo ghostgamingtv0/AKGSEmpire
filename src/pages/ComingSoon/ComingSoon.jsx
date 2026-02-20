@@ -217,24 +217,24 @@ const ComingSoon = () => {
           href="https://www.geckoterminal.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#53FC18] hover:bg-black/70 transition-all"
+          className="flex items-center"
         >
           <img
             src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
             alt="GeckoTerminal"
-            className="h-6 w-auto object-contain"
+            className="h-8 w-auto object-contain"
           />
         </a>
         <a
           href="https://polygon.technology/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
+          className="flex items-center"
         >
           <img
             src="https://i.ibb.co/BHxKNLwv/Polygon-Logo-Modifi.png"
             alt="Polygon"
-            className="h-10 w-auto object-contain"
+            className="h-8 w-auto object-contain"
           />
         </a>
       </div>
