@@ -139,10 +139,14 @@ const Earn = () => {
   };
 
   const handleCopyAndOpen = () => {
-      const codeToCopy = gCode || generatedCode;
+      const codeToCopy = currentTaskForModal?.type === 'watch'
+        ? generatedCode
+        : (gCode || generatedCode);
       if (codeToCopy) {
           navigator.clipboard.writeText(codeToCopy).then(() => {
-              window.open(currentTaskForModal.link, '_blank');
+              if (currentTaskForModal) {
+                proceedWithTask(currentTaskForModal);
+              }
           });
       }
   };
@@ -986,9 +990,9 @@ const Earn = () => {
 
     if (task.type === 'watch') {
       const code = getOrCreateViewCode(task.platform);
-      setCurrentViewCode({ platform: task.platform, code });
-      setShowViewCodeModal(true);
-      proceedWithTask(task);
+      setGeneratedCode(code);
+      setCurrentTaskForModal(task);
+      setShowCopyCodeModal(true);
       return;
     }
 
