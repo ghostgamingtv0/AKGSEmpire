@@ -52,7 +52,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
             className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
           >
             <img
-              src="https://i.ibb.co/svK14S9h/Polygon-blockchain-logo.png"
+              src="https://i.ibb.co/BHxKNLwv/Polygon-Logo-Modifi.png"
               alt="Polygon"
               className="h-6 w-auto object-contain"
             />
