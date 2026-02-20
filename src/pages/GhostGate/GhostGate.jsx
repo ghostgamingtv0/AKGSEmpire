@@ -240,7 +240,7 @@ const GhostGate = () => {
                 </div>
                 <div className="flex items-center gap-2 bg-black/60 border border-white/10 rounded-xl px-3 py-1">
                     <img
-                        src="https://cryptologos.cc/logos/polygon-matic-logo.png"
+                        src="https://i.ibb.co/svK14S9h/Polygon-blockchain-logo.png"
                         alt="Polygon"
                         className="h-5 w-auto object-contain"
                     />

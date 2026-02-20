@@ -32,7 +32,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <a
                 href="https://www.geckoterminal.com/"
@@ -56,7 +56,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
                 className="flex items-center gap-2 rounded-xl bg-black/40 border border-white/10 px-3 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
               >
                 <img
-                  src="https://cryptologos.cc/logos/polygon-matic-logo.png"
+                  src="https://i.ibb.co/svK14S9h/Polygon-blockchain-logo.png"
                   alt="Polygon"
                   className="h-6 w-auto object-contain"
                 />
@@ -69,9 +69,9 @@ const Navbar = ({ onConnect, walletAddress }) => {
               <img 
                 src={ASSETS.LOGO_URL} 
                 alt="AKGS Empire Logo" 
-                className="w-16 h-16 rounded-lg object-cover border border-[#53FC18]/50 group-hover:shadow-[0_0_20px_rgba(83,252,24,0.5)] transition-all duration-300"
+                className="w-14 h-14 md:w-16 md:h-16 rounded-lg object-cover border border-[#53FC18]/50 group-hover:shadow-[0_0_20px_rgba(83,252,24,0.5)] transition-all duration-300"
               />
-              <span className="font-bold text-2xl tracking-wider brand-gradient-text transition-colors">AKGS EMPIRE</span>
+              <span className="font-bold text-xl md:text-2xl tracking-wider brand-gradient-text transition-colors">AKGS EMPIRE</span>
             </Link>
           </div>
 
