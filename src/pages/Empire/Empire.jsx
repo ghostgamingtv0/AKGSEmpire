@@ -30,29 +30,29 @@ const Navbar = ({ onConnect, walletAddress }) => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/10 relative">
-      <div className="absolute inset-y-0 left-4 flex items-center gap-2">
+    <div className="absolute inset-y-0 left-4 flex items-center gap-2">
         <a
           href="https://www.geckoterminal.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#53FC18] hover:bg-black/70 transition-all"
+        className="flex items-center"
         >
           <img
             src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
             alt="GeckoTerminal"
-            className="h-6 w-auto object-contain"
+          className="h-8 w-auto object-contain"
           />
         </a>
         <a
           href="https://polygon.technology/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
+        className="flex items-center"
         >
           <img
             src="https://i.ibb.co/BHxKNLwv/Polygon-Logo-Modifi.png"
             alt="Polygon"
-            className="h-10 w-auto object-contain"
+          className="h-8 w-auto object-contain"
           />
         </a>
       </div>
@@ -71,7 +71,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
           </div>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-10 ml-8">
+        <div className="hidden md:flex items-center gap-10 ml-16">
             {navItems.map((item) => (
               <Link
                 key={item.name}
