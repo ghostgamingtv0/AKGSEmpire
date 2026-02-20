@@ -30,47 +30,47 @@ const Navbar = ({ onConnect, walletAddress }) => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        {/* شعارات Gecko / Polygon على أقصى اليسار، مستقلة عن باقي الهيدر */}
+        <div className="absolute inset-y-0 left-0 flex items-center gap-2">
+          <a
+            href="https://www.geckoterminal.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#53FC18] hover:bg-black/70 transition-all"
+          >
+            <img
+              src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
+              alt="GeckoTerminal"
+              className="h-6 w-auto object-contain"
+            />
+          </a>
+          <a
+            href="https://polygon.technology/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
+          >
+            <img
+              src="https://i.ibb.co/svK14S9h/Polygon-blockchain-logo.png"
+              alt="Polygon"
+              className="h-6 w-auto object-contain"
+            />
+          </a>
+        </div>
+
         <div className="flex items-center justify-between h-20">
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2">
-              <a
-                href="https://www.geckoterminal.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#53FC18] hover:bg-black/70 transition-all"
-              >
-                <img
-                  src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
-                  alt="GeckoTerminal"
-                  className="h-6 w-auto object-contain"
-                />
-              </a>
-              <a
-                href="https://polygon.technology/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
-              >
-                <img
-                  src="https://i.ibb.co/svK14S9h/Polygon-blockchain-logo.png"
-                  alt="Polygon"
-                  className="h-6 w-auto object-contain"
-                />
-              </a>
-            </div>
-            <Link to="/empire" className="flex items-center gap-3 group">
-              <img 
-                src={ASSETS.LOGO_URL} 
-                alt="AKGS Empire Logo" 
-                className="w-14 h-14 md:w-16 md:h-16 rounded-lg object-cover border border-[#53FC18]/50 group-hover:shadow-[0_0_20px_rgba(83,252,24,0.5)] transition-all duration-300"
-              />
-              <span className="font-bold text-xl md:text-2xl tracking-wide brand-gradient-text transition-colors">AKGS EMPIRE</span>
-            </Link>
-          </div>
+          <Link to="/empire" className="flex items-center gap-3 group ml-28">
+            <img 
+              src={ASSETS.LOGO_URL} 
+              alt="AKGS Empire Logo" 
+              className="w-16 h-16 rounded-lg object-cover border border-[#53FC18]/50 group-hover:shadow-[0_0_20px_rgba(83,252,24,0.5)] transition-all duration-300"
+            />
+            <span className="font-bold text-2xl tracking-wider brand-gradient-text transition-colors">AKGS EMPIRE</span>
+          </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-10 ml-8">
+          <div className="hidden md:flex items-center gap-10">
             {navItems.map((item) => (
               <Link
                 key={item.name}
