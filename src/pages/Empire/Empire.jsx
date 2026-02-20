@@ -52,7 +52,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
           <img
             src="https://i.ibb.co/BHxKNLwv/Polygon-Logo-Modifi.png"
             alt="Polygon"
-          className="h-10 w-auto object-contain"
+          className="h-8 w-auto object-contain"
           />
         </a>
       </div>
