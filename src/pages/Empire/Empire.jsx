@@ -29,37 +29,37 @@ const Navbar = ({ onConnect, walletAddress }) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2">
-              <a
-                href="https://www.geckoterminal.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#53FC18] hover:bg-black/70 transition-all"
-              >
-                <img
-                  src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
-                  alt="GeckoTerminal"
-                  className="h-6 w-auto object-contain"
-                />
-              </a>
-              <a
-                href="https://polygon.technology/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
-              >
-                <img
-                  src="https://i.ibb.co/BHxKNLwv/Polygon-Logo-Modifi.png"
-                  alt="Polygon"
-                  className="h-8 w-auto object-contain"
-                />
-              </a>
-            </div>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/10 relative">
+      <div className="absolute inset-y-0 left-4 flex items-center gap-2">
+        <a
+          href="https://www.geckoterminal.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#53FC18] hover:bg-black/70 transition-all"
+        >
+          <img
+            src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png"
+            alt="GeckoTerminal"
+            className="h-6 w-auto object-contain"
+          />
+        </a>
+        <a
+          href="https://polygon.technology/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center rounded-xl bg-black/40 border border-white/10 px-2 py-1 hover:border-[#983695] hover:bg-black/70 transition-all"
+        >
+          <img
+            src="https://i.ibb.co/BHxKNLwv/Polygon-Logo-Modifi.png"
+            alt="Polygon"
+            className="h-8 w-auto object-contain"
+          />
+        </a>
+      </div>
 
+      <div className="max-w-7xl mx-auto pl-40 pr-4 sm:pr-6 lg:pr-8">
+        <div className="flex items-center justify-between h-20">
+          <div className="flex items-center gap-4">
             <Link to="/empire" className="flex items-center gap-3 group">
               <img 
                 src={ASSETS.LOGO_URL} 
