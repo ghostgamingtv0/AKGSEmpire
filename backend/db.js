@@ -79,6 +79,8 @@ export const initDB = async () => {
     try { await pool.query('ALTER TABLE users ADD COLUMN tiktok_username TEXT'); } catch (e) {}
     try { await pool.query('ALTER TABLE users ADD COLUMN instagram_username TEXT'); } catch (e) {}
     try { await pool.query('ALTER TABLE users ADD COLUMN username TEXT UNIQUE'); } catch (e) {}
+    try { await pool.query('ALTER TABLE users ADD COLUMN g_code TEXT'); } catch (e) {}
+    try { await pool.query('ALTER TABLE users ADD COLUMN mining_unlocked TINYINT(1) DEFAULT 0'); } catch (e) {}
 
     // Tasks Table (Optional if you want dynamic tasks)
     await pool.query(`

@@ -2,36 +2,42 @@
 
 1. Command: !project
    Response:
-   🟢 GHOST EMPIRE هو أول مشروع Web3 + Gaming كيربط بين المشاهدة والربح! 🎮💸 تفاعل مع البث، جمع النقاط، وحولها لعملات $AKGS حقيقية. 👉 بدا دابا من هنا: https://akgs-empire.onrender.com
+   🟢 GHOST EMPIRE هو أول مشروع Web3 + Gaming يربط بين المشاهدة والربح الحقيقي. 🎮💸 شاهد البث، شارك في المهام، واجمع النقاط التي يمكنك تحويلها إلى عملات $AKGS على الشبكة. 
+   � GHOST EMPIRE is the first Web3 + Gaming project that connects watching streams with real rewards. 🎮💸 Watch the stream, complete tasks, earn points, and convert them into $AKGS tokens. Start here: https://akgs-empire.onrender.com
 
 -------------------------------------------------------
 
 2. Command: !win
    Response:
-   🏆 كيفاش تربح؟ 1️⃣ تسجل فالموقع. 2️⃣ تفرج فالبث ودير لايك للمهام. 3️⃣ كل تفاعل = نقاط 💎. كل نقاط = $AKGS 💰. كلما تفاعلتي أكثر، ضريبة السحب كتنقص! 🔥
+   🏆 كيف تربح؟ 1️⃣ سجّل في الموقع. 2️⃣ شاهد البث وشارك في المهام. 3️⃣ كل تفاعل = نقاط 💎، وكل نقاط يمكن تحويلها إلى عملات $AKGS 💰. كلما زاد تفاعلك، تقل نسبة الضريبة على السحب! 🔥
+   🏆 How do you win? 1️⃣ Register on the website. 2️⃣ Watch the stream and complete tasks. 3️⃣ Every interaction = points 💎, and points can be converted into $AKGS 💰. The more you engage, the lower your withdrawal tax becomes! 🔥
 
 -------------------------------------------------------
 
 3. Command: !link
    Response:
-   🌍 الموقع الرسمي: https://akgs-empire.onrender.com (تأكد ديما أنك فالموقع الرسمي باش تحمي رزقك!) 🛡️
+   🌍 الموقع الرسمي للمشروع: https://akgs-empire.onrender.com تأكد دائمًا أنك داخل الموقع الرسمي لتحمي رصيدك وأموالك. 🛡️
+   🌍 Official website: https://akgs-empire.onrender.com — always double‑check the URL to protect your funds. 🛡️
 
 -------------------------------------------------------
 
 4. Command: !token
    Response:
-   🪙 $AKGS Tokenomics: الشبكة: Polygon (POL) 🟣 | الحرق: 30 مليون عملة تحرقات! 🔥 | السيولة: 100% Locked 🔒.
+   🪙 اقتصاد عملة $AKGS: الشبكة المستخدمة هي Polygon (POL) 🟣، تم حرق 30 مليون عملة حتى الآن 🔥، والسيولة مقفلة بنسبة 100% 🔒 للحماية والاستقرار.
+   🪙 $AKGS Tokenomics: Network: Polygon (POL) 🟣 | Burn: 30M tokens already burned 🔥 | Liquidity: 100% locked 🔒 for long‑term security and stability.
 
 -------------------------------------------------------
 
 5. Command: !discord
    Response:
-   💬 انضم للعائلة فديسكورد باش توصل بالجديد والمسابقات: 👉 https://discord.gg/wMVJTrppXh
+   💬 انضم إلى عائلة GHOST EMPIRE على ديسكورد لتصلك الأخبار الحصرية، التحديثات، والمسابقات اليومية: 👉 https://discord.gg/wMVJTrppXh
+   💬 Join the GHOST EMPIRE family on Discord for news, updates, and exclusive giveaways: 👉 https://discord.gg/wMVJTrppXh
 
 -------------------------------------------------------
 
 6. Command: !gcode
    Response:
-   🔑 باش تربح نقاط، خاصك تكتب G-Code ديالك فالكومنتير! سير للموقع (Profile) وانسخ الكود ديالك وحطو هنا. 👇
+   🔑 لربط حسابك بالموقع وفتح مهام التعدين، اذهب أولًا إلى ملفك الشخصي في الموقع واستخرج G‑Code الخاص بك، ثم اكتب في الدردشة: !gcode مع الكود هكذا:  !gcode GCODE123  👇
+   🔑 To link your account with the website and unlock mining tasks, open your Profile on the site, copy your personal G‑Code, then type in chat: !gcode plus your code, like:  !gcode GCODE123  👇
 
 =======================================================

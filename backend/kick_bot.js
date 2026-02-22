@@ -17,6 +17,7 @@ const KICK_CHANNEL_SLUG = 'ghost_gamingtv';
 const CHATROOM_ID = 64930060; 
 const PUSHER_KEY = 'eb1d5f283081a78b932c'; // Public Key for listening
 const API_BASE_URL = 'https://api.kick.com/public/v1';
+const CF_BASE_URL = process.env.CF_BASE_URL || process.env.PUBLIC_BASE_URL || 'https://akgsempire.org';
 
 // OAUTH CREDENTIALS (Load from .env or file)
 const CLIENT_ID = process.env.KICK_CLIENT_ID || '01KH3T8WNDZ269403HKC17JN7X';
@@ -165,22 +166,46 @@ async function handleGCode(username) {
 
 async function verifyUserGCode(username, providedCode) {
     try {
-        const user = await db.get('SELECT * FROM users WHERE g_code = ?', [providedCode]);
-        
-        if (user) {
-            if (user.kick_username && user.kick_username.toLowerCase() === username.toLowerCase()) {
-                 await sendOfficialReply(`✅ **POINTS EARNED | تم احتساب النقاط**\n👤 @${username}\n🆔 Code: ${providedCode}`);
-            } else if (!user.kick_username) {
-                 await db.run('UPDATE users SET kick_username = ? WHERE g_code = ?', [username, providedCode]);
-                 await sendOfficialReply(`🔗 **LINKED SUCCESSFULLY | تم الربط بنجاح**\n👤 @${username} is now owner of ${providedCode}`);
-            } else {
-                 await sendOfficialReply(`⚠️ **ERROR | خطأ**\n⛔ Code belongs to another user! / الكود مستخدم بالفعل`);
-            }
+        const payload = {
+            kick_username: username,
+            g_code: providedCode
+        };
+
+        const response = await axios.post(`${CF_BASE_URL}/api/kick/mining/verify`, payload, {
+            timeout: 8000
+        });
+
+        const data = response.data || {};
+
+        if (data.success) {
+            await sendOfficialReply(
+                `✅ **MINING UNLOCKED | تم فتح التعدين**\n👤 @${username}\n🆔 Code: ${providedCode}`
+            );
         } else {
-             // Silent fail or minimal reply to avoid spam
+            await sendOfficialReply(
+                `⚠️ **ERROR | خطأ**\n${data.message || 'Verification failed / فشل التحقق'}`
+            );
         }
     } catch (e) {
-        console.error('Verify Error:', e.message);
+        if (e.response) {
+            const status = e.response.status;
+            if (status === 404) {
+                await sendOfficialReply(
+                    `🚫 **INVALID CODE | كود غير صالح**\n🆔 ${providedCode}`
+                );
+            } else if (status === 409) {
+                await sendOfficialReply(
+                    `⛔ **CODE IN USE | الكود مرتبط بحساب آخر**\n🆔 ${providedCode}`
+                );
+            } else {
+                await sendOfficialReply(
+                    `⚠️ **SERVER ERROR | خطأ في الخادم**\nStatus: ${status}`
+                );
+            }
+        } else {
+            console.error('Verify Error:', e.message);
+            await sendOfficialReply('⚠️ Temporary verification error / خطأ مؤقت في التحقق');
+        }
     }
 }
 

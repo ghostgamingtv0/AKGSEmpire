@@ -4,7 +4,7 @@ import { handleKickRequest, KICK_CONFIG } from './api_social_media/kick/router.j
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const BACKEND_BASE = (env && env.BACKEND_BASE) ? env.BACKEND_BASE : 'https://akgs-empire.onrender.com';
+    const BACKEND_BASE = env && env.BACKEND_BASE;
 
     // =================================================================================
     // 0. STATIC VERIFICATION FILES (Bypass SPA Routing)
@@ -220,6 +220,50 @@ export default {
         return new Response(JSON.stringify(resp), { headers: { "Content-Type": "application/json" } });
       } catch (e) {
         return new Response(JSON.stringify({ success: false, message: "Ping failed" }), { status: 400, headers: { "Content-Type": "application/json" } });
+      }
+    }
+
+    if (url.pathname === "/api/kick/mining/verify" && request.method === "POST") {
+      try {
+        const backendUrl = BACKEND_BASE + "/api/kick/mining/verify";
+        const bodyText = await request.text();
+        const backendRes = await fetch(backendUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: bodyText
+        });
+        const text = await backendRes.text();
+        return new Response(text, {
+          status: backendRes.status,
+          headers: {
+            "Content-Type": backendRes.headers.get("Content-Type") || "application/json"
+          }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ success: false, message: "Mining verify failed" }), { status: 502, headers: { "Content-Type": "application/json" } });
+      }
+    }
+
+    if (url.pathname === "/api/kick/mining/status" && request.method === "GET") {
+      try {
+        const backendUrl = BACKEND_BASE + "/api/kick/mining/status" + url.search;
+        const backendRes = await fetch(backendUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        const text = await backendRes.text();
+        return new Response(text, {
+          status: backendRes.status,
+          headers: {
+            "Content-Type": backendRes.headers.get("Content-Type") || "application/json"
+          }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ success: false, message: "Mining status failed" }), { status: 502, headers: { "Content-Type": "application/json" } });
       }
     }
 

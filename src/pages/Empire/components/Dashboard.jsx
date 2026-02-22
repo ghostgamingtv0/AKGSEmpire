@@ -223,9 +223,73 @@ const Dashboard = () => {
     }
   };
 
-  const handleKickSync = () => {
-    const origin = window.location.origin.replace(/\/$/, '');
-    window.location.href = `${origin}/empire/earn/?kick_connect=1`;
+  const handleKickSync = async () => {
+    try {
+      setIsLoading(true);
+      const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
+
+      try {
+        const statsRes = await fetch(`${API_BASE}/api/stats`);
+        if (statsRes.ok) {
+          const statsData = await statsRes.json();
+          if (statsData && (statsData.success || typeof statsData.kick_followers === 'number')) {
+            setGlobalStats(prev => ({
+              ...prev,
+              ...statsData
+            }));
+          }
+        }
+      } catch (e) {
+        console.error('Failed to fetch /api/stats during sync', e);
+      }
+
+      try {
+        const kickRes = await fetch('https://kick.com/api/v1/channels/ghost_gamingtv', {
+          headers: {
+            'User-Agent': 'Mozilla/5.0'
+          }
+        });
+        if (kickRes.ok) {
+          const kickData = await kickRes.json();
+          const followers =
+            kickData.followersCount ||
+            kickData.followers_count ||
+            0;
+          const isLive = !!kickData.livestream;
+          const viewers = isLive ? (kickData.livestream.viewer_count || 0) : 0;
+          const category =
+            (isLive && kickData.livestream && kickData.livestream.categories && kickData.livestream.categories[0]?.name) ||
+            (kickData.recent_categories && kickData.recent_categories[0]?.name) ||
+            'None';
+
+          setGlobalStats(prev => ({
+            ...prev,
+            kick_followers: followers,
+            kick_viewers: viewers,
+            kick_is_live: isLive,
+            kick_category: category
+          }));
+
+          try {
+            await fetch(`${API_BASE}/api/update-kick-stats`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                followers,
+                viewers,
+                is_live: isLive
+              })
+            });
+          } catch (e) {
+            console.error('Failed to sync Kick stats to backend during sync', e);
+          }
+        }
+      } catch (e) {
+        console.error('Direct Kick API fetch failed during sync', e);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isStreamLive = globalStats.kick_is_live;

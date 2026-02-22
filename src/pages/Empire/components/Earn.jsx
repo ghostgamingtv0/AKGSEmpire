@@ -725,6 +725,26 @@ const Earn = () => {
     }
   }, [visitorId, walletAddress, kickUsername]);
 
+  // Sync Kick Mining Status from Backend
+  useEffect(() => {
+    if (!visitorId) return;
+    const fetchMiningStatus = async () => {
+      try {
+        const API_BASE = '';
+        const res = await fetch(`${API_BASE}/api/kick/mining/status?visitor_id=${encodeURIComponent(visitorId)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.success && data.mining_unlocked) {
+          setMiningUnlocked(true);
+          localStorage.setItem('kick_mining_unlocked', 'true');
+        }
+      } catch (e) {
+        console.error('Failed to fetch mining status:', e);
+      }
+    };
+    fetchMiningStatus();
+  }, [visitorId]);
+
   const startTaskLogic = (task) => {
     // User is starting task - Start 20s Timer
     window.open(task.link, '_blank');
@@ -916,36 +936,8 @@ const Earn = () => {
             alert('Connect Kick first');
             return;
         }
-        const now = Date.now();
-        if (!gCodeExpected || now > gCodeExpiresAt) {
-            const num = String(Math.floor(100000 + Math.random() * 900000)).padStart(6, '0');
-            const code = `👻${num}+${kickUsername}+GGT👻`;
-            const expires = now + 15 * 60 * 1000;
-            setGCodeExpected(code);
-            setGCodeDigits(num);
-            setGCodeExpiresAt(expires);
-            localStorage.setItem('kick_gcode_expected', code);
-            localStorage.setItem('kick_gcode_expires_at', String(expires));
-            localStorage.setItem('kick_gcode_digits', num);
-            alert(`Your G-Code: ${code}\nValid for 15 minutes`);
-            return;
-        }
         if (!miningUnlocked) {
-            const input = prompt('Enter your G-Code');
-            const parsed = parseGCode(input);
-            const expectedUser = (kickUsername || '').toLowerCase();
-            const valid =
-              parsed &&
-              parsed.user === expectedUser &&
-              parsed.digits === String(gCodeDigits) &&
-              Date.now() <= gCodeExpiresAt;
-            if (valid) {
-                setMiningUnlocked(true);
-                localStorage.setItem('kick_mining_unlocked', 'true');
-                alert('Mining unlocked');
-            } else {
-                alert('Invalid or expired code');
-            }
+            alert('لفتح زر التعدين:\n1) انسخ G-Code من صفحة Empire (Profile)\n2) اكتب في شات Kick:\n   !gcode GCODE_DYALK\n3) حدّث هذه الصفحة بعد رسالة النجاح من البوت.');
             return;
         }
     }

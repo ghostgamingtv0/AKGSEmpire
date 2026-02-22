@@ -77,6 +77,8 @@ const initDB = async () => {
     try { await pool.query('ALTER TABLE users ADD COLUMN tiktok_username TEXT'); } catch (e) {}
     try { await pool.query('ALTER TABLE users ADD COLUMN instagram_username TEXT'); } catch (e) {}
     try { await pool.query('ALTER TABLE users ADD COLUMN username TEXT UNIQUE'); } catch (e) {}
+    try { await pool.query('ALTER TABLE users ADD COLUMN g_code TEXT'); } catch (e) {}
+    try { await pool.query('ALTER TABLE users ADD COLUMN mining_unlocked TINYINT(1) DEFAULT 0'); } catch (e) {}
 
     // Tasks Table (Optional if you want dynamic tasks)
     await pool.query(`
@@ -1222,6 +1224,63 @@ app.post('/api/kick/token', async (req, res) => {
     } catch (e) {
         console.error('❌ Server Error:', e);
         res.status(500).json({ error: e.message });
+    }
+});
+
+// --- Kick Mining Verification (from Chat Bot) ---
+app.post('/api/kick/mining/verify', async (req, res) => {
+    try {
+        const { kick_username, g_code } = req.body;
+        if (!kick_username || !g_code) {
+            return res.status(400).json({ success: false, message: 'Missing kick_username or g_code' });
+        }
+
+        const normalizedKick = String(kick_username).toLowerCase();
+
+        const [users] = await pool.query('SELECT * FROM users WHERE g_code = ?', [g_code]);
+        if (users.length === 0) {
+            return res.status(404).json({ success: false, message: 'G-Code not found' });
+        }
+
+        const user = users[0];
+
+        if (user.kick_username && user.kick_username.toLowerCase() !== normalizedKick) {
+            return res.status(409).json({ success: false, message: 'G-Code is linked to another user' });
+        }
+
+        if (!user.kick_username) {
+            await pool.query('UPDATE users SET kick_username = ? WHERE id = ?', [kick_username, user.id]);
+        }
+
+        if (!user.mining_unlocked) {
+            await pool.query('UPDATE users SET mining_unlocked = 1 WHERE id = ?', [user.id]);
+        }
+
+        return res.json({ success: true, message: 'Mining unlocked', visitor_id: user.visitor_id });
+    } catch (error) {
+        console.error('Kick mining verify error:', error);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// --- Kick Mining Status (for Frontend) ---
+app.get('/api/kick/mining/status', async (req, res) => {
+    try {
+        const { visitor_id } = req.query;
+        if (!visitor_id) {
+            return res.status(400).json({ success: false, message: 'Missing visitor_id' });
+        }
+
+        const [users] = await pool.query('SELECT mining_unlocked FROM users WHERE visitor_id = ?', [visitor_id]);
+        if (users.length === 0) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const miningUnlocked = !!users[0].mining_unlocked;
+        return res.json({ success: true, mining_unlocked: miningUnlocked });
+    } catch (error) {
+        console.error('Kick mining status error:', error);
+        return res.status(500).json({ success: false, message: 'Server error' });
     }
 });
 

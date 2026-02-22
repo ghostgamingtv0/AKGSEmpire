@@ -161,6 +161,62 @@ app.post('/api/verify-task', async (req, res) => {
     }
 });
 
+// --- KICK MINING ROUTES (Used by Kick Chat Bot + Frontend) ---
+app.post('/api/kick/mining/verify', async (req, res) => {
+    try {
+        const { kick_username, g_code } = req.body || {};
+        if (!kick_username || !g_code) {
+            return res.status(400).json({ success: false, message: 'Missing kick_username or g_code' });
+        }
+
+        const normalizedKick = String(kick_username).toLowerCase();
+
+        const [users] = await pool.query('SELECT * FROM users WHERE g_code = ?', [g_code]);
+        if (users.length === 0) {
+            return res.status(404).json({ success: false, message: 'G-Code not found' });
+        }
+
+        const user = users[0];
+
+        if (user.kick_username && user.kick_username.toLowerCase() !== normalizedKick) {
+            return res.status(409).json({ success: false, message: 'G-Code is linked to another user' });
+        }
+
+        if (!user.kick_username) {
+            await pool.query('UPDATE users SET kick_username = ? WHERE id = ?', [kick_username, user.id]);
+        }
+
+        if (!user.mining_unlocked) {
+            await pool.query('UPDATE users SET mining_unlocked = 1 WHERE id = ?', [user.id]);
+        }
+
+        return res.json({ success: true, message: 'Mining unlocked', visitor_id: user.visitor_id });
+    } catch (e) {
+        console.error('Kick mining verify error:', e);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+app.get('/api/kick/mining/status', async (req, res) => {
+    try {
+        const { visitor_id } = req.query || {};
+        if (!visitor_id) {
+            return res.status(400).json({ success: false, message: 'Missing visitor_id' });
+        }
+
+        const [users] = await pool.query('SELECT mining_unlocked FROM users WHERE visitor_id = ?', [visitor_id]);
+        if (users.length === 0) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const miningUnlocked = !!users[0].mining_unlocked;
+        return res.json({ success: true, mining_unlocked: miningUnlocked });
+    } catch (e) {
+        console.error('Kick mining status error:', e);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
 // --- OAUTH REDIRECTS (Delegated to Services) ---
 app.get('/api/tiktok/login', (req, res) => {
     const { visitor_id } = req.query;
