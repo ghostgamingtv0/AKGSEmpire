@@ -22,31 +22,43 @@ const db = new sqlite3.Database(dbPath, (err) => {
     console.log('✅ Connected to database.');
 });
 
-// 1. Export Data
 db.all('SELECT * FROM users', [], (err, rows) => {
     if (err) {
         console.error('❌ Error querying users', err);
         process.exit(1);
     }
 
-    // Save to JSON
     fs.writeFileSync(backupFile, JSON.stringify(rows, null, 2));
     console.log(`✅ Backup created successfully at: ${backupFile}`);
-    console.log(`📊 Total records archived: ${rows.length}`);
+    console.log(`📊 Total user records archived: ${rows.length}`);
 
-    // 2. Wipe Data
     db.run('DELETE FROM users', [], (err) => {
         if (err) {
             console.error('❌ Error deleting users', err);
             process.exit(1);
         }
         console.log('🗑️ All user data deleted successfully from database.');
-        
-        // Vacuum to reclaim space
-        db.run('VACUUM', [], (err) => {
-            if (err) console.error('Warning: Vacuum failed', err);
-            else console.log('🧹 Database vacuumed and optimized.');
-            process.exit(0);
+
+        db.run('DELETE FROM task_verifications', [], (err) => {
+            if (err) {
+                console.error('❌ Error deleting task_verifications', err);
+            } else {
+                console.log('🗑️ All task_verifications data deleted successfully from database.');
+            }
+
+            db.run('DELETE FROM system_stats', [], (err) => {
+                if (err) {
+                    console.error('❌ Error deleting system_stats', err);
+                } else {
+                    console.log('🗑️ All system_stats data deleted successfully from database.');
+                }
+
+                db.run('VACUUM', [], (err) => {
+                    if (err) console.error('Warning: Vacuum failed', err);
+                    else console.log('🧹 Database vacuumed and optimized.');
+                    process.exit(0);
+                });
+            });
         });
     });
 });

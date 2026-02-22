@@ -11,6 +11,37 @@ const NFT_IMAGE_MINING = "https://i.ibb.co/sv1qDbd0/E4gk6-In-WEAQ1s-JF.jpg";
 const NFT_IMAGE_REWARD = "https://i.ibb.co/dwzrDDGk/33710b273ed1e486862440e0446dfc18.jpg";
 const NFT_IMAGE_MAIN = NFT_IMAGE_MINING;
 
+const DATA_RESET_VERSION = '2026-02-22-launch';
+
+const resetLocalStorageIfNeeded = () => {
+  if (typeof window === 'undefined') return;
+  const stored = localStorage.getItem('data_reset_version');
+  if (stored === DATA_RESET_VERSION) return;
+  const keysToClear = [
+    'gCode',
+    'user_session',
+    'kickUsername',
+    'walletAddress',
+    'isProfileSaved',
+    'claimedTasks',
+    'claimedContent',
+    'viewCodes',
+    'earn_active_tab',
+    'referred_by',
+    'kick_mining_unlocked',
+    'kick_gcode_expected',
+    'kick_gcode_expires_at',
+    'kick_gcode_digits',
+    'stable_visitor_id'
+  ];
+  keysToClear.forEach((key) => {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {}
+  });
+  localStorage.setItem('data_reset_version', DATA_RESET_VERSION);
+};
+
 const ProjectNFTIcon = ({ color = "#53FC18", tier = "1", imageSrc = NFT_IMAGE_MAIN }) => (
   <div className="relative w-20 h-20 md:w-24 md:h-24 group">
     <div className="absolute inset-0 rounded-lg blur-md opacity-60 group-hover:opacity-100 transition-opacity duration-300" style={{ backgroundColor: color }}></div>
@@ -29,6 +60,7 @@ const ProjectNFTIcon = ({ color = "#53FC18", tier = "1", imageSrc = NFT_IMAGE_MA
 );
 
 const Earn = () => {
+  resetLocalStorageIfNeeded();
   const [activeTab, setActiveTab] = useState(() => {
     const saved = localStorage.getItem('earn_active_tab');
     return saved || 'social';
