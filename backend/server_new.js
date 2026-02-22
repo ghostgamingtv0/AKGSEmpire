@@ -19,7 +19,6 @@ import { verifyTask, processBotVerification } from './services/verificationServi
 
 // Import Bots (Running as side effects)
 import './telegram_bot.js';
-import './discord_bot.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, '../.env') });
