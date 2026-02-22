@@ -15,7 +15,7 @@ export const CONTRACTS = {
 };
 
 export const ASSETS = {
-  LOGO_URL: 'https://i.ibb.co/Jjdm6v0J/fe58cfb14a674ec977bf157cdc091cfd.jpg'
+  LOGO_URL: 'https://i.ibb.co/j9SRz0Cy/Generated-image22.jpg'
 };
 
 export const API_ENDPOINTS = {

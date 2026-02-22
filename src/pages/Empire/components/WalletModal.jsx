@@ -57,7 +57,7 @@ const WalletModal = ({ isOpen, onClose }) => {
                     address: '0xc291F63681Cd76383c3bDabE0B8E4bb072B4DF65',
                     symbol: 'AKGS',
                     decimals: 18,
-                    image: 'https://i.ibb.co/Jjdm6v0J/fe58cfb14a674ec977bf157cdc091cfd.jpg',
+                    image: 'https://i.ibb.co/j9SRz0Cy/Generated-image22.jpg',
                 },
             },
         });
