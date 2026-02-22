@@ -1,4 +1,5 @@
-import { Client, GatewayIntentBits, ChannelType, Partials, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import pkg from 'discord.js';
+const { Client, GatewayIntentBits, ChannelType, Partials, EmbedBuilder, PermissionsBitField } = pkg;
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';

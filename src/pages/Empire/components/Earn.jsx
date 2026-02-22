@@ -268,10 +268,14 @@ const Earn = () => {
     const saved = localStorage.getItem('claimedTasks');
     return saved ? JSON.parse(saved) : [];
   });
-  const [verifyingTasks, setVerifyingTasks] = useState([]); // Tasks ready to claim
-  const [processingTasks, setProcessingTasks] = useState({}); // Tasks in 20s countdown: { id: { timeLeft: 20 } }
-  const [feedStatus, setFeedStatus] = useState({}); // RSS Feed Status
-  const [confirmationTasks, setConfirmationTasks] = useState({}); // { taskId: { timeLeft: 60, readyToConfirm: false } }
+  const [verifyingTasks, setVerifyingTasks] = useState([]);
+  const [processingTasks, setProcessingTasks] = useState({});
+  const [feedStatus, setFeedStatus] = useState({});
+  const [confirmationTasks, setConfirmationTasks] = useState({});
+  const [claimedContent, setClaimedContent] = useState(() => {
+    const saved = localStorage.getItem('claimedContent');
+    return saved ? JSON.parse(saved) : {};
+  });
 
   // Load Twitter Widget & Handle Tab Switch
   useEffect(() => {
@@ -849,6 +853,16 @@ const Earn = () => {
           const newClaimed = [...claimedTasks, task.id];
           setClaimedTasks(newClaimed);
           localStorage.setItem('claimedTasks', JSON.stringify(newClaimed));
+          if (task.type === 'watch') {
+            let platformKey = task.platform.toLowerCase();
+            if (platformKey.includes('twitter')) platformKey = 'twitter';
+            const currentLink = feedStatus[platformKey]?.link;
+            if (currentLink) {
+              const updated = { ...claimedContent, [platformKey]: currentLink };
+              setClaimedContent(updated);
+              localStorage.setItem('claimedContent', JSON.stringify(updated));
+            }
+          }
           console.log('✅ Reward claimed via Backend:', data.message);
         } else {
           console.error('❌ Claim failed:', data.message);
@@ -1912,8 +1926,11 @@ const Earn = () => {
              {/* Twitter Widget */}
              {(() => {
                  const task = tasks.find(t => t.id === 10);
-                 const isNew = feedStatus['twitter']?.isNew;
-                 const isClaimed = claimedTasks.includes(task.id);
+                 const platformKey = 'twitter';
+                 const isNew = feedStatus[platformKey]?.isNew;
+                 const currentLink = feedStatus[platformKey]?.link || null;
+                 const lastClaimedLink = claimedContent[platformKey] || null;
+                 const isClaimed = claimedTasks.includes(task.id) && currentLink && lastClaimedLink === currentLink;
                  const confirmState = confirmationTasks[task.id];
                  const isTimerRunning = confirmState && confirmState.timeLeft > 0;
                  const isReadyToConfirm = confirmState && confirmState.readyToConfirm;
@@ -1976,8 +1993,11 @@ const Earn = () => {
              {/* Instagram Widget */}
              {(() => {
                  const task = tasks.find(t => t.id === 9);
-                 const isNew = feedStatus['instagram']?.isNew;
-                 const isClaimed = claimedTasks.includes(task.id);
+                 const platformKey = 'instagram';
+                 const isNew = feedStatus[platformKey]?.isNew;
+                 const currentLink = feedStatus[platformKey]?.link || null;
+                 const lastClaimedLink = claimedContent[platformKey] || null;
+                 const isClaimed = claimedTasks.includes(task.id) && currentLink && lastClaimedLink === currentLink;
                  const confirmState = confirmationTasks[task.id];
                  const isTimerRunning = confirmState && confirmState.timeLeft > 0;
                  const isReadyToConfirm = confirmState && confirmState.readyToConfirm;
@@ -2036,8 +2056,11 @@ const Earn = () => {
              {/* TikTok Widget */}
              {(() => {
                  const task = tasks.find(t => t.id === 8);
-                 const isNew = feedStatus['tiktok']?.isNew;
-                 const isClaimed = claimedTasks.includes(task.id);
+                 const platformKey = 'tiktok';
+                 const isNew = feedStatus[platformKey]?.isNew;
+                 const currentLink = feedStatus[platformKey]?.link || null;
+                 const lastClaimedLink = claimedContent[platformKey] || null;
+                 const isClaimed = claimedTasks.includes(task.id) && currentLink && lastClaimedLink === currentLink;
                  const confirmState = confirmationTasks[task.id];
                  const isTimerRunning = confirmState && confirmState.timeLeft > 0;
                  const isReadyToConfirm = confirmState && confirmState.readyToConfirm;
@@ -2096,8 +2119,11 @@ const Earn = () => {
              {/* Threads Widget */}
              {(() => {
                  const task = tasks.find(t => t.id === 19);
-                 const isNew = feedStatus['threads']?.isNew;
-                 const isClaimed = claimedTasks.includes(task.id);
+                 const platformKey = 'threads';
+                 const isNew = feedStatus[platformKey]?.isNew;
+                 const currentLink = feedStatus[platformKey]?.link || null;
+                 const lastClaimedLink = claimedContent[platformKey] || null;
+                 const isClaimed = claimedTasks.includes(task.id) && currentLink && lastClaimedLink === currentLink;
                  const confirmState = confirmationTasks[task.id];
                  const isTimerRunning = confirmState && confirmState.timeLeft > 0;
                  const isReadyToConfirm = confirmState && confirmState.readyToConfirm;
