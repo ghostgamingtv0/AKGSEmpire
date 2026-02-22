@@ -29,7 +29,10 @@ const ProjectNFTIcon = ({ color = "#53FC18", tier = "1", imageSrc = NFT_IMAGE_MA
 );
 
 const Earn = () => {
-  const [activeTab, setActiveTab] = useState('social');
+  const [activeTab, setActiveTab] = useState(() => {
+    const saved = localStorage.getItem('earn_active_tab');
+    return saved || 'social';
+  });
   const [isKickLive, setIsKickLive] = useState(false); // State for stream status
   const [timeLeft, setTimeLeft] = useState('');
   const [visitorId, setVisitorId] = useState(null);
@@ -230,14 +233,14 @@ const Earn = () => {
           
           const data = await res.json();
           
-          if (data.success) {
-               // Update UI to success
+         if (data.success) {
                setConfirmationTasks(prev => ({
                    ...prev,
                    [taskId]: { timeLeft: 0, status: 'verified', points: data.points_added }
                }));
-               // Update global points if needed
-               // setPoints(prev => prev + data.points_added);
+               if (typeof data.points_added === 'number') {
+                   setPoints(prev => prev + data.points_added);
+               }
           } else {
                setConfirmationTasks(prev => ({
                    ...prev,
@@ -276,6 +279,11 @@ const Earn = () => {
     const saved = localStorage.getItem('claimedContent');
     return saved ? JSON.parse(saved) : {};
   });
+
+  // Persist active tab across refresh
+  useEffect(() => {
+    localStorage.setItem('earn_active_tab', activeTab);
+  }, [activeTab]);
 
   // Load Twitter Widget & Handle Tab Switch
   useEffect(() => {
@@ -853,6 +861,8 @@ const Earn = () => {
           const newClaimed = [...claimedTasks, task.id];
           setClaimedTasks(newClaimed);
           localStorage.setItem('claimedTasks', JSON.stringify(newClaimed));
+          const rewardPoints = parseInt(task.reward) || 5;
+          setPoints(prev => prev + rewardPoints);
           if (task.type === 'watch') {
             let platformKey = task.platform.toLowerCase();
             if (platformKey.includes('twitter')) platformKey = 'twitter';
