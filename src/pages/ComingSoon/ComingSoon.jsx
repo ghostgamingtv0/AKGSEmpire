@@ -232,7 +232,7 @@ const ComingSoon = () => {
           className="flex items-center"
         >
           <img
-            src="https://i.ibb.co/BHxKNLwv/Polygon-Logo-Modifi.png"
+            src="https://cryptologos.cc/logos/polygon-matic-logo.png"
             alt="Polygon"
             className="h-[72px] w-auto object-contain"
           />
