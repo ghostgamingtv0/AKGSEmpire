@@ -1963,11 +1963,11 @@ const Earn = () => {
                     borderClass = "bg-[#0A0A0A] border-[#983695]/40";
                  }
 
-                 return (
-                 <div 
-                   onClick={(e) => task && !isClaimed && !isTimerRunning && handleTaskAction(e, task)}
-                   className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
-                 >
+                return (
+                <div 
+                  onClick={(e) => task && !isClaimed && handleTaskAction(e, task)}
+                  className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
+                >
                     {/* Background Icon */}
                     <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
                         <FaXTwitter size={200} />
@@ -2030,11 +2030,11 @@ const Earn = () => {
                     borderClass = "bg-[#0A0A0A] border-[#983695]/40";
                  }
 
-                 return (
-                 <div 
-                   onClick={(e) => task && !isClaimed && !isTimerRunning && handleTaskAction(e, task)}
-                   className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
-                 >
+                return (
+                <div 
+                  onClick={(e) => task && !isClaimed && handleTaskAction(e, task)}
+                  className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
+                >
                     <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
                         <FaInstagram size={200} />
                     </div>
@@ -2093,11 +2093,11 @@ const Earn = () => {
                     borderClass = "bg-[#0A0A0A] border-[#983695]/40";
                  }
 
-                 return (
-                 <div 
-                   onClick={(e) => task && !isClaimed && !isTimerRunning && handleTaskAction(e, task)}
-                   className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
-                 >
+                return (
+                <div 
+                  onClick={(e) => task && !isClaimed && handleTaskAction(e, task)}
+                  className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
+                >
                     <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
                         <FaTiktok size={200} />
                     </div>
@@ -2156,11 +2156,11 @@ const Earn = () => {
                     borderClass = "bg-[#0A0A0A] border-[#983695]/40";
                  }
 
-                 return (
-                 <div 
-                   onClick={(e) => task && !isClaimed && !isTimerRunning && handleTaskAction(e, task)}
-                   className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
-                 >
+                return (
+                <div 
+                  onClick={(e) => task && !isClaimed && handleTaskAction(e, task)}
+                  className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
+                >
                     <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
                         <FaThreads size={200} />
                     </div>
