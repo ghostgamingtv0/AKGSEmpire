@@ -247,7 +247,7 @@ const GhostGate = () => {
                     className="flex items-center"
                 >
                     <img
-                        src="https://cryptologos.cc/logos/polygon-matic-logo.png"
+                        src="https://i.ibb.co/BHxKNLwv/Polygon-Logo-Modifi.png"
                         alt="Polygon"
                         className="h-[72px] w-auto object-contain"
                     />
