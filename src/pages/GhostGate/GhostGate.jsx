@@ -210,8 +210,7 @@ const GhostGate = () => {
                 setStep('success');
                 // Auto prompt to add token
                 setTimeout(addTokenToWallet, 1000);
-                // Redirect to Coming Soon immediately after successful registration
-                navigate('/coming-soon');
+                navigate('/empire/earn');
             } else {
                 setError(data.error || 'Registration failed');
             }
@@ -435,7 +434,7 @@ const GhostGate = () => {
                                             const data = await res.json();
                                             if (data.success) {
                                                 localStorage.setItem('user_session', JSON.stringify(data.user));
-                                                navigate('/coming-soon');
+                                                navigate('/empire/earn');
                                             } else {
                                                 setError(data.error || 'Login failed');
                                             }
@@ -743,7 +742,7 @@ const GhostGate = () => {
                                 onClick={() => {
                                     if (!gCode) return;
                                     copyToClipboard(gCode);
-                                    navigate('/coming-soon');
+                                    navigate('/empire/earn');
                                 }}
                                 disabled={!gCode}
                                 className="w-full py-3 bg-[#53FC18] hover:bg-[#45d612] disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold text-lg rounded-xl transition-all shadow-[0_0_20px_rgba(83,252,24,0.3)] flex items-center justify-center gap-2 group"
