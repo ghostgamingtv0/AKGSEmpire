@@ -224,6 +224,7 @@ function Empire() {
   const location = useLocation();
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   const checkConnection = async () => {
     if (typeof window.ethereum !== 'undefined') {
@@ -240,6 +241,15 @@ function Empire() {
   };
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const sessionRaw = localStorage.getItem('user_session');
+      const isOnLogin = location.pathname === '/empire/login';
+      if (!sessionRaw && !isOnLogin) {
+        window.location.href = '/';
+        return;
+      }
+    }
+    setIsAuthChecked(true);
     checkConnection();
     
     // Listen for storage events (in case wallet is connected in another tab or via modal)
@@ -281,6 +291,10 @@ function Empire() {
   }, []);
 
   const isHome = location.pathname === '/empire' || location.pathname === '/empire/';
+
+  if (!isAuthChecked && location.pathname !== '/empire/login') {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-[#53FC18] selection:text-black relative">
