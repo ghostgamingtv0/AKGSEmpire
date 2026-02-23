@@ -735,30 +735,28 @@ const Earn = () => {
                alert(data.error);
             }
           } else {
-            console.log('User Synced:', data);
+            const user = data.user || {};
+            console.log('User Synced:', user);
             
-            // Sync Profile Data (Restore identity if cleared from localStorage)
-            if (data.kick_username) {
-                setKickUsername(data.kick_username);
-                localStorage.setItem('kickUsername', data.kick_username);
+            if (user.kick_username) {
+                setKickUsername(user.kick_username);
+                localStorage.setItem('kickUsername', user.kick_username);
             }
-            if (data.wallet_address) {
-                setWalletAddress(data.wallet_address);
-                localStorage.setItem('walletAddress', data.wallet_address);
+            if (user.wallet_address) {
+                setWalletAddress(user.wallet_address);
+                localStorage.setItem('walletAddress', user.wallet_address);
             }
-            if (data.kick_username && data.wallet_address) {
+            if (user.kick_username && user.wallet_address) {
                 setIsProfileSaved(true);
                 localStorage.setItem('isProfileSaved', 'true');
             }
 
-            // Sync Points
-            if (data.total_points !== undefined) {
-                setPoints(data.total_points);
+            if (user.total_points !== undefined) {
+                setPoints(user.total_points);
             }
-            // Sync G-Code (Unlock if exists)
-            if (data.g_code) {
-                setGCode(data.g_code);
-                localStorage.setItem('gCode', data.g_code);
+            if (user.g_code) {
+                setGCode(user.g_code);
+                localStorage.setItem('gCode', user.g_code);
             }
           }
         } catch (error) {
