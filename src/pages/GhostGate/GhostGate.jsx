@@ -209,7 +209,7 @@ const GhostGate = () => {
 
                 setStep('success');
                 setTimeout(addTokenToWallet, 1000);
-                navigate('/empire');
+                navigate('/empire/home');
             } else {
                 setError(data.error || 'Registration failed');
             }
@@ -433,7 +433,7 @@ const GhostGate = () => {
                                             const data = await res.json();
                                             if (data.success) {
                                                 localStorage.setItem('user_session', JSON.stringify(data.user));
-                                                navigate('/empire');
+                                                navigate('/empire/home');
                                             } else {
                                                 setError(data.error || 'Login failed');
                                             }
@@ -741,7 +741,7 @@ const GhostGate = () => {
                                 onClick={() => {
                                     if (!gCode) return;
                                     copyToClipboard(gCode);
-                                    navigate('/empire');
+                                    navigate('/empire/home');
                                 }}
                                 disabled={!gCode}
                                 className="w-full py-3 bg-[#53FC18] hover:bg-[#45d612] disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold text-lg rounded-xl transition-all shadow-[0_0_20px_rgba(83,252,24,0.3)] flex items-center justify-center gap-2 group"

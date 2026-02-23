@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutDashboard, Wallet, Menu, X, Users, Coins, Zap, User } from 'lucide-react';
 import Hero from './components/Hero';
@@ -17,7 +17,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
   const location = useLocation();
 
   const navItems = [
-    { name: 'Home', path: '/empire', icon: <LayoutDashboard size={18} /> },
+    { name: 'Home', path: '/empire/home', icon: <LayoutDashboard size={18} /> },
     { name: 'Earn', path: '/empire/earn', icon: <Zap size={18} /> },
     { name: 'Dashboard', path: '/empire/dashboard', icon: <Users size={18} /> },
     { name: 'Tokenomics', path: '/empire/tokenomics', icon: <Coins size={18} /> },
@@ -60,7 +60,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
       <div className="max-w-7xl mx-auto pl-40 pr-4 sm:pr-6 lg:pr-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center gap-4">
-            <Link to="/empire" className="flex items-center gap-3 group">
+            <Link to="/empire/home" className="flex items-center gap-3 group">
               <img 
                 src={ASSETS.LOGO_URL} 
                 alt="AKGS Empire Logo" 
@@ -290,7 +290,7 @@ function Empire() {
     };
   }, []);
 
-  const isHome = location.pathname === '/empire' || location.pathname === '/empire/';
+  const isHome = location.pathname === '/empire' || location.pathname === '/empire/' || location.pathname === '/empire/home';
 
   if (!isAuthChecked && location.pathname !== '/empire/login') {
     return null;
@@ -307,7 +307,8 @@ function Empire() {
       <main className="flex-grow pt-20 relative z-10">
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
-            <Route index element={<Hero />} />
+            <Route index element={<Navigate to="home" replace />} />
+            <Route path="home" element={<Hero />} />
             <Route path="earn" element={<Earn />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="tokenomics" element={<Tokenomics />} />
