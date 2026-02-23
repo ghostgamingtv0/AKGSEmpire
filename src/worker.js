@@ -448,6 +448,7 @@ export default {
           } catch (e) {}
         }
         let followers = null;
+        let isFollowing = false;
         try {
           const chRes = await fetch("https://api.kick.com/public/v1/channels", {
             headers: {
@@ -461,12 +462,31 @@ export default {
             followers = c.followersCount || c.followers_count || (Array.isArray(c.followers) ? c.followers.length : null);
           }
         } catch (e) {}
+        try {
+          if (username) {
+            const channelSlug = "ghost_gamingtv";
+            const followingRes = await fetch(`https://api.kick.com/public/v1/users/${username}/following`, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                Accept: "application/json"
+              }
+            });
+            if (followingRes.ok) {
+              const followingData = await followingRes.json();
+              const list = followingData.data || [];
+              const found = list.find((c) => c.slug === channelSlug || c.username === channelSlug);
+              if (found) {
+                isFollowing = true;
+              }
+            }
+          }
+        } catch (e) {}
         const resp = {
           success: true,
           username: username || null,
           profile_pic: profilePic || null,
           followers: followers || null,
-          following: false,
+          following: isFollowing,
           is_profile_complete: false,
           visitor_id: visitorId
         };
