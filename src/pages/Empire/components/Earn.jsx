@@ -205,11 +205,11 @@ const Earn = () => {
           console.error('Verification request failed', e);
       }
       
-      // Start 60s countdown for "Verifying..."
+      // Start 20s countdown for "Verifying..."
       setConfirmationTasks(prev => ({
           ...prev,
           [currentTaskForModal.id]: { 
-              timeLeft: 60, 
+              timeLeft: 20, 
               status: 'verifying',
               gCode: generatedCode // Store G-Code for this specific verification
           }
@@ -828,7 +828,7 @@ const Earn = () => {
       window.open(targetLink, '_blank');
       setConfirmationTasks(prev => ({
         ...prev,
-        [task.id]: { timeLeft: 60, readyToConfirm: false }
+        [task.id]: { timeLeft: 20, readyToConfirm: false }
       }));
       try {
         fetch('/api/track-click', {
