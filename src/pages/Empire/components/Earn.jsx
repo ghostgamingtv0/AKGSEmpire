@@ -936,29 +936,23 @@ const Earn = () => {
   };
 
   const handleKickConnect = async () => {
-    // Generate PKCE
     const codeVerifier = generateRandomString(128);
     const codeChallenge = await generateCodeChallenge(codeVerifier);
     const state = generateRandomString(32);
     
-    // Store verifier and state in localStorage for later verification
     localStorage.setItem('kick_code_verifier', codeVerifier);
     localStorage.setItem('kick_auth_state', state);
     localStorage.setItem('performing_kick_task', 'true');
     
-    // Construct Redirect URI (must match the one used in Exchange Token)
     const origin = window.location.origin.replace(/\/$/, '');
     const redirectUri = `${origin}/empire/earn/`;
     console.log('Kick OAuth Redirect URI:', redirectUri);
     
-    // Use the hardcoded Client ID if env var is missing (fallback)
     const clientId = import.meta.env.VITE_KICK_CLIENT_ID || '01KH3T8WNDZ269403HKC17JN7X';
     const scopes = 'chat:write channel:read user:read events:subscribe channel:write moderation:ban kicks:read channel:rewards:read channel:rewards:write';
     const KICK_AUTH_URL = `https://id.kick.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scopes)}&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
     
-    // Redirect in same tab to ensure callback handles correctly in this context
-    // or use _self to replace current page
-    window.location.href = KICK_AUTH_URL;
+    window.open(KICK_AUTH_URL, '_blank', 'noopener,noreferrer');
   };
 
   // Normalize and parse G-Code from chat or manual input
