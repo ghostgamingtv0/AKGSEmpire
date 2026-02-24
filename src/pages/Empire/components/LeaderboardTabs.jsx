@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, MessageCircle, Users, Instagram, Twitter, Hash, MonitorPlay, ExternalLink, CheckSquare, MessageSquare } from 'lucide-react';
 
-const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:5000';
+const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
 
 const LeaderboardTabs = () => {
   const [dataCache, setDataCache] = useState({

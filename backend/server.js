@@ -112,14 +112,23 @@ const initDB = async () => {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // Initialize default stats if empty
+    const [stats] = await pool.query('SELECT COUNT(*) as count FROM system_stats');
+    if (stats[0].count === 0) {
+        console.log('📦 Initializing default system stats...');
+        await setSystemStat('kick_followers', '5500');
+        await setSystemStat('kick_viewers', '0');
+        await setSystemStat('kick_is_live', 'false');
+        await setSystemStat('kick_category', 'Gaming');
+        await setSystemStat('weekly_start_followers', '5450');
+    }
     
     console.log('✅ Tables initialized');
   } catch (err) {
     console.error('❌ Table initialization failed:', err);
   }
 };
-
-initDB();
 
 // Middleware
 app.use(cors());
@@ -251,10 +260,11 @@ app.post('/api/verify-task', async (req, res) => {
 // --- Stats API ---
 const updateChannelStats = async () => {
     try {
-        // Fetch Kick Channel Stats
-        const response = await fetch('https://kick.com/api/v1/channels/ghost_gamingtv', {
-             headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
-        });
+        // Fetch Kick Channel Stats via AllOrigins Proxy to bypass Cloudflare
+        const targetUrl = 'https://kick.com/api/v1/channels/ghost_gamingtv';
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+        
+        const response = await fetch(proxyUrl);
         
         if (response.ok) {
             const data = await response.json();
@@ -275,6 +285,8 @@ const updateChannelStats = async () => {
             }
             
             console.log(`✅ Kick Stats Updated: ${followers} Followers | Live: ${isLive} | Viewers: ${viewers}`);
+        } else {
+            console.log(`⚠️ Kick Stats Sync: Proxy returned ${response.status}. Falling back to system defaults.`);
         }
     } catch (e) {
         console.error('❌ Failed to update channel stats:', e.message);
@@ -589,6 +601,7 @@ const setSystemStat = async (key, value) => {
     }
 };
 
+initDB();
 
 // --- TikTok OAuth Flow ---
 const TIKTOK_CLIENT_KEY = (process.env.TIKTOK_CLIENT_KEY || '').trim();

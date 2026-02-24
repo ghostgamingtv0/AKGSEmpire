@@ -100,7 +100,7 @@ const Dashboard = () => {
         // 2. Check for Referral Code
         const refCode = localStorage.getItem('ref_code');
 
-        const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:5000';
+        const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
 
         // 3. Init/Load User
         const res = await fetch(`${API_BASE}/api/init-user`, {
@@ -143,11 +143,7 @@ const Dashboard = () => {
 
         // 5b. Fallback: Always ensure Kick stats are fresh from Kick API
         try {
-          const kickRes = await fetch('https://kick.com/api/v1/channels/ghost_gamingtv', {
-            headers: {
-              'User-Agent': 'Mozilla/5.0'
-            }
-          });
+          const kickRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://kick.com/api/v1/channels/ghost_gamingtv')}`);
           if (kickRes.ok) {
             const kickData = await kickRes.json();
             const followers =
@@ -244,11 +240,7 @@ const Dashboard = () => {
       }
 
       try {
-        const kickRes = await fetch('https://kick.com/api/v1/channels/ghost_gamingtv', {
-          headers: {
-            'User-Agent': 'Mozilla/5.0'
-          }
-        });
+        const kickRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://kick.com/api/v1/channels/ghost_gamingtv')}`);
         if (kickRes.ok) {
           const kickData = await kickRes.json();
           const followers =
