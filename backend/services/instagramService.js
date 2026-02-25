@@ -40,7 +40,7 @@ export const getAuthUrl = (redirectUri, state) => {
         'instagram_business_manage_insights'
     ].join(',');
 
-    // We use the passed redirectUri from the controller to maintain flexibility (localhost vs prod),
+    // We use the passed redirectUri from the controller to maintain flexibility (production origins),
     // but the scopes and endpoint are updated to match the user's request.
     return `https://www.instagram.com/oauth/authorize?force_reauth=true&client_id=${INSTAGRAM_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=${scopes}&state=${encodeURIComponent(state)}`;
 };

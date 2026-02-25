@@ -100,7 +100,7 @@ const Dashboard = () => {
         // 2. Check for Referral Code
         const refCode = localStorage.getItem('ref_code');
 
-        const API_BASE = import.meta.env.PROD ? 'https://site-akgs.onrender.com' : 'http://localhost:3001';
+        const API_BASE = 'https://site-akgs.onrender.com';
 
         // 3. Init/Load User
         const res = await fetch(`${API_BASE}/api/init-user`, {
@@ -222,7 +222,7 @@ const Dashboard = () => {
   const handleKickSync = async () => {
     try {
       setIsLoading(true);
-      const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
+      const API_BASE = 'https://site-akgs.onrender.com';
 
       try {
         const statsRes = await fetch(`${API_BASE}/api/stats`);

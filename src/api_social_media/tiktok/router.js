@@ -17,9 +17,9 @@ export async function handleTikTokRequest(request, url) {
         url.pathname === "/empire/api/tiktok/login"
     ) {
         const csrfState = Math.random().toString(36).substring(7);
-        const origin = url.origin.replace('http:', 'https:');
+        const origin = 'https://akgs-empire.pages.dev';
         const redirectUri = `${origin}/empire/api/tiktok/callback`;
-        const isDev = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
+        const isDev = url.hostname.endsWith('pages.dev') && !url.hostname.includes('akgs-empire');
         const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
         
         let targetUrl = 'https://www.tiktok.com/v2/auth/authorize/';
@@ -76,9 +76,9 @@ export async function handleTikTokRequest(request, url) {
             // OAuth Code Exchange (must use the SAME redirect_uri as login)
             if (code) {
                 try {
-                    const origin = url.origin.replace('http:', 'https:');
+                    const origin = 'https://akgs-empire.pages.dev';
                     const redirectUri = `${origin}/empire/api/tiktok/callback`;
-                    const isDev = url.hostname.includes('localhost') || url.hostname.endsWith('pages.dev');
+                    const isDev = url.hostname.endsWith('pages.dev') && !url.hostname.includes('akgs-empire');
                     const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
                     const params = new URLSearchParams();
                     params.append('client_key', keys.CLIENT_KEY);
