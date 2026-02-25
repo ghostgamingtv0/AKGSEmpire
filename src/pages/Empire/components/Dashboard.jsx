@@ -82,7 +82,25 @@ const Dashboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [userData, setUserData] = useState(null);
   const [copied, setCopied] = useState(false);
-  const [globalStats, setGlobalStats] = useState({ total_users: 0, total_distributed: 0 });
+  const [globalStats, setGlobalStats] = useState(() => {
+    const saved = localStorage.getItem('globalStats');
+    return saved ? JSON.parse(saved) : { 
+      total_users: 0, 
+      total_distributed: 0,
+      kick_followers: 0,
+      kick_viewers: 0,
+      kick_is_live: false,
+      kick_category: 'None',
+      weekly_growth: 0
+    };
+  });
+
+  // Persist globalStats to localStorage
+  useEffect(() => {
+    if (globalStats) {
+      localStorage.setItem('globalStats', JSON.stringify(globalStats));
+    }
+  }, [globalStats]);
   const [topComments, setTopComments] = useState([]);
   const [interactiveLeaderboard, setInteractiveLeaderboard] = useState([]);
   const [referralLeaderboard, setReferralLeaderboard] = useState([]);
@@ -289,10 +307,11 @@ const Dashboard = () => {
   const totalFollowers = globalStats.kick_followers || 0;
   const weeklyGrowth = typeof globalStats.weekly_growth === 'number' ? globalStats.weekly_growth : 0;
   const heatScore = (() => {
-    const followersScore = Math.min(totalFollowers / 1000, 50);
-    const growthScore = Math.max(Math.min(weeklyGrowth / 100, 30), -30);
-    const viewersScore = Math.min((globalStats.kick_viewers || 0) / 10, 20);
-    return Math.max(0, Math.round(followersScore + growthScore + viewersScore));
+    const baseline = 65; // High momentum baseline
+    const followersScore = Math.min(totalFollowers / 500, 20); // Scale up to 20
+    const growthScore = Math.max(Math.min(weeklyGrowth / 50, 10), -5);
+    const viewersScore = Math.min((globalStats.kick_viewers || 0) / 5, 5);
+    return Math.min(100, Math.round(baseline + followersScore + growthScore + viewersScore));
   })();
 
   const stats = [

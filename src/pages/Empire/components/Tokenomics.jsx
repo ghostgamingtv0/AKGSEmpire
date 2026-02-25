@@ -7,11 +7,24 @@ import { CONTRACT_ADDRESS } from '../../../constants';
 
 const Tokenomics = () => {
   const data = [
-    { name: 'Circulating Supply', value: 431.89, color: '#53FC18' },
-    { name: 'Burned', value: 30.15, color: '#FF3B3B' },
-    { name: 'Marketing & Dev', value: 20, color: '#FFFFFF' },
-    { name: 'Liquidity Pool', value: 17.96, color: '#1A1A1A' },
+    { name: 'Circulating Supply', value: 431.89, color: '#53FC18', abs: '431,891,203 AKGS' },
+    { name: 'Burned', value: 30.15, color: '#FF3B3B', abs: '30,148,797 AKGS' },
+    { name: 'Marketing & Dev', value: 20.00, color: '#FFFFFF', abs: '20,000,000 AKGS' },
+    { name: 'Liquidity Pool', value: 17.96, color: '#1A1A1A', abs: '17,960,000 AKGS' },
   ];
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-[#050505] border border-[#333] p-3 rounded-lg shadow-xl">
+          <p className="text-white font-bold mb-1">{payload[0].name}</p>
+          <p className="text-[#53FC18] font-mono text-sm">{payload[0].payload.abs}</p>
+          <p className="text-gray-400 text-xs mt-1">{payload[0].value}% of Total</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden empire-gradient-page">
@@ -76,10 +89,7 @@ const Tokenomics = () => {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#050505', borderColor: '#333', borderRadius: '8px' }}
-                  itemStyle={{ color: '#fff' }}
-                />
+                <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
             

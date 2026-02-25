@@ -101,6 +101,15 @@ const Earn = () => {
     const saved = localStorage.getItem('viewCodes');
     return saved ? JSON.parse(saved) : {};
   });
+  const [confirmationTasks, setConfirmationTasks] = useState(() => {
+    const saved = localStorage.getItem('confirmationTasks');
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  // Persist confirmationTasks to localStorage
+  useEffect(() => {
+    localStorage.setItem('confirmationTasks', JSON.stringify(confirmationTasks));
+  }, [confirmationTasks]);
   const [currentViewCode, setCurrentViewCode] = useState(null);
   const [showViewCodeModal, setShowViewCodeModal] = useState(false);
 
@@ -139,14 +148,18 @@ const Earn = () => {
 
   const generateViewCode = (platform) => {
     const baseUsername = (username || 'anonymous').toLowerCase();
-    const baseIdSource = walletAddress || visitorId || '';
+    const baseIdSource = walletAddress || visitorId || 'guest';
     const baseId = typeof baseIdSource === 'string' ? baseIdSource.slice(0, 8) : 'noWallet';
     const tag = getPlatformTag(platform);
 
-    let digits;
-    do {
-      digits = String(Math.floor(100000 + Math.random() * 900000));
-    } while (digits === String(gCodeDigits));
+    // Use a stable hash based on ID and platform to avoid randomness
+    let hash = 0;
+    const input = `${baseId}-${platform}`;
+    for (let i = 0; i < input.length; i++) {
+      hash = ((hash << 5) - hash) + input.charCodeAt(i);
+      hash |= 0; 
+    }
+    const digits = String(Math.abs(hash) % 900000 + 100000); // Stable 6-digit code
 
     return `👻${baseUsername}-${baseId}-${tag}-${digits}👻`;
   };
@@ -306,7 +319,6 @@ const Earn = () => {
   const [verifyingTasks, setVerifyingTasks] = useState([]);
   const [processingTasks, setProcessingTasks] = useState({});
   const [feedStatus, setFeedStatus] = useState({});
-  const [confirmationTasks, setConfirmationTasks] = useState({});
   const [claimedContent, setClaimedContent] = useState(() => {
     const saved = localStorage.getItem('claimedContent');
     return saved ? JSON.parse(saved) : {};
@@ -341,6 +353,13 @@ const Earn = () => {
     handleKickConnect();
   };
 
+  const getTaskStatus = (task) => {
+    if (claimedTasks.includes(task.id)) return 'verified';
+    const state = confirmationTasks[task.id];
+    if (state) return state.status;
+    return 'pending';
+  };
+
   const tasks = [
     { 
       id: 1, 
@@ -348,7 +367,7 @@ const Earn = () => {
       platform: 'Twitter (X)', 
       action: 'Follow AKGS on X (Twitter)', 
       reward: '5 Points', 
-      status: 'pending', 
+      status: getTaskStatus({ id: 1 }), 
       link: SOCIAL_LINKS.TWITTER,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-white" aria-hidden="true">
@@ -362,7 +381,7 @@ const Earn = () => {
       platform: 'Telegram', 
       action: 'Join Official Telegram', 
       reward: '5 Points', 
-      status: 'pending', 
+      status: getTaskStatus({ id: 2 }), 
       link: SOCIAL_LINKS.TELEGRAM,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-blue-500" aria-hidden="true">
@@ -376,7 +395,7 @@ const Earn = () => {
       platform: 'Instagram', 
       action: 'Follow AKGS on Instagram', 
       reward: '5 Points',  
-      status: 'pending', 
+      status: getTaskStatus({ id: 3 }), 
       link: SOCIAL_LINKS.INSTAGRAM,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-pink-500" aria-hidden="true">
@@ -390,7 +409,7 @@ const Earn = () => {
       platform: 'TikTok', 
       action: 'Follow AKGS on TikTok', 
       reward: '5 Points', 
-      status: 'pending', 
+      status: getTaskStatus({ id: 4 }), 
       link: SOCIAL_LINKS.TIKTOK,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-white" aria-hidden="true">
@@ -404,7 +423,7 @@ const Earn = () => {
       platform: 'Kick', 
       action: 'Follow AKGS on Kick', 
       reward: '5 Points', 
-      status: 'pending', 
+      status: getTaskStatus({ id: 5 }), 
       link: SOCIAL_LINKS.KICK,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-[#53FC18]" aria-hidden="true">
@@ -418,7 +437,7 @@ const Earn = () => {
       platform: 'Discord', 
       action: 'Join Official Discord', 
       reward: '5 Points', 
-      status: 'pending', 
+      status: getTaskStatus({ id: 6 }), 
       link: SOCIAL_LINKS.DISCORD,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-indigo-500" aria-hidden="true">
@@ -432,7 +451,7 @@ const Earn = () => {
       platform: 'Threads', 
       action: 'Follow AKGS on Threads', 
       reward: '5 Points', 
-      status: 'pending', 
+      status: getTaskStatus({ id: 7 }), 
       link: SOCIAL_LINKS.THREADS,
       icon: (
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-white" aria-hidden="true">
