@@ -22,19 +22,21 @@ jobs:
         run: npm install
 
       - name: Build frontend and worker
-        run: npm run build
+        run: |
+          npm run build
+          ls -la dist
+          ls -la dist/_worker.js
 
       - name: Deploy to Cloudflare Pages
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          npx wrangler pages deploy dist \
-            --project-name=akgsempire \
-            --branch=main
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=akgsempire --branch=main
 
       - name: Trigger Render deployment
+        if: success()
         run: |
           if [ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
-            curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" || true
+            curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
           fi
