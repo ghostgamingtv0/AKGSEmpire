@@ -15,15 +15,16 @@
     "bcryptjs": "^3.0.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.6",
-    "discord.js": "^13.17.1",
+    "discord.js": "^14.25.1",
     "dotenv": "^16.6.1",
     "express": "^4.22.1",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
     "mysql2": "^3.9.1",
     "node-cron": "^4.2.1",
     "rss-parser": "^3.13.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.0.2",
     "ws": "^8.19.0"
-  },
-  "devDependencies": {}
+  }
 }

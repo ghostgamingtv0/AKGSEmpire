@@ -218,38 +218,32 @@ app.post('/api/auth/login', async (req, res) => {
 
 // --- Task Verification Routes ---
 app.post('/api/verify-task', async (req, res) => {
-    const { username, task_id, platform, g_code } = req.body;
+    const { username, visitor_id, task_id, platform, g_code } = req.body;
 
-    if (!username || !task_id || !platform) {
+    if (!visitor_id || !task_id || !platform) {
         return res.status(400).json({ success: false, error: 'Missing required fields' });
     }
 
     try {
-        // 1. Check if user exists
-        const [users] = await pool.query('SELECT id, total_points FROM users WHERE username = ?', [username]);
+        // 1. Check if user exists by visitor_id
+        const [users] = await pool.query('SELECT id, total_points, kick_username, username FROM users WHERE visitor_id = ?', [visitor_id]);
         if (users.length === 0) {
             return res.status(404).json({ success: false, error: 'User not found' });
         }
         const user = users[0];
 
-        // 2. Check if task already completed (optional, if we track per task)
-        // For now, we'll just log it and award points strictly (or simulate verification)
-        
-        // 3. Simulate Verification Logic (e.g. check if G-Code matches pattern)
-        // In a real scenario, we would check the external platform via API or Scraper
-        const isValidGCode = g_code && g_code.includes('👻') && g_code.includes(username);
+        // 2. Validate G-Code format (should contain username or kick_username)
+        const effectiveUsername = username || user.kick_username || user.username || 'anonymous';
+        const isValidGCode = g_code && g_code.includes('👻') && (g_code.includes(effectiveUsername) || g_code.includes(visitor_id.substring(0, 8)));
         
         if (!isValidGCode) {
              return res.status(400).json({ success: false, error: 'Invalid G-Code format' });
         }
 
-        // 4. Award Points (e.g., 10 points per task)
+        // 3. Award Points (e.g., 10 points per task)
         const REWARD_POINTS = 10;
-        await pool.query('UPDATE users SET total_points = total_points + ? WHERE id = ?', [REWARD_POINTS, user.id]);
+        await pool.query('UPDATE users SET total_points = total_points + ?, weekly_points = weekly_points + ? WHERE id = ?', [REWARD_POINTS, REWARD_POINTS, user.id]);
         
-        // 5. Log transaction/activity
-        // await pool.query('INSERT INTO activity_log ...');
-
         res.json({ 
             success: true, 
             message: 'Task verified successfully', 
@@ -941,7 +935,7 @@ app.get('/api/tiktok/callback', async (req, res) => {
 // --- Auth Endpoints ---
 
 app.post('/api/init-user', async (req, res) => {
-    const { visitor_id, ref_code } = req.body;
+    const { visitor_id, ref_code, wallet_address, kick_username, g_code: client_g_code } = req.body;
     if (!visitor_id) return res.status(400).json({ error: 'Visitor ID required' });
 
     try {
@@ -962,14 +956,39 @@ app.post('/api/init-user', async (req, res) => {
                 }
             }
 
-            const gCode = 'G-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            const gCode = client_g_code || ('G-' + Math.random().toString(36).substring(2, 8).toUpperCase());
             
             await pool.query(
-                'INSERT INTO users (visitor_id, referral_code, referred_by, g_code) VALUES (?, ?, ?, ?)', 
-                [visitor_id, referralCode, referredBy, gCode]
+                'INSERT INTO users (visitor_id, referral_code, referred_by, g_code, wallet_address, kick_username) VALUES (?, ?, ?, ?, ?, ?)', 
+                [visitor_id, referralCode, referredBy, gCode, wallet_address || null, kick_username || null]
             );
             
             [users] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+        } else {
+            // Update existing user with new profile info if provided
+            const user = users[0];
+            const updates = [];
+            const params = [];
+
+            if (wallet_address && wallet_address !== user.wallet_address) {
+                updates.push('wallet_address = ?');
+                params.push(wallet_address);
+            }
+            if (kick_username && kick_username !== user.kick_username) {
+                updates.push('kick_username = ?');
+                params.push(kick_username);
+            }
+            if (client_g_code && client_g_code !== user.g_code) {
+                updates.push('g_code = ?');
+                params.push(client_g_code);
+            }
+
+            if (updates.length > 0) {
+                params.push(visitor_id);
+                await pool.query(`UPDATE users SET ${updates.join(', ')} WHERE visitor_id = ?`, params);
+                // Refresh user data
+                [users] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+            }
         }
         
         res.json({ success: true, user: users[0] });
@@ -980,30 +999,47 @@ app.post('/api/init-user', async (req, res) => {
 });
 
 app.post('/api/auth/register', async (req, res) => {
-    const { visitor_id, password, wallet_address } = req.body;
+    const { visitor_id, username, password, wallet_address } = req.body;
+    if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
+
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         
-        // Check if user exists
-        const [existing] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+        // 1. Check if username is taken
+        const [existingByUsername] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+        if (existingByUsername.length > 0) {
+            return res.status(400).json({ error: 'Username already taken' });
+        }
+
+        // 2. Check if visitor_id already has an account
+        const [existingByVisitor] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
         
-        if (existing.length > 0) {
-            await pool.query('UPDATE users SET password = ?, wallet_address = ? WHERE visitor_id = ?', [hashedPassword, wallet_address, visitor_id]);
+        if (existingByVisitor.length > 0) {
+            // Upgrade guest account to registered account
+            await pool.query(
+                'UPDATE users SET username = ?, password = ?, wallet_address = ? WHERE visitor_id = ?', 
+                [username, hashedPassword, wallet_address, visitor_id]
+            );
         } else {
+            // Create brand new account
             const referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-            await pool.query('INSERT INTO users (visitor_id, password, wallet_address, referral_code) VALUES (?, ?, ?, ?)', [visitor_id, hashedPassword, wallet_address, referralCode]);
+            await pool.query(
+                'INSERT INTO users (visitor_id, username, password, wallet_address, referral_code) VALUES (?, ?, ?, ?, ?)', 
+                [visitor_id, username, hashedPassword, wallet_address, referralCode]
+            );
         }
         
         res.json({ success: true });
     } catch (e) {
+        console.error('Registration Error:', e);
         res.status(500).json({ error: e.message });
     }
 });
 
 app.post('/api/auth/login', async (req, res) => {
-    const { visitor_id, password } = req.body;
+    const { username, password, visitor_id } = req.body;
     try {
-        const [users] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+        const [users] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
         if (users.length === 0) return res.status(400).json({ error: 'User not found' });
         
         const user = users[0];
@@ -1011,8 +1047,15 @@ app.post('/api/auth/login', async (req, res) => {
         
         if (!valid) return res.status(400).json({ error: 'Invalid password' });
         
+        // Update visitor_id on login to link this device
+        if (visitor_id && visitor_id !== user.visitor_id) {
+            await pool.query('UPDATE users SET visitor_id = ? WHERE id = ?', [visitor_id, user.id]);
+            user.visitor_id = visitor_id;
+        }
+        
         res.json({ success: true, user });
     } catch (e) {
+        console.error('Login Error:', e);
         res.status(500).json({ error: e.message });
     }
 });

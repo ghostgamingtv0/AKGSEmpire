@@ -10,7 +10,7 @@ export const TIKTOK_CONFIG = {
     }
 };
 
-export async function handleTikTokRequest(request, url) {
+export async function handleTikTokRequest(request, url, env) {
     // 1. TikTok Login Redirect
     if (
         url.pathname === "/api/tiktok/login" ||
@@ -20,10 +20,12 @@ export async function handleTikTokRequest(request, url) {
         const origin = 'https://akgs-empire.pages.dev';
         const redirectUri = `${origin}/empire/api/tiktok/callback`;
         const isDev = url.hostname.endsWith('pages.dev') && !url.hostname.includes('akgs-empire');
-        const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
+        
+        // Use env if available
+        const TIKTOK_CLIENT_KEY = env?.TIKTOK_CLIENT_KEY || (isDev ? TIKTOK_CONFIG.SANDBOX.CLIENT_KEY : TIKTOK_CONFIG.PROD.CLIENT_KEY);
         
         let targetUrl = 'https://www.tiktok.com/v2/auth/authorize/';
-        targetUrl += `?client_key=${keys.CLIENT_KEY}`;
+        targetUrl += `?client_key=${TIKTOK_CLIENT_KEY}`;
         targetUrl += `&scope=user.info.basic`;
         targetUrl += `&response_type=code`;
         targetUrl += `&redirect_uri=${encodeURIComponent(redirectUri)}`;
@@ -79,10 +81,14 @@ export async function handleTikTokRequest(request, url) {
                     const origin = 'https://akgs-empire.pages.dev';
                     const redirectUri = `${origin}/empire/api/tiktok/callback`;
                     const isDev = url.hostname.endsWith('pages.dev') && !url.hostname.includes('akgs-empire');
-                    const keys = isDev ? TIKTOK_CONFIG.SANDBOX : TIKTOK_CONFIG.PROD;
+                    
+                    // Use env if available
+                    const TIKTOK_CLIENT_KEY = env?.TIKTOK_CLIENT_KEY || (isDev ? TIKTOK_CONFIG.SANDBOX.CLIENT_KEY : TIKTOK_CONFIG.PROD.CLIENT_KEY);
+                    const TIKTOK_CLIENT_SECRET = env?.TIKTOK_CLIENT_SECRET || (isDev ? TIKTOK_CONFIG.SANDBOX.CLIENT_SECRET : TIKTOK_CONFIG.PROD.CLIENT_SECRET);
+                    
                     const params = new URLSearchParams();
-                    params.append('client_key', keys.CLIENT_KEY);
-                    params.append('client_secret', keys.CLIENT_SECRET);
+                    params.append('client_key', TIKTOK_CLIENT_KEY);
+                    params.append('client_secret', TIKTOK_CLIENT_SECRET);
                     params.append('code', code);
                     params.append('grant_type', 'authorization_code');
                     params.append('redirect_uri', redirectUri);

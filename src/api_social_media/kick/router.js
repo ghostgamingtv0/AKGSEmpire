@@ -1,5 +1,7 @@
 export const KICK_CONFIG = {
     CLIENT_ID: '01KH3T8WNDZ269403HKC17JN7X',
+    // In Cloudflare Worker, we use env.KICK_CLIENT_SECRET
+    // The value below is a fallback or for local testing only
     CLIENT_SECRET: 'c23959f212aca21f06584f80029291f71d4b26b537e21c1e1b8865737791f7ba',
     AUTH_URL: 'https://id.kick.com/oauth/authorize',
     TOKEN_URL: 'https://id.kick.com/oauth/token',
@@ -26,7 +28,8 @@ async function generateCodeChallenge(verifier) {
         .replace(/=+$/, '');
 }
 
-export async function handleKickRequest(request, url) {
+export async function handleKickRequest(request, url, env) {
+    const CLIENT_SECRET = env?.KICK_CLIENT_SECRET || KICK_CONFIG.CLIENT_SECRET;
     // 1. Kick Login Redirect
     if (url.pathname === "/api/kick/login") {
         try {

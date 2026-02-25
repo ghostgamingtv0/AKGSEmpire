@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 import { initDB, pool, getSystemStat } from './db.js';
 import { updateKickStats, getKickStats } from './services/kickService.js';
@@ -19,15 +21,79 @@ import { verifyTask, processBotVerification } from './services/verificationServi
 
 // Import Bots (Running as side effects)
 import './telegram_bot.js';
+import './discord_bot.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, '../.env') });
 
+const USER_EVENTS_FILE = join(__dirname, '../data/user_events.jsonl');
+
+const appendEventLog = (name, req, payload = {}) => {
+    try {
+        const dir = dirname(USER_EVENTS_FILE);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        const entry = {
+            event: name,
+            timestamp: new Date().toISOString(),
+            ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+            userAgent: req.headers['user-agent'],
+            method: req.method,
+            path: req.originalUrl || req.url,
+            referer: req.headers['referer'] || null,
+            payload
+        };
+        fs.appendFileSync(USER_EVENTS_FILE, JSON.stringify(entry) + '\n');
+    } catch (e) {
+        console.error('Failed to append event log:', e.message);
+    }
+};
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors());
+// --- SECURITY MIDDLEWARE ---
+// 1. Helmet for Security Headers
+app.use(helmet({
+    contentSecurityPolicy: false, // Disabled for development, enable in production with specific domains
+    crossOriginEmbedderPolicy: false
+}));
+
+// 2. Rate Limiting (Prevent DDoS/Brute Force)
+const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per window
+    message: { success: false, error: 'Too many requests from this IP, please try again later.' }
+});
+
+const authLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 10, // Limit each IP to 10 login/register attempts per hour
+    message: { success: false, error: 'Too many login attempts. Please try again in an hour.' }
+});
+
+app.use('/api/', generalLimiter);
+app.use('/api/auth/', authLimiter);
+
+// 3. CORS Configuration
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://akgsempire.org',
+    'https://site-akgs.onrender.com'
+];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.warn(`Blocked CORS request from origin: ${origin}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
+
 app.use(express.json());
 
 // Initialize DB
@@ -47,20 +113,30 @@ app.post('/api/auth/register', async (req, res) => {
     }
 
     try {
-        const [existing] = await pool.query('SELECT id FROM users WHERE username = ?', [username]);
-        if (existing.length > 0) {
+        // 1. Check if username is taken
+        const [existingByUsername] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+        if (existingByUsername.length > 0) {
             return res.status(400).json({ success: false, error: 'Username already taken' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const [user] = await pool.query('SELECT id FROM users WHERE visitor_id = ?', [visitor_id]);
         
-        if (user.length > 0) {
-            await pool.query('UPDATE users SET username = ?, password = ?, wallet_address = ? WHERE visitor_id = ?', 
-                [username, hashedPassword, wallet_address, visitor_id]);
+        // 2. Check if visitor_id already has a guest account
+        const [existingByVisitor] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+        
+        if (existingByVisitor.length > 0) {
+            // Upgrade guest account
+            await pool.query(
+                'UPDATE users SET username = ?, password = ?, wallet_address = ? WHERE visitor_id = ?', 
+                [username, hashedPassword, wallet_address, visitor_id]
+            );
         } else {
-            await pool.query('INSERT INTO users (visitor_id, username, password, wallet_address) VALUES (?, ?, ?, ?)', 
-                [visitor_id, username, hashedPassword, wallet_address]);
+            // Create brand new account
+            const referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            await pool.query(
+                'INSERT INTO users (visitor_id, username, password, wallet_address, referral_code) VALUES (?, ?, ?, ?, ?)', 
+                [visitor_id, username, hashedPassword, wallet_address, referralCode]
+            );
         }
 
         res.json({ success: true, username });
@@ -71,11 +147,12 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 app.post('/api/auth/login', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, visitor_id } = req.body;
 
     try {
         const [users] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
         if (users.length === 0) {
+            appendEventLog('login_fail_user_not_found', req, { username, visitor_id });
             return res.status(400).json({ success: false, error: 'User not found' });
         }
 
@@ -83,9 +160,17 @@ app.post('/api/auth/login', async (req, res) => {
         const validPassword = await bcrypt.compare(password, user.password);
 
         if (!validPassword) {
+            appendEventLog('login_fail_wrong_password', req, { username, visitor_id });
             return res.status(400).json({ success: false, error: 'Invalid password' });
         }
 
+        // Update visitor_id on login to link this device
+        if (visitor_id && visitor_id !== user.visitor_id) {
+            await pool.query('UPDATE users SET visitor_id = ? WHERE id = ?', [visitor_id, user.id]);
+            user.visitor_id = visitor_id;
+        }
+
+        appendEventLog('login_success', req, { username, visitor_id });
         res.json({ 
             success: true, 
             user: {
@@ -97,7 +182,72 @@ app.post('/api/auth/login', async (req, res) => {
         });
     } catch (e) {
         console.error('Login Error:', e);
+        appendEventLog('login_error', req, { username, error: e.message });
         res.status(500).json({ success: false, error: 'Login failed' });
+    }
+});
+
+app.post('/api/init-user', async (req, res) => {
+    const { visitor_id, ref_code, wallet_address, kick_username, g_code: client_g_code } = req.body;
+    if (!visitor_id) return res.status(400).json({ error: 'Visitor ID required' });
+
+    try {
+        let [users] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+        
+        if (users.length === 0) {
+            // Create new user
+            const referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            let referredBy = null;
+            
+            if (ref_code) {
+                // Check validity of referral code
+                const [refs] = await pool.query('SELECT visitor_id FROM users WHERE referral_code = ?', [ref_code]);
+                if (refs.length > 0) {
+                    referredBy = refs[0].visitor_id;
+                    // Award referrer
+                    await pool.query('UPDATE users SET referral_count = referral_count + 1, total_points = total_points + 100, weekly_points = weekly_points + 100 WHERE visitor_id = ?', [referredBy]);
+                }
+            }
+
+            const gCode = client_g_code || ('G-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+            
+            await pool.query(
+                'INSERT INTO users (visitor_id, referral_code, referred_by, g_code, wallet_address, kick_username) VALUES (?, ?, ?, ?, ?, ?)', 
+                [visitor_id, referralCode, referredBy, gCode, wallet_address || null, kick_username || null]
+            );
+            
+            [users] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+        } else {
+            // Update existing user with new profile info if provided
+            const user = users[0];
+            const updates = [];
+            const params = [];
+
+            if (wallet_address && wallet_address !== user.wallet_address) {
+                updates.push('wallet_address = ?');
+                params.push(wallet_address);
+            }
+            if (kick_username && kick_username !== user.kick_username) {
+                updates.push('kick_username = ?');
+                params.push(kick_username);
+            }
+            if (client_g_code && client_g_code !== user.g_code) {
+                updates.push('g_code = ?');
+                params.push(client_g_code);
+            }
+
+            if (updates.length > 0) {
+                params.push(visitor_id);
+                await pool.query(`UPDATE users SET ${updates.join(', ')} WHERE visitor_id = ?`, params);
+                // Refresh user data
+                [users] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+            }
+        }
+        
+        res.json({ success: true, user: users[0] });
+    } catch (e) {
+        console.error('Init User Error:', e);
+        res.status(500).json({ error: e.message });
     }
 });
 
@@ -150,13 +300,46 @@ app.get('/api/stats', async (req, res) => {
 
 // --- VERIFICATION ROUTES ---
 app.post('/api/verify-task', async (req, res) => {
-    const { username, task_id, platform, g_code } = req.body;
+    const { username, visitor_id, task_id, platform, g_code } = req.body;
+
+    if (!visitor_id || !task_id || !platform) {
+        return res.status(400).json({ success: false, error: 'Missing required fields' });
+    }
+
     try {
-        const result = await verifyTask(username, task_id, platform, g_code);
-        res.json(result);
+        // 1. Check if user exists by visitor_id
+        const [users] = await pool.query('SELECT id, total_points, kick_username, username FROM users WHERE visitor_id = ?', [visitor_id]);
+        if (users.length === 0) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+        }
+        const user = users[0];
+
+        // 2. Validate G-Code format (should contain username or kick_username)
+        const effectiveUsername = username || user.kick_username || user.username || 'anonymous';
+        const isValidGCode = g_code && g_code.includes('👻') && (g_code.includes(effectiveUsername) || g_code.includes(visitor_id.substring(0, 8)));
+        
+        if (!isValidGCode) {
+             return res.status(400).json({ success: false, error: 'Invalid G-Code format' });
+        }
+
+        // 3. Award Points (e.g., 10 points per task)
+        const REWARD_POINTS = 10;
+        await pool.query('UPDATE users SET total_points = total_points + ?, weekly_points = weekly_points + ?, tasks_completed = tasks_completed + 1 WHERE id = ?', [REWARD_POINTS, REWARD_POINTS, user.id]);
+        
+        // 4. Log Verification
+        await pool.query('INSERT INTO task_verifications (username, task_id, platform, g_code, status) VALUES (?, ?, ?, ?, ?)', 
+            [effectiveUsername, task_id || 0, platform, g_code, 'approved']);
+
+        res.json({ 
+            success: true, 
+            message: 'Task verified successfully', 
+            points_added: REWARD_POINTS,
+            new_total: user.total_points + REWARD_POINTS 
+        });
+
     } catch (e) {
         console.error('Verification Error:', e);
-        res.status(400).json({ success: false, error: e.message });
+        res.status(500).json({ success: false, error: 'Verification failed' });
     }
 });
 
@@ -374,6 +557,105 @@ app.post('/api/genesis/test-register', async (req, res) => {
     } catch (e) {
         console.error(e);
         res.status(500).json({ success: false, error: 'Internal Error' });
+    }
+});
+
+app.post('/api/claim', async (req, res) => {
+    const { visitor_id, task_id, points, platform } = req.body;
+    
+    try {
+        // 1. Get User
+        const [users] = await pool.query('SELECT g_code FROM users WHERE visitor_id = ?', [visitor_id]);
+        if (users.length === 0) return res.status(400).json({ success: false, message: 'User not found' });
+
+        // 2. Update User Points
+        const pointsToAdd = points || 10;
+        
+        await pool.query(
+            'UPDATE users SET total_points = total_points + ?, weekly_points = weekly_points + ?, tasks_completed = tasks_completed + 1 WHERE visitor_id = ?',
+            [pointsToAdd, pointsToAdd, visitor_id]
+        );
+
+        res.json({ success: true, message: 'Reward claimed' });
+    } catch (error) {
+        console.error('Claim Error:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+});
+
+app.post('/api/tasks/claim', (req, res) => {
+    res.redirect(307, '/api/claim');
+});
+
+app.get('/api/leaderboard', async (req, res) => {
+    try {
+        const [leaderboard] = await pool.query('SELECT username, kick_username, total_points, weekly_points FROM users ORDER BY total_points DESC LIMIT 10');
+        res.json({ success: true, leaderboard });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/leaderboard/points', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT username, kick_username, weekly_points as points FROM users ORDER BY weekly_points DESC LIMIT 10');
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/leaderboard/tasks', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT username, kick_username, tasks_completed as count FROM users ORDER BY tasks_completed DESC LIMIT 10');
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/leaderboard/referrers', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT username, kick_username, referral_count as count FROM users ORDER BY referral_count DESC LIMIT 10');
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/leaderboard/comments', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT username, kick_username, weekly_comments as count FROM users ORDER BY weekly_comments DESC LIMIT 10');
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/leaderboard/messages', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT username, kick_username, chat_messages_count as count FROM users ORDER BY chat_messages_count DESC LIMIT 10');
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/users/platform/:platform', async (req, res) => {
+    const { platform } = req.params;
+    let column = '';
+    if (platform === 'kick') column = 'kick_username';
+    else if (platform === 'twitter') column = 'twitter_username';
+    else if (platform === 'threads') column = 'threads_username';
+    else if (platform === 'instagram') column = 'instagram_username';
+    
+    if (!column) return res.status(400).json({ error: 'Invalid platform' });
+    
+    try {
+        const [rows] = await pool.query(`SELECT username, ${column}, weekly_points FROM users WHERE ${column} IS NOT NULL ORDER BY weekly_points DESC LIMIT 10`);
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
     }
 });
 

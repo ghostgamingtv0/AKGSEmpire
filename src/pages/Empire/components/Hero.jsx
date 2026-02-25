@@ -29,7 +29,7 @@ const Hero = () => {
              localStorage.setItem('stable_visitor_id', visitorId);
           }
 
-          const API_BASE = 'https://site-akgs.onrender.com';
+          const API_BASE = ''; // Use relative path
           const response = await fetch(`${API_BASE}/api/kick/exchange-token`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

@@ -81,7 +81,15 @@ const Earn = () => {
   });
   const [isProfileSaved, setIsProfileSaved] = useState(() => localStorage.getItem('isProfileSaved') === 'true');
   const [gCode, setGCode] = useState(() => localStorage.getItem('gCode') || '');
-  const [points, setPoints] = useState(0); // User's Total Points
+  const [points, setPoints] = useState(() => {
+    const saved = localStorage.getItem('user_points');
+    return saved ? parseInt(saved, 10) : 0;
+  });
+
+  // Persist points to localStorage
+  useEffect(() => {
+    localStorage.setItem('user_points', points.toString());
+  }, [points]);
   const [showKickModal, setShowKickModal] = useState(false);
   const [tempKickUsername, setTempKickUsername] = useState('');
   const [showConsentModal, setShowConsentModal] = useState(false);
@@ -269,6 +277,7 @@ const Earn = () => {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
+                  visitor_id: visitorId,
                   username,
                   task_id: taskId,
                   platform: task.platform,
@@ -366,7 +375,7 @@ const Earn = () => {
       type: 'social', 
       platform: 'Twitter (X)', 
       action: 'Follow AKGS on X (Twitter)', 
-      reward: '5 Points', 
+      reward: '10 Points', 
       status: getTaskStatus({ id: 1 }), 
       link: SOCIAL_LINKS.TWITTER,
       icon: (
@@ -380,7 +389,7 @@ const Earn = () => {
       type: 'social', 
       platform: 'Telegram', 
       action: 'Join Official Telegram', 
-      reward: '5 Points', 
+      reward: '10 Points', 
       status: getTaskStatus({ id: 2 }), 
       link: SOCIAL_LINKS.TELEGRAM,
       icon: (
@@ -394,7 +403,7 @@ const Earn = () => {
       type: 'social', 
       platform: 'Instagram', 
       action: 'Follow AKGS on Instagram', 
-      reward: '5 Points',  
+      reward: '10 Points',  
       status: getTaskStatus({ id: 3 }), 
       link: SOCIAL_LINKS.INSTAGRAM,
       icon: (
@@ -408,7 +417,7 @@ const Earn = () => {
       type: 'social', 
       platform: 'TikTok', 
       action: 'Follow AKGS on TikTok', 
-      reward: '5 Points', 
+      reward: '10 Points', 
       status: getTaskStatus({ id: 4 }), 
       link: SOCIAL_LINKS.TIKTOK,
       icon: (
@@ -422,7 +431,7 @@ const Earn = () => {
       type: 'social', 
       platform: 'Kick', 
       action: 'Follow AKGS on Kick', 
-      reward: '5 Points', 
+      reward: '10 Points', 
       status: getTaskStatus({ id: 5 }), 
       link: SOCIAL_LINKS.KICK,
       icon: (
@@ -436,7 +445,7 @@ const Earn = () => {
       type: 'social', 
       platform: 'Discord', 
       action: 'Join Official Discord', 
-      reward: '5 Points', 
+      reward: '10 Points', 
       status: getTaskStatus({ id: 6 }), 
       link: SOCIAL_LINKS.DISCORD,
       icon: (
@@ -450,7 +459,7 @@ const Earn = () => {
       type: 'social', 
       platform: 'Threads', 
       action: 'Follow AKGS on Threads', 
-      reward: '5 Points', 
+      reward: '10 Points', 
       status: getTaskStatus({ id: 7 }), 
       link: SOCIAL_LINKS.THREADS,
       icon: (
@@ -757,6 +766,9 @@ const Earn = () => {
             const user = data.user || {};
             console.log('User Synced:', user);
             
+            // Persist user session
+            localStorage.setItem('user_session', JSON.stringify(user));
+
             if (user.kick_username) {
                 setKickUsername(user.kick_username);
                 localStorage.setItem('kickUsername', user.kick_username);

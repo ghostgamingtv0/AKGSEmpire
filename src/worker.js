@@ -401,7 +401,7 @@ export default {
         const tokenParams = new URLSearchParams();
         tokenParams.append("grant_type", "authorization_code");
         tokenParams.append("client_id", KICK_CONFIG.CLIENT_ID);
-        tokenParams.append("client_secret", KICK_CONFIG.CLIENT_SECRET);
+        tokenParams.append("client_secret", env?.KICK_CLIENT_SECRET || KICK_CONFIG.CLIENT_SECRET);
         tokenParams.append("redirect_uri", redirectUri);
         tokenParams.append("code", code);
         tokenParams.append("code_verifier", codeVerifier);
@@ -501,8 +501,10 @@ export default {
     // =================================================================================
     let response = null;
 
-    if (!response) response = await handleTikTokRequest(request, url);
-    if (!response) response = await handleKickRequest(request, url);
+    if (!response) response = await handleTikTokRequest(request, url, env);
+    if (!response) response = await handleKickRequest(request, url, env);
+    if (!response) response = await handleFacebookRequest(request, url, env);
+    if (!response) response = await handleInstagramRequest(request, url, env);
     
     // If no API handled it, fetch assets
     if (!response) {

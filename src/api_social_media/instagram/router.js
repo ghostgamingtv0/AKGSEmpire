@@ -5,7 +5,8 @@ export const INSTAGRAM_CONFIG = {
     ACCESS_TOKEN: 'IGAALFtL5aBqFBZAFkwSTBvNklnYURBSmpOOEJ4bXhvbFVJSXJrUXZAqb3lqN0RPS3dpMXZAPMTJSTThvUHNXMWg1MXZAQR2F6c0lPT01SeEFNb2lrd3kwSVpBejJKcWxiQmZAyV2hrN3ZAvYlpYaFY0aXpfa3Y2TGF0cDh4Rll1V0UtMAZDZD'
 };
 
-export async function handleInstagramRequest(request, url) {
+export async function handleInstagramRequest(request, url, env) {
+    const CLIENT_SECRET = env?.INSTAGRAM_CLIENT_SECRET || INSTAGRAM_CONFIG.CLIENT_SECRET;
     // 1. Instagram Login Redirect
     if (url.pathname === "/api/instagram/login") {
         // Force HTTPS
@@ -15,7 +16,9 @@ export async function handleInstagramRequest(request, url) {
         const scope = 'instagram_business_basic,instagram_business_manage_messages,instagram_business_manage_comments,instagram_business_content_publish,instagram_business_manage_insights';
         const state = Math.random().toString(36).substring(7);
         
-        const authUrl = `https://www.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code&state=${state}`;
+        // Use env if available
+        const INSTAGRAM_CLIENT_ID = env?.INSTAGRAM_CLIENT_ID || INSTAGRAM_CONFIG.CLIENT_ID;
+        const authUrl = `https://www.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code&state=${state}`;
         
         return Response.redirect(authUrl, 302);
     }

@@ -118,13 +118,18 @@ const Dashboard = () => {
         // 2. Check for Referral Code
         const refCode = localStorage.getItem('ref_code');
 
-        const API_BASE = 'https://site-akgs.onrender.com';
+        const API_BASE = ''; // Use relative path
 
         // 3. Init/Load User
         const res = await fetch(`${API_BASE}/api/init-user`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ visitor_id: visitorId, ref_code: refCode })
+            body: JSON.stringify({ 
+              visitor_id: visitorId, 
+              ref_code: refCode,
+              wallet_address: localStorage.getItem('walletAddress'),
+              kick_username: localStorage.getItem('kickUsername')
+            })
         });
         const data = await res.json();
         
@@ -132,6 +137,15 @@ const Dashboard = () => {
         if (data && (data.visitor_id || data.success)) {
             const user = data.user || data;
             setUserData(user);
+            
+            // Persist for other pages (Earn.jsx, etc)
+            if (user.total_points !== undefined) {
+              localStorage.setItem('user_points', user.total_points.toString());
+            }
+            localStorage.setItem('user_session', JSON.stringify(user));
+            if (user.kick_username) localStorage.setItem('kickUsername', user.kick_username);
+            if (user.wallet_address) localStorage.setItem('walletAddress', user.wallet_address);
+            
             // Clear ref code after successful use to avoid re-sending
             if (refCode) localStorage.removeItem('ref_code');
         }
@@ -437,6 +451,17 @@ const Dashboard = () => {
                         </button>
                     )}
                 </div>
+
+                <div className="flex gap-12 md:border-l md:border-white/10 md:pl-12">
+                    <div className="text-center">
+                        <p className="text-gray-400 text-base mb-2">Total Points</p>
+                        <p className="text-4xl font-black text-[#53FC18] drop-shadow-[0_0_10px_rgba(83,252,24,0.3)]">{userData.total_points || 0}</p>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-gray-400 text-base mb-2">Weekly Points</p>
+                        <p className="text-4xl font-black text-white">{userData.weekly_points || 0}</p>
+                    </div>
+                </div>
             </div>
 
           </motion.div>
@@ -481,7 +506,7 @@ const Dashboard = () => {
                   <p className="text-4xl font-black text-white">{userData.referral_count || 0}</p>
                 </div>
                  <div className="text-center">
-                  <p className="text-gray-400 text-base mb-2">Points Earned</p>
+                  <p className="text-gray-400 text-base mb-2">Referral Points</p>
                   <p className="text-4xl font-black text-[#53FC18] drop-shadow-[0_0_10px_rgba(83,252,24,0.3)]">{(userData.referral_count || 0) * 100}</p>
                 </div>
               </div>

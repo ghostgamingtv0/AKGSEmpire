@@ -88,12 +88,18 @@ const Login = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 username, 
-                password
+                password,
+                visitor_id: visitorId
             })
         });
         const data = await res.json();
         if (data.success) {
             localStorage.setItem('user_session', JSON.stringify(data.user));
+            // Update other local storage items for consistency
+            if (data.user.kick_username) localStorage.setItem('kickUsername', data.user.kick_username);
+            if (data.user.wallet_address) localStorage.setItem('walletAddress', data.user.wallet_address);
+            if (data.user.total_points !== undefined) localStorage.setItem('user_points', data.user.total_points.toString());
+            
             navigate('/empire/home');
         } else {
             setError(data.error || 'Login failed');
