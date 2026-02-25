@@ -84,7 +84,8 @@ const allowedOrigins = [
 app.use(cors({
     origin: (origin, callback) => {
         // Disallow localhost and null origins in production
-        if (allowedOrigins.includes(origin)) {
+        // If origin is null (e.g. mobile apps or direct server-to-server), allow for now to prevent lockout
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             console.warn(`Blocked Unauthorized Access: ${origin}`);
@@ -97,9 +98,9 @@ app.use(cors({
 // 4. Force Cloudflare Proxy Only
 app.use((req, res, next) => {
     // Cloudflare adds 'cf-connecting-ip'. If it's missing, the request didn't come through Cloudflare.
+    // RELAXED: Only log for now, don't block, to verify if this is causing the issue
     if (!req.headers['cf-connecting-ip'] && process.env.NODE_ENV === 'production') {
-        console.error('Direct access attempt blocked:', req.ip);
-        return res.status(403).send('Forbidden: Direct access to this server is not allowed. Please use https://akgsempire.org');
+        console.warn('Direct access attempt detected (Not Blocked):', req.ip);
     }
     next();
 });
