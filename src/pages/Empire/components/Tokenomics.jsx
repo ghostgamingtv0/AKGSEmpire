@@ -40,25 +40,24 @@ const Tokenomics = () => {
           <div className="h-1 w-24 bg-[#53FC18] mx-auto rounded-full"></div>
         </motion.div>
 
-        {/* GeckoTerminal Widget Area */}
+        {/* Birdeye Chart Widget Area */}
         <div className="glass-panel p-4 h-[600px] w-full overflow-hidden mb-12">
            <div className="flex items-center justify-between mb-4 px-2">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#53FC18] animate-pulse"></span>
-              <span className="font-bold">Live Chart</span>
-              <img src="https://i.ibb.co/TD4bgczv/geckoterminal-icon.png" alt="GeckoTerminal" className="h-6 w-6 ml-2" />
+              <span className="font-bold">Live Chart (Birdeye)</span>
+              <img src="https://birdeye.so/favicon.ico" alt="Birdeye" className="h-4 w-4 ml-2" />
             </div>
-            <a href={`https://www.geckoterminal.com/polygon_pos/pools/${CONTRACT_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="text-sm text-[#53FC18] hover:underline flex items-center gap-1">
-              <img src="https://i.ibb.co/B5FHyTcS/geckoterminal-dark.png" alt="GeckoTerminal" className="h-6 mr-2" />
-              Open in GeckoTerminal <ExternalLink size={14} />
+            <a href="https://birdeye.so/polygon/token/0xc291F63681Cd76383c3bDabE0B8E4bb072B4DF65/0xd3bfe6273c8a2aecff5d1fdea6827c70478ccb4a7e25259b5f0e3933af3c573f" target="_blank" rel="noopener noreferrer" className="text-sm text-[#53FC18] hover:underline flex items-center gap-1">
+              Open in Birdeye <ExternalLink size={14} />
             </a>
           </div>
           <iframe 
             height="100%" 
             width="100%" 
-            id="geckoterminal-embed" 
-            title="GeckoTerminal Embed" 
-            src={`https://www.geckoterminal.com/polygon_pos/pools/${CONTRACT_ADDRESS}?embed=1&info=0&swaps=0`}
+            id="birdeye-embed" 
+            title="Birdeye Chart" 
+            src="https://birdeye.so/tv-widget/0xc291F63681Cd76383c3bDabE0B8E4bb072B4DF65?chain=polygon&viewMode=pair&pairAddress=0xd3bfe6273c8a2aecff5d1fdea6827c70478ccb4a7e25259b5f0e3933af3c573f"
             frameBorder="0" 
             allow="clipboard-write" 
             allowFullScreen
