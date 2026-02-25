@@ -13,6 +13,19 @@ const NFT_IMAGE_MAIN = NFT_IMAGE_MINING;
 
 const DATA_RESET_VERSION = '2026-02-22-launch';
 
+// Helper to manage cookies for session persistence
+const setCookie = (name, value, days) => {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+};
+
+const getCookie = (name) => {
+    return document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+    }, '');
+};
+
 const resetLocalStorageIfNeeded = () => {
   if (typeof window === 'undefined') return;
   const stored = localStorage.getItem('data_reset_version');
@@ -67,20 +80,22 @@ const Earn = () => {
   });
   const [isKickLive, setIsKickLive] = useState(false); // State for stream status
   const [timeLeft, setTimeLeft] = useState('');
-  const [visitorId, setVisitorId] = useState(null);
+  const [visitorId, setVisitorId] = useState(() => getCookie('visitor_id') || null);
   const [kickUsername, setKickUsername] = useState(() => {
-        const session = JSON.parse(localStorage.getItem('user_session') || '{}');
+        const sessionStr = localStorage.getItem('user_session') || getCookie('user_session');
+        const session = JSON.parse(sessionStr || '{}');
         return session.username || localStorage.getItem('kickUsername') || '';
     });
   // Alias kickUsername to username for compatibility with existing code
   const username = kickUsername;
 
   const [walletAddress, setWalletAddress] = useState(() => {
-      const session = JSON.parse(localStorage.getItem('user_session') || '{}');
+      const sessionStr = localStorage.getItem('user_session') || getCookie('user_session');
+      const session = JSON.parse(sessionStr || '{}');
       return session.wallet_address || localStorage.getItem('walletAddress') || '';
   });
   const [isProfileSaved, setIsProfileSaved] = useState(() => localStorage.getItem('isProfileSaved') === 'true');
-  const [gCode, setGCode] = useState(() => localStorage.getItem('gCode') || '');
+  const [gCode, setGCode] = useState(() => localStorage.getItem('gCode') || getCookie('gCode') || '');
   const [points, setPoints] = useState(() => {
     const saved = localStorage.getItem('user_points');
     return saved ? parseInt(saved, 10) : 0;
@@ -724,11 +739,12 @@ const Earn = () => {
         const { visitorId } = await (await fpPromise).get();
         
         // Prefer stored ID if available to prevent rotation
-        const stored = localStorage.getItem('stable_visitor_id');
+        const stored = localStorage.getItem('stable_visitor_id') || getCookie('visitor_id');
         const finalId = stored || visitorId;
         
         if (!stored) {
             localStorage.setItem('stable_visitor_id', finalId);
+            setCookie('visitor_id', finalId, 365);
         }
         
         setVisitorId(finalId);
@@ -759,15 +775,13 @@ const Earn = () => {
           const data = await response.json();
           if (data.error) {
             console.error('User Sync Error:', data.error);
-            if (data.error.includes('blocked')) {
-               alert(data.error);
-            }
           } else {
             const user = data.user || {};
             console.log('User Synced:', user);
             
-            // Persist user session
+            // Persist user session in both storage and cookies
             localStorage.setItem('user_session', JSON.stringify(user));
+            setCookie('user_session', JSON.stringify(user), 30);
 
             if (user.kick_username) {
                 setKickUsername(user.kick_username);
@@ -788,6 +802,7 @@ const Earn = () => {
             if (user.g_code) {
                 setGCode(user.g_code);
                 localStorage.setItem('gCode', user.g_code);
+                setCookie('gCode', user.g_code, 30);
             }
           }
         } catch (error) {

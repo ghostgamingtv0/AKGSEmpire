@@ -4,10 +4,24 @@ import { motion } from 'framer-motion';
 import { Shield, ShieldCheck, Lock, Wallet, User, CheckCircle2, AlertTriangle, Key, Copy, Clock, Globe, Instagram, Gamepad2, Tv, ChevronDown, LogIn, ArrowRight, Facebook } from 'lucide-react';
 import SceneOneBackground from './components/UnifiedBackground';
 import { CONTRACTS, API_ENDPOINTS, ASSETS } from '../../config/constants';
+import { load } from '@fingerprintjs/fingerprintjs';
 
 const TOKEN_CONTRACT = CONTRACTS.AKGS_TOKEN;
 // Using a placeholder SVG for now to ensure visibility if the external link is broken
 const TOKEN_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='black' stroke='%2353FC18' stroke-width='5'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='30' fill='%2353FC18' text-anchor='middle' font-weight='bold'%3EAKGS%3C/text%3E%3C/svg%3E";
+
+// Helper to manage cookies for session persistence
+const setCookie = (name, value, days) => {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+};
+
+const getCookie = (name) => {
+    return document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+    }, '');
+};
 
 // Renamed from GenesisGate to GhostGate
 const GhostGate = () => {
@@ -16,6 +30,7 @@ const GhostGate = () => {
     const [step, setStep] = useState('gate'); // gate, register, success
     const [authMode, setAuthMode] = useState('login'); // login, register
     const [spotsLeft, setSpotsLeft] = useState(50);
+    const [visitorId, setVisitorId] = useState(() => getCookie('visitor_id') || '');
     const [formData, setFormData] = useState({
         platformUsername: '',
         nickname: '',
@@ -24,6 +39,31 @@ const GhostGate = () => {
         confirmNickname: '',
         wallet: ''
     });
+
+    // Initialize FingerprintJS
+    useEffect(() => {
+        const initFingerprint = async () => {
+            const stored = getCookie('visitor_id');
+            if (stored) {
+                setVisitorId(stored);
+                return;
+            }
+            try {
+                const fp = await load();
+                const result = await fp.get();
+                setVisitorId(result.visitorId);
+                setCookie('visitor_id', result.visitorId, 365);
+            } catch (e) {
+                console.error('Fingerprint Error:', e);
+                // Fallback: Random ID
+                const fallbackId = 'G-' + Math.random().toString(36).substring(2, 15);
+                setVisitorId(fallbackId);
+                setCookie('visitor_id', fallbackId, 365);
+            }
+        };
+        initFingerprint();
+    }, []);
+
     const [selectedPlatform, setSelectedPlatform] = useState('Kick'); // Default to Kick
     const [showPlatformMenu, setShowPlatformMenu] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -165,6 +205,7 @@ const GhostGate = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...formData,
+                    visitor_id: visitorId, // Pass visitor_id for sync
                     platform: selectedPlatform,
                     ref: refParam,
                     signMessage,
@@ -178,9 +219,7 @@ const GhostGate = () => {
                 if (data.spotsLeft !== undefined) setSpotsLeft(data.spotsLeft);
                 setGCode(data.gCode); // Use server-generated G-Code
                 
-                // --- STRICT: SAVE TO LOCALSTORAGE FOR SYNC WITH EMPIRE ---
-                localStorage.setItem('gCode', data.gCode);
-                localStorage.setItem('user_session', JSON.stringify({
+                const sessionData = {
                     username: formData.platformUsername,
                     nickname: formData.nickname,
                     wallet_address: formData.wallet,
@@ -188,7 +227,12 @@ const GhostGate = () => {
                     gCode: data.gCode,
                     signMessage,
                     signTimestamp
-                }));
+                };
+
+                // --- STRICT: SAVE TO LOCALSTORAGE & COOKIE FOR SYNC ---
+                localStorage.setItem('gCode', data.gCode);
+                localStorage.setItem('user_session', JSON.stringify(sessionData));
+                setCookie('user_session', JSON.stringify(sessionData), 30); // Persistent cookie
                 // --------------------------------------------------------
 
                 try {
@@ -202,7 +246,8 @@ const GhostGate = () => {
                             nickname: formData.nickname,
                             wallet: formData.wallet,
                             gCode: data.gCode,
-                            rank: data.rank
+                            rank: data.rank,
+                            visitor_id: visitorId
                         })
                     });
                 } catch {}

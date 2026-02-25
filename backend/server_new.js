@@ -505,8 +505,9 @@ app.post('/api/genesis/login', (req, res) => {
 });
 
 app.post('/api/genesis/test-register', async (req, res) => {
-    const { platformUsername, nickname, password, wallet, platform, ref, signMessage, signTimestamp } = req.body;
+    const { platformUsername, nickname, password, wallet, platform, ref, signMessage, signTimestamp, visitor_id } = req.body;
     if (!platformUsername || !nickname || !password || !wallet) return res.status(400).json({ success: false, error: 'Missing fields' });
+    
     try {
         const stats = getGenesisStats();
         const staticPrefix = "ghost";
@@ -517,6 +518,7 @@ app.post('/api/genesis/test-register', async (req, res) => {
         const random = Math.floor(100000 + Math.random() * 900000);
         const gCode = `👻${staticPrefix}-${walletPart}-${thirdPart}-${random}👻`;
         
+        // 1. Save to JSON (Legacy/Archive)
         const GENESIS_USERS_FILE = join(__dirname, '../data/genesis_users.json');
         const dataDir = dirname(GENESIS_USERS_FILE);
         if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
@@ -538,12 +540,33 @@ app.post('/api/genesis/test-register', async (req, res) => {
             rank,
             signMessage: signMessage || null,
             signTimestamp: signTimestamp || null,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            visitor_id: visitor_id || null
         };
         
         users.push(newUser);
         fs.writeFileSync(GENESIS_USERS_FILE, JSON.stringify(users, null, 2));
 
+        // 2. Sync to Database (Main System)
+        if (visitor_id) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            // Insert or Update user in DB
+            await pool.query(
+                `INSERT INTO users (visitor_id, username, password, wallet_address, kick_username, g_code, referral_code) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?)
+                 ON CONFLICT(visitor_id) DO UPDATE SET 
+                    username = excluded.username,
+                    password = excluded.password,
+                    wallet_address = excluded.wallet_address,
+                    kick_username = excluded.kick_username,
+                    g_code = excluded.g_code`,
+                [visitor_id, nickname, hashedPassword, wallet, platformUsername, gCode, referralCode]
+            );
+        }
+
+        // 3. Handle Referrals
         if (ref) {
             try {
                 const refIndex = users.findIndex(u => u.gCode === ref);
@@ -553,14 +576,20 @@ app.post('/api/genesis/test-register', async (req, res) => {
                     refUser.points = (refUser.points || 0) + 500;
                     users[refIndex] = refUser;
                     fs.writeFileSync(GENESIS_USERS_FILE, JSON.stringify(users, null, 2));
+
+                    // Also update in DB
+                    if (refUser.visitor_id) {
+                        await pool.query(
+                            'UPDATE users SET referral_count = referral_count + 1, total_points = total_points + 500 WHERE visitor_id = ?',
+                            [refUser.visitor_id]
+                        );
+                    }
+
                     appendEventLog('referral_award', req, { referrer: refUser.websiteNickname, awarded: 500, ref_gcode: ref, new_referrals: refUser.referrals, new_points: refUser.points });
-                    try {
-                        if (globalThis.AKGS_LOGGER && typeof globalThis.AKGS_LOGGER.send === 'function') {
-                            await globalThis.AKGS_LOGGER.send(`🎁 Referral Award\nReferrer: ${refUser.websiteNickname}\nAward: 500 points\nRef Code: ${ref}\nTotal Referrals: ${refUser.referrals}\nTotal Points: ${refUser.points}`);
-                        }
-                    } catch {}
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.error('Referral Sync Error:', e);
+            }
         }
         
         res.json({ success: true, rank, spotsLeft: newSpots, gCode, message: 'Welcome' });

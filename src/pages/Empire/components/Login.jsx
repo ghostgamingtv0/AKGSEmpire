@@ -9,10 +9,23 @@ import BackgroundEffects from '../../../components/BackgroundEffects';
 
 const API_BASE = '';
 
+// Helper to manage cookies for session persistence
+const setCookie = (name, value, days) => {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+};
+
+const getCookie = (name) => {
+    return document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+    }, '');
+};
+
 const Login = () => {
   const navigate = useNavigate();
   // const [step, setStep] = useState(1); // Removed in favor of simple toggle
-  const [visitorId, setVisitorId] = useState(null);
+  const [visitorId, setVisitorId] = useState(() => getCookie('visitor_id') || null);
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
   const [password, setPassword] = useState('');
@@ -25,10 +38,16 @@ const Login = () => {
   useEffect(() => {
     const loadFp = async () => {
       try {
+        const stored = localStorage.getItem('stable_visitor_id') || getCookie('visitor_id');
+        if (stored) {
+            setVisitorId(stored);
+            return;
+        }
         const fp = await load();
         const result = await fp.get();
-        const id = localStorage.getItem('stable_visitor_id') || result.visitorId;
-        if (!localStorage.getItem('stable_visitor_id')) localStorage.setItem('stable_visitor_id', id);
+        const id = result.visitorId;
+        localStorage.setItem('stable_visitor_id', id);
+        setCookie('visitor_id', id, 365);
         setVisitorId(id);
       } catch (e) {
         console.error('FP Error:', e);
@@ -95,10 +114,25 @@ const Login = () => {
         const data = await res.json();
         if (data.success) {
             localStorage.setItem('user_session', JSON.stringify(data.user));
+            setCookie('user_session', JSON.stringify(data.user), 30);
+            
             // Update other local storage items for consistency
-            if (data.user.kick_username) localStorage.setItem('kickUsername', data.user.kick_username);
-            if (data.user.wallet_address) localStorage.setItem('walletAddress', data.user.wallet_address);
-            if (data.user.total_points !== undefined) localStorage.setItem('user_points', data.user.total_points.toString());
+            if (data.user.kick_username) {
+                localStorage.setItem('kickUsername', data.user.kick_username);
+                setCookie('kickUsername', data.user.kick_username, 30);
+            }
+            if (data.user.wallet_address) {
+                localStorage.setItem('walletAddress', data.user.wallet_address);
+                setCookie('walletAddress', data.user.wallet_address, 30);
+            }
+            if (data.user.g_code) {
+                localStorage.setItem('gCode', data.user.g_code);
+                setCookie('gCode', data.user.g_code, 30);
+            }
+            if (data.user.total_points !== undefined) {
+                localStorage.setItem('user_points', data.user.total_points.toString());
+                setCookie('user_points', data.user.total_points.toString(), 30);
+            }
             
             navigate('/empire/home');
         } else {
