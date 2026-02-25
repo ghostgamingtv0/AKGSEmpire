@@ -1,14 +1,17 @@
 import { handleTikTokRequest } from './api_social_media/tiktok/router.js';
 import { handleKickRequest, KICK_CONFIG } from './api_social_media/kick/router.js';
+import { handleFacebookRequest } from './api_social_media/facebook/router.js';
+import { handleInstagramRequest } from './api_social_media/instagram/router.js';
 
 export default {
   async fetch(request, env) {
-    const url = new URL(request.url);
-    const BACKEND_BASE = env && env.BACKEND_BASE;
+    try {
+      const url = new URL(request.url);
+      const BACKEND_BASE = env && env.BACKEND_BASE;
 
-    // =================================================================================
-    // 0. STATIC VERIFICATION FILES (Bypass SPA Routing)
-    // =================================================================================
+      // =================================================================================
+      // 0. STATIC VERIFICATION FILES (Bypass SPA Routing)
+      // =================================================================================
     if (url.pathname === "/czuudtyh60e6l29pldx1s2htix8oxz") {
       return new Response("czuudtyh60e6l29pldx1s2htix8oxz", {
         headers: { "Content-Type": "text/plain" }
@@ -524,5 +527,8 @@ export default {
       statusText: response.statusText,
       headers: newHeaders
     });
+    } catch (e) {
+      return new Response(`Internal Server Error: ${e.message}`, { status: 500 });
+    }
   }
 }
