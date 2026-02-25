@@ -1889,6 +1889,7 @@ const Earn = () => {
 
         {/* Social Task Security Notice */}
         {activeTab === 'social' && (
+          <>
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1918,6 +1919,35 @@ const Earn = () => {
               </div>
             </div>
           </motion.div>
+
+          {/* Zaraz Social Feed Integration */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            <div className="glass-panel p-4 border border-[#53FC18]/30 bg-black/40">
+                <h3 className="text-[#53FC18] font-bold mb-4 flex items-center gap-2">
+                    <FaInstagram /> Latest Instagram Update
+                </h3>
+                <div className="rounded-xl overflow-hidden min-h-[400px] flex items-center justify-center bg-white/5 border border-white/10">
+                    <instagram-post 
+                        post-url="https://www.instagram.com/p/C3Sk6d2MTjI/" 
+                        captions="true"
+                    ></instagram-post>
+                </div>
+            </div>
+
+            <div className="glass-panel p-4 border border-[#53FC18]/30 bg-black/40">
+                <h3 className="text-[#53FC18] font-bold mb-4 flex items-center gap-2">
+                    <FaXTwitter /> Official Announcement
+                </h3>
+                <div className="rounded-xl overflow-hidden min-h-[400px] flex items-center justify-center bg-white/5 border border-white/10">
+                    <twitter-post tweet-id="1754336034228171055"></twitter-post>
+                </div>
+            </div>
+          </motion.div>
+          </>
         )}
 
         {/* Watch Task Fair Play Rules */}
