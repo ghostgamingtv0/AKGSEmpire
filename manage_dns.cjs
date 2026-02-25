@@ -1,22 +1,29 @@
 const https = require('https');
 
-const email = 'undercover00yt@gmail.com';
-const apiKey = '8a5ff10d5b679261be550f5daab0720d31520'; // Global API Key
-const zoneId = 'dd6f87708289237323be906271272de6';
+const email = process.env.CLOUDFLARE_EMAIL || 'undercover00yt@gmail.com';
+const apiKey = process.env.CLOUDFLARE_GLOBAL_API_KEY || process.env.CLOUDFLARE_API_TOKEN;
+const zoneId = process.env.CLOUDFLARE_ZONE_ID || 'dd6f87708289237323be906271272de6';
 // We don't hardcode record ID here because we'll search for it first
 const txtValue = 'tiktok-developers-site-verification=LBOhRmLGMJ0y3f2BvRyYIXaLkNNKlRB7';
 
 function request(path, method = 'GET', body = null) {
     return new Promise((resolve, reject) => {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (apiKey.length > 40) { // Likely a Bearer Token
+            headers['Authorization'] = `Bearer ${apiKey}`;
+        } else { // Likely a Global API Key
+            headers['X-Auth-Email'] = email;
+            headers['X-Auth-Key'] = apiKey;
+        }
+
         const options = {
             hostname: 'api.cloudflare.com',
             path: path,
             method: method,
-            headers: {
-                'X-Auth-Email': email,
-                'X-Auth-Key': apiKey,
-                'Content-Type': 'application/json'
-            }
+            headers: headers
         };
 
         const req = https.request(options, (res) => {

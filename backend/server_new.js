@@ -76,23 +76,33 @@ app.use('/api/auth/', authLimiter);
 
 // 3. CORS Configuration
 const allowedOrigins = [
-    'http://localhost:3000',
-    'http://localhost:5173',
     'https://akgsempire.org',
-    'https://site-akgs.onrender.com'
+    'https://www.akgsempire.org',
+    'https://akgs-empire.pages.dev'
 ];
 
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        // Disallow localhost and null origins in production
+        if (allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            console.warn(`Blocked CORS request from origin: ${origin}`);
-            callback(new Error('Not allowed by CORS'));
+            console.warn(`Blocked Unauthorized Access: ${origin}`);
+            callback(new Error('Access Denied: Only Cloudflare-proxied requests allowed.'));
         }
     },
     credentials: true
 }));
+
+// 4. Force Cloudflare Proxy Only
+app.use((req, res, next) => {
+    // Cloudflare adds 'cf-connecting-ip'. If it's missing, the request didn't come through Cloudflare.
+    if (!req.headers['cf-connecting-ip'] && process.env.NODE_ENV === 'production') {
+        console.error('Direct access attempt blocked:', req.ip);
+        return res.status(403).send('Forbidden: Direct access to this server is not allowed. Please use https://akgsempire.org');
+    }
+    next();
+});
 
 app.use(express.json());
 
