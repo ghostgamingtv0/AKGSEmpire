@@ -343,26 +343,26 @@ const GhostGate = () => {
                                     </div>
 
                                     {/* Bottom: English left, Arabic right */}
-                                    <div className="grid grid-cols-2 gap-6 w-full">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                                         <div className="space-y-2">
-                                            <p className="text-[#53FC18] font-heading text-xs md:text-sm tracking-[0.25em] uppercase">
+                                            <p className="text-[#53FC18] font-heading text-[10px] md:text-sm tracking-[0.25em] uppercase">
                                                 EMPIRE VAULT: COMMANDERS' REWARD
                                             </p>
-                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed">
+                                            <p className="text-gray-100 text-xs md:text-base leading-relaxed">
                                                 At the heart of the Empire sits a vault holding 150,000,000 $AKGS and 50 Royal NFTs. This ultimate bounty is reserved strictly for the Top 100 Commanders who prove their dominance through relentless engagement on Kick & Instagram.
                                             </p>
-                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed">
+                                            <p className="text-gray-100 text-xs md:text-base leading-relaxed">
                                                 The Strategy: After the launch phase, the Daily Streak Protocol begins. Gain +50 points daily. Be warned: Missing a day resets your progress. Hold your ground for 4 consecutive days to trigger the x3 Multiplier.
                                             </p>
                                         </div>
-                                        <div dir="rtl" className="space-y-2 text-right font-arabic">
-                                            <p className="text-[#53FC18] font-bold text-sm md:text-base">
+                                        <div dir="rtl" className="space-y-2 text-right font-arabic border-t border-[#53FC18]/20 pt-4 md:border-t-0 md:pt-0">
+                                            <p className="text-[#53FC18] font-bold text-xs md:text-base">
                                                 خزانة الإمبراطورية – مكافأة القادة الأوائل
                                             </p>
-                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed">
+                                            <p className="text-gray-100 text-xs md:text-base leading-relaxed">
                                                 في قلب الإمبراطورية خزانة ضخمة تحتوي على 150,000,000 $AKGS و 50 NFT ملكي بانتظار النخبة. هذه الغنائم محجوزة حصرياً لأفضل 100 قائد يثبتون جدارتهم عبر التفاعل المطلق على Kick و Instagram.
                                             </p>
-                                            <p className="text-gray-100 text-sm md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3">
+                                            <p className="text-gray-100 text-xs md:text-base leading-relaxed border-t border-[#53FC18]/30 pt-3 mt-2">
                                                 الخطة الاستراتيجية: بعد انتهاء مرحلة الإطلاق، يُفعّل بروتوكول الاستمرارية. احصد 50 نقطة يومياً، لكن احذر؛ فاليوم الذي تغيب فيه يتصفر عدادك. أثبت ولاءك لـ 4 أيام متتالية لتفعيل مضاعف القوة x3.
                                             </p>
                                         </div>
@@ -543,100 +543,133 @@ const GhostGate = () => {
 
                                     {/* Platform Username */}
                                     <div className="relative group">
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#53FC18] font-bold text-xs pointer-events-none">
-                                            {selectedPlatform}:
+                                        <div className="flex items-center bg-black/40 border border-[#53FC18]/30 rounded-xl focus-within:border-[#53FC18] focus-within:shadow-[0_0_20px_rgba(83,252,24,0.2)] transition-all">
+                                            <div className="pl-4 py-3 text-[#53FC18] font-bold text-[10px] md:text-xs whitespace-nowrap border-r border-[#53FC18]/10 mr-2">
+                                                {selectedPlatform}:
+                                            </div>
+                                            <input 
+                                                type="text" 
+                                                name="platformUsername"
+                                                value={formData.platformUsername}
+                                                onChange={handleInputChange}
+                                                placeholder="Username | اسم المستخدم"
+                                                className="w-full bg-transparent py-3 pr-10 text-white placeholder:text-gray-600 focus:outline-none font-mono text-sm"
+                                                required
+                                            />
+                                            <User className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-[#53FC18] transition-colors" size={18} />
                                         </div>
-                                        <input 
-                                            type="text" 
-                                            name="platformUsername"
-                                            value={formData.platformUsername}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter Username | اسم المستخدم"
-                                            className="w-full bg-black/40 border border-[#53FC18]/30 rounded-xl py-3 pl-24 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_20px_rgba(83,252,24,0.2)] transition-all font-mono"
-                                            required
-                                        />
-                                        <User className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-[#53FC18] transition-colors" size={18} />
                                     </div>
 
                                     {/* Site Username & Confirm */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        <div className="relative group">
-                                            <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#53FC18]/50 group-focus-within:text-[#53FC18] transition-colors" />
-                                            <input 
-                                                type="text" 
-                                                name="nickname"
-                                                placeholder="Site Username | اسم بالموقع"
-                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-arabic text-sm"
-                                                value={formData.nickname}
-                                                onChange={handleInputChange}
-                                                required
-                                            />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] text-[#53FC18]/70 ml-1 uppercase font-bold flex justify-between">
+                                                <span>Site Username</span>
+                                                <span className="font-arabic">الاسم بالموقع</span>
+                                            </label>
+                                            <div className="relative group">
+                                                <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#53FC18]/50 group-focus-within:text-[#53FC18] transition-colors" />
+                                                <input 
+                                                    type="text" 
+                                                    name="nickname"
+                                                    placeholder="Username"
+                                                    className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 text-sm"
+                                                    value={formData.nickname}
+                                                    onChange={handleInputChange}
+                                                    required
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="relative group">
-                                            <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#53FC18]/50 group-focus-within:text-[#53FC18] transition-colors" />
-                                            <input 
-                                                type="text" 
-                                                placeholder="Confirm Username | تأكيد الاسم"
-                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-arabic text-sm"
-                                                value={formData.confirmNickname}
-                                                onChange={(e) => setFormData({...formData, confirmNickname: e.target.value})}
-                                                onPaste={(e) => { e.preventDefault(); return false; }}
-                                                required
-                                            />
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] text-[#53FC18]/70 ml-1 uppercase font-bold flex justify-between">
+                                                <span>Confirm Name</span>
+                                                <span className="font-arabic">تأكيد الاسم</span>
+                                            </label>
+                                            <div className="relative group">
+                                                <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#53FC18]/50 group-focus-within:text-[#53FC18] transition-colors" />
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Confirm Username"
+                                                    className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 text-sm"
+                                                    value={formData.confirmNickname}
+                                                    onChange={(e) => setFormData({...formData, confirmNickname: e.target.value})}
+                                                    onPaste={(e) => { e.preventDefault(); return false; }}
+                                                    required
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
                                     {/* Password & Confirm */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        <div className="relative group">
-                                            <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#53FC18]/50 group-focus-within:text-[#53FC18] transition-colors" />
-                                            <input 
-                                                type="password" 
-                                                placeholder="Password | كلمة المرور"
-                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-arabic text-sm"
-                                                value={formData.password}
-                                                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                                                onPaste={(e) => { e.preventDefault(); return false; }}
-                                                required
-                                            />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] text-[#53FC18]/70 ml-1 uppercase font-bold flex justify-between">
+                                                <span>Password</span>
+                                                <span className="font-arabic">كلمة المرور</span>
+                                            </label>
+                                            <div className="relative group">
+                                                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#53FC18]/50 group-focus-within:text-[#53FC18] transition-colors" />
+                                                <input 
+                                                    type="password" 
+                                                    placeholder="••••••••"
+                                                    className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 text-sm"
+                                                    value={formData.password}
+                                                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                                                    onPaste={(e) => { e.preventDefault(); return false; }}
+                                                    required
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="relative group">
-                                            <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#53FC18]/50 group-focus-within:text-[#53FC18] transition-colors" />
-                                            <input 
-                                                type="password" 
-                                                placeholder="Confirm | تأكيد"
-                                                className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 font-arabic text-sm"
-                                                value={formData.confirmPassword}
-                                                onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-                                                onPaste={(e) => { e.preventDefault(); return false; }}
-                                                required
-                                            />
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] text-[#53FC18]/70 ml-1 uppercase font-bold flex justify-between">
+                                                <span>Confirm</span>
+                                                <span className="font-arabic">تأكيد</span>
+                                            </label>
+                                            <div className="relative group">
+                                                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#53FC18]/50 group-focus-within:text-[#53FC18] transition-colors" />
+                                                <input 
+                                                    type="password" 
+                                                    placeholder="••••••••"
+                                                    className="w-full bg-black/50 border border-[#53FC18]/30 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#53FC18] focus:shadow-[0_0_15px_rgba(83,252,24,0.3)] transition-all placeholder:text-gray-600 text-sm"
+                                                    value={formData.confirmPassword}
+                                                    onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                                                    onPaste={(e) => { e.preventDefault(); return false; }}
+                                                    required
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
                                     {/* Wallet Address (Read Only) */}
                                     <div className="relative group z-0">
-                                        <img 
-                                            src={TOKEN_LOGO} 
-                                            alt="AKGS" 
-                                            className="absolute left-4 top-3.5 w-[18px] h-[18px] rounded-full opacity-50 group-hover:opacity-100 transition-opacity" 
-                                        />
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
+                                            <img 
+                                                src={TOKEN_LOGO} 
+                                                alt="AKGS" 
+                                                className="w-4 h-4 rounded-full opacity-50 group-hover:opacity-100 transition-opacity" 
+                                            />
+                                            {!formData.wallet && (
+                                                <span className="text-[10px] text-gray-600 font-arabic hidden sm:inline">ربط المحفظة</span>
+                                            )}
+                                        </div>
                                         <input 
                                             type="text" 
-                                            placeholder="Connect Wallet First | اربط المحفظة أولاً"
-                                            className="w-full bg-black/30 border border-[#53FC18]/10 rounded-xl py-3 pl-12 pr-4 text-gray-400 cursor-not-allowed font-arabic text-sm"
+                                            placeholder={formData.wallet ? "" : "Connect Wallet First | اربط المحفظة أولاً"}
+                                            className="w-full bg-black/30 border border-[#53FC18]/10 rounded-xl py-3 pl-12 pr-28 text-gray-400 cursor-not-allowed font-arabic text-xs md:text-sm truncate"
                                             value={formData.wallet}
                                             readOnly
                                         />
-                                        <motion.button
-                                            whileTap={{ scale: 0.95 }}
-                                            type="button"
-                                            onClick={connectWallet}
-                                            className="absolute right-2 top-2 bg-[#53FC18]/10 hover:bg-[#53FC18]/20 text-[#53FC18] text-xs font-bold px-3 py-1.5 rounded-lg border border-[#53FC18]/30 transition-all flex items-center gap-2"
-                                        >
-                                            <img src={TOKEN_LOGO} alt="AKGS" className="w-3 h-3 rounded-full" />
-                                            Connect
-                                        </motion.button>
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                                            <motion.button
+                                                whileTap={{ scale: 0.95 }}
+                                                type="button"
+                                                onClick={connectWallet}
+                                                className="bg-[#53FC18]/10 hover:bg-[#53FC18]/20 text-[#53FC18] text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg border border-[#53FC18]/30 transition-all flex items-center gap-2 whitespace-nowrap"
+                                            >
+                                                <Wallet size={12} />
+                                                {formData.wallet ? 'Connected' : 'Connect Wallet'}
+                                            </motion.button>
+                                        </div>
                                     </div>
 
                                     {error && (

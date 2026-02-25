@@ -105,9 +105,9 @@ const LeaderboardTabs = () => {
   };
 
   return (
-    <div className="glass-panel p-6 mb-12 border border-white/10">
-      {/* Matrix Showcase */}
-      <div className="overflow-x-auto mb-8">
+    <div className="glass-panel p-4 md:p-6 mb-12 border border-white/10">
+      {/* Desktop Matrix Showcase (Hidden on Mobile) */}
+      <div className="hidden md:block overflow-x-auto mb-8">
         <table className="w-full border-collapse min-w-[1000px]">
           <thead>
             <tr>
@@ -173,6 +173,48 @@ const LeaderboardTabs = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile-Friendly Grid (Visible on Mobile only) */}
+      <div className="md:hidden space-y-8">
+        {platforms.map(p => (
+          <div key={p.id} className="space-y-4">
+            <h3 className="text-[#53FC18] font-bold text-lg uppercase tracking-widest border-b border-[#53FC18]/20 pb-2">
+              {p.label}
+            </h3>
+            <div className="grid grid-cols-1 gap-4">
+              {metrics.map(m => {
+                const topUsers = getTopUsers(m.id, p.id);
+                return (
+                  <div key={m.id} className="bg-white/5 rounded-xl p-4 border border-white/10">
+                    <h4 className="text-gray-400 text-xs uppercase font-bold mb-3">{m.label}</h4>
+                    {loading ? (
+                      <div className="text-center text-gray-600 text-[10px] py-2">Loading...</div>
+                    ) : topUsers.length > 0 ? (
+                      <div className="space-y-2">
+                        {topUsers.map((user, idx) => (
+                          <div key={idx} className="flex items-center justify-between px-2 py-1.5 rounded-lg bg-black/20 border border-white/5">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="font-mono text-[10px] text-[#53FC18] font-bold">#{idx + 1}</span>
+                              <span className="text-xs truncate text-gray-200">
+                                {user.username || user.kick_username || user.visitor_id?.substring(0,8)}
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-mono text-[#53FC18]">
+                              {getMetricDisplay(user, m.id)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center text-gray-700 text-[10px] italic py-1">Empty</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

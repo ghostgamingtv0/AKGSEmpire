@@ -508,6 +508,32 @@ app.post('/api/genesis/test-register', async (req, res) => {
         users.push(newUser);
         fs.writeFileSync(GENESIS_USERS_FILE, JSON.stringify(users, null, 2));
 
+        // --- Sync with SQLite Database ---
+        try {
+            const visitor_id = req.headers['x-visitor-id'] || `v_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            
+            // Check if user exists by username
+            const [existingSql] = await pool.query('SELECT id FROM users WHERE username = ? OR wallet_address = ?', [nickname, wallet]);
+            
+            if (existingSql.length > 0) {
+                // Update existing user
+                await pool.query(
+                    'UPDATE users SET kick_username = ?, wallet_address = ?, password = ?, g_code = ? WHERE id = ?',
+                    [platformUsername, wallet, storedPassword, gCode, existingSql[0].id]
+                );
+            } else {
+                // Create new user in SQLite
+                await pool.query(
+                    'INSERT INTO users (visitor_id, username, kick_username, wallet_address, password, g_code) VALUES (?, ?, ?, ?, ?, ?)',
+                    [visitor_id, nickname, platformUsername, wallet, storedPassword, gCode]
+                );
+            }
+            console.log(`[SQLITE] Synced user: ${nickname}`);
+        } catch (sqliteErr) {
+            console.error('[SQLITE] Sync failed:', sqliteErr.message);
+        }
+        // ---------------------------------
+
         if (ref) {
             try {
                 const refIndex = users.findIndex(u => u.gCode === ref);
@@ -1010,7 +1036,7 @@ app.post('/api/kick/token', async (req, res) => {
         params.append('grant_type', 'authorization_code');
         params.append('client_id', clientId);
         params.append('client_secret', clientSecret);
-        params.append('redirect_uri', redirect_uri || 'http://localhost:3000/');
+        params.append('redirect_uri', redirect_uri || 'https://site-akgs.onrender.com/');
         params.append('code', code);
         
         // Add PKCE verifier if provided (Required by Kick now)
@@ -1769,5 +1795,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
