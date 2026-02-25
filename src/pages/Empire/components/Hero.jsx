@@ -29,7 +29,7 @@ const Hero = () => {
              localStorage.setItem('stable_visitor_id', visitorId);
           }
 
-          const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
+          const API_BASE = import.meta.env.PROD ? 'https://site-akgs.onrender.com' : 'http://localhost:3001';
           const response = await fetch(`${API_BASE}/api/kick/exchange-token`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

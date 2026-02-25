@@ -131,7 +131,13 @@ const initDB = async () => {
 };
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: ['https://site-akgs.onrender.com', 'https://akgs-empire.pages.dev', 'http://localhost:3000'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // --- Auth Routes ---

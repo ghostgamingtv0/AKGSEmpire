@@ -100,7 +100,7 @@ const Dashboard = () => {
         // 2. Check for Referral Code
         const refCode = localStorage.getItem('ref_code');
 
-        const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3001';
+        const API_BASE = import.meta.env.PROD ? 'https://site-akgs.onrender.com' : 'http://localhost:3001';
 
         // 3. Init/Load User
         const res = await fetch(`${API_BASE}/api/init-user`, {
