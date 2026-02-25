@@ -89,6 +89,39 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
+      // Force cache clearing for major updates
+      const APP_VERSION = '2.1.0-security-fix';
+      const storedVersion = localStorage.getItem('akgs_app_version');
+
+      if (storedVersion !== APP_VERSION) {
+        console.log('New version detected! Clearing cache and storage...');
+        
+        // Clear caches
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            for (let name of names) caches.delete(name);
+          });
+        }
+        
+        // Unregister service workers
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            for (let registration of registrations) registration.unregister();
+          });
+        }
+
+        // Only clear essential items, don't delete user session if possible
+        // but for a clean state in normal mode, we might need a full reset
+        const session = localStorage.getItem('user_session');
+        localStorage.clear();
+        if (session) localStorage.setItem('user_session', session);
+        
+        localStorage.setItem('akgs_app_version', APP_VERSION);
+        
+        // Reload to apply changes
+        window.location.reload(true);
+      }
+
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')

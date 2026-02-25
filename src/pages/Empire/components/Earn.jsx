@@ -11,7 +11,7 @@ const NFT_IMAGE_MINING = "https://i.ibb.co/sv1qDbd0/E4gk6-In-WEAQ1s-JF.jpg";
 const NFT_IMAGE_REWARD = "https://i.ibb.co/dwzrDDGk/33710b273ed1e486862440e0446dfc18.jpg";
 const NFT_IMAGE_MAIN = NFT_IMAGE_MINING;
 
-const DATA_RESET_VERSION = '2026-02-22-launch';
+const DATA_RESET_VERSION = '2026-02-25-security-update';
 
 // Helper to manage cookies for session persistence
 const setCookie = (name, value, days) => {
@@ -28,11 +28,13 @@ const getCookie = (name) => {
 
 const resetLocalStorageIfNeeded = () => {
   if (typeof window === 'undefined') return;
-  const stored = localStorage.getItem('data_reset_version');
+  const stored = localStorage.getItem('data_reset_version') || getCookie('data_reset_version');
   if (stored === DATA_RESET_VERSION) return;
+  
+  console.log('Detected version mismatch. Resetting data for update...');
+  
   const keysToClear = [
     'gCode',
-    'user_session',
     'kickUsername',
     'walletAddress',
     'isProfileSaved',
@@ -52,7 +54,12 @@ const resetLocalStorageIfNeeded = () => {
       localStorage.removeItem(key);
     } catch (e) {}
   });
+  
   localStorage.setItem('data_reset_version', DATA_RESET_VERSION);
+  setCookie('data_reset_version', DATA_RESET_VERSION, 365);
+  
+  // Force reload to apply clean state
+  window.location.reload();
 };
 
 const ProjectNFTIcon = ({ color = "#53FC18", tier = "1", imageSrc = NFT_IMAGE_MAIN }) => (
