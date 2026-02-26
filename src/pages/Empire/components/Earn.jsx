@@ -1926,40 +1926,81 @@ const Earn = () => {
               </div>
             </div>
           </motion.div>
-
-          {/* Zaraz Social Feed Integration */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
-            <div className="glass-panel p-4 border border-[#53FC18]/30 bg-black/40">
-                <h3 className="text-[#53FC18] font-bold mb-4 flex items-center gap-2">
-                    <FaInstagram /> Latest Instagram Update
-                </h3>
-                <div className="rounded-xl overflow-hidden min-h-[400px] flex items-center justify-center bg-white/5 border border-white/10">
-                    <instagram-post 
-                        post-url="https://www.instagram.com/p/C3Sk6d2MTjI/" 
-                        captions="true"
-                    ></instagram-post>
-                </div>
-            </div>
-
-            <div className="glass-panel p-4 border border-[#53FC18]/30 bg-black/40">
-                <h3 className="text-[#53FC18] font-bold mb-4 flex items-center gap-2">
-                    <FaXTwitter /> Official Announcement
-                </h3>
-                <div className="rounded-xl overflow-hidden min-h-[400px] flex items-center justify-center bg-white/5 border border-white/10">
-                    <twitter-post tweet-id="1754336034228171055"></twitter-post>
-                </div>
-            </div>
-          </motion.div>
           </>
         )}
 
         {/* Watch Task Fair Play Rules */}
         {activeTab === 'watch' && (
           <>
+          {/* Watch to Earn Interactive Boxes */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            {/* Box 1: Kick Live Stream */}
+            <div className="glass-panel p-4 border border-[#53FC18]/30 bg-black/40 shadow-[0_0_20px_rgba(83,252,24,0.1)] hover:shadow-[0_0_30px_rgba(83,252,24,0.2)] transition-shadow group">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-[#53FC18] font-bold flex items-center gap-2 text-sm uppercase tracking-widest">
+                        <div className="w-2 h-2 rounded-full bg-[#53FC18] animate-ping"></div>
+                        Latest Kick Stream
+                    </h3>
+                    <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-gray-500 font-bold px-2 py-0.5 border border-white/10 rounded uppercase">LIVE REWARDS</span>
+                    </div>
+                </div>
+                <div className="rounded-xl overflow-hidden min-h-[400px] flex flex-col items-center justify-center bg-white/5 border border-white/10 relative group">
+                    <iframe 
+                        src="https://player.kick.com/ghostgamingtv" 
+                        height="100%" 
+                        width="100%" 
+                        frameborder="0" 
+                        scrolling="no" 
+                        allowfullscreen="true"
+                        className="absolute inset-0 w-full h-full"
+                    ></iframe>
+                    {/* Overlay for "Watch to Earn" prompt if needed */}
+                    <div className="absolute bottom-4 right-4 bg-black/80 backdrop-blur-md px-4 py-2 rounded-full border border-[#53FC18]/30 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                        <Zap size={14} className="text-[#53FC18]" />
+                        <span className="text-xs font-bold text-white">EARNING ACTIVE</span>
+                    </div>
+                </div>
+                <div className="mt-4 flex justify-between items-center px-2">
+                    <p className="text-[11px] text-gray-400 font-medium">Watch for <span className="text-[#53FC18]">30 mins</span> to earn <span className="text-[#53FC18]">500 Points</span></p>
+                    <button className="text-[10px] font-bold text-white bg-[#53FC18]/10 px-3 py-1 rounded border border-[#53FC18]/30 hover:bg-[#53FC18]/20 transition-colors uppercase tracking-wider">Claim Status</button>
+                </div>
+            </div>
+
+            {/* Box 2: Official Announcement / Video */}
+            <div className="glass-panel p-4 border border-[#983695]/30 bg-black/40 shadow-[0_0_20px_rgba(152,54,149,0.1)] hover:shadow-[0_0_30px_rgba(152,54,149,0.2)] transition-shadow group">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-[#983695] font-bold flex items-center gap-2 text-sm uppercase tracking-widest">
+                        <Video size={16} />
+                        Official Announcement
+                    </h3>
+                    <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-gray-500 font-bold px-2 py-0.5 border border-white/10 rounded uppercase">ONE-TIME REWARD</span>
+                    </div>
+                </div>
+                <div className="rounded-xl overflow-hidden min-h-[400px] flex flex-col items-center justify-center bg-white/5 border border-white/10 relative group">
+                    <iframe 
+                        width="100%" 
+                        height="100%" 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ" // Example placeholder
+                        title="Official Announcement" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen
+                        className="absolute inset-0 w-full h-full"
+                    ></iframe>
+                </div>
+                <div className="mt-4 flex justify-between items-center px-2">
+                    <p className="text-[11px] text-gray-400 font-medium">Watch full video to earn <span className="text-[#983695]">200 Points</span></p>
+                    <button className="text-[10px] font-bold text-white bg-[#983695]/10 px-3 py-1 rounded border border-[#983695]/30 hover:bg-[#983695]/20 transition-colors uppercase tracking-wider">Claim Points</button>
+                </div>
+            </div>
+          </motion.div>
+
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
