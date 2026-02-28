@@ -7,7 +7,15 @@ export default {
   async fetch(request, env) {
     try {
       const url = new URL(request.url);
-      const BACKEND_BASE = env && env.BACKEND_BASE;
+      const BACKEND_BASE = (env && env.BACKEND_BASE) || "https://site-akgs.onrender.com";
+
+      // --- AUTO WAKE-UP LOGIC ---
+      // Every time a user hits the site, we fire a background request to wake up Render
+      // We don't 'await' it so it doesn't slow down the user's initial load
+      if (url.pathname === "/" || url.pathname.includes("/empire")) {
+        const pingUrl = BACKEND_BASE.replace(/\/$/, "") + "/api/ping";
+        fetch(pingUrl).catch(() => {}); // Fire and forget
+      }
 
       // =================================================================================
       // 0. STATIC VERIFICATION FILES (Bypass SPA Routing)

@@ -132,7 +132,7 @@ const initDB = async () => {
 
 // Middleware
 const corsOptions = {
-  origin: ['https://site-akgs.onrender.com', 'https://akgs-empire.pages.dev'],
+  origin: ['https://akgsempire.org', 'https://www.akgsempire.org', 'https://akgs-empire.pages.dev'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204
@@ -1085,7 +1085,7 @@ app.post('/api/kick/token', async (req, res) => {
         params.append('grant_type', 'authorization_code');
         params.append('client_id', clientId);
         params.append('client_secret', clientSecret);
-        params.append('redirect_uri', redirect_uri || 'https://site-akgs.onrender.com/');
+        params.append('redirect_uri', redirect_uri || 'https://akgsempire.org/');
         params.append('code', code);
         
         // Add PKCE verifier if provided (Required by Kick now)

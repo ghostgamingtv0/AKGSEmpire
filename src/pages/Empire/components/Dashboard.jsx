@@ -254,7 +254,7 @@ const Dashboard = () => {
   const handleKickSync = async () => {
     try {
       setIsLoading(true);
-      const API_BASE = 'https://site-akgs.onrender.com';
+      const API_BASE = ''; // Proxy handles routing through /api
 
       try {
         const statsRes = await fetch(`${API_BASE}/api/stats`);
