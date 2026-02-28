@@ -5,8 +5,16 @@ import { handleInstagramRequest } from './api_social_media/instagram/router.js';
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+    // --- FORCE CLOUDFLARE DOMAIN ---
+    // If user accesses through Render URL, redirect them to Cloudflare
+    if (url.hostname.includes("render.com")) {
+      const secureUrl = new URL(request.url);
+      secureUrl.hostname = "akgsempire.org";
+      return Response.redirect(secureUrl.toString(), 301);
+    }
+
     try {
-      const url = new URL(request.url);
       const BACKEND_BASE = (env && env.BACKEND_BASE) || "https://site-akgs.onrender.com";
 
       // --- AUTO WAKE-UP LOGIC ---
@@ -349,9 +357,33 @@ export default {
       return Response.redirect(newUrl.toString(), 302);
     }
     if (url.pathname.startsWith("/empire/earn/api/")) {
-      const newUrl = new URL(request.url);
-      newUrl.pathname = url.pathname.replace("/empire/earn", "");
-      return Response.redirect(newUrl.toString(), 302);
+      // Default Proxy to Backend
+      const backendUrl = BACKEND_BASE.replace(/\/$/, "") + url.pathname.replace("/empire/earn", "") + url.search;
+      
+      const modifiedRequest = new Request(backendUrl, {
+        method: request.method,
+        headers: request.headers,
+        body: request.body,
+        redirect: "manual"
+      });
+
+      // Add Cloudflare Security Headers to the backend request
+      modifiedRequest.headers.set("X-Forwarded-Host", "akgsempire.org");
+      modifiedRequest.headers.set("X-Forwarded-Proto", "https");
+
+      const response = await fetch(modifiedRequest);
+      
+      // Handle redirects from backend (if any) to keep them on Cloudflare domain
+      if (response.status >= 300 && response.status < 400) {
+        const location = response.headers.get("Location");
+        if (location && (location.includes("render.com") || location.startsWith("/"))) {
+          const newLocation = new URL(location, "https://akgsempire.org");
+          newLocation.hostname = "akgsempire.org";
+          return Response.redirect(newLocation.toString(), response.status);
+        }
+      }
+
+      return response;
     }
     if (url.pathname === "/empire/earn/api/stats") {
       const newUrl = new URL(request.url);
