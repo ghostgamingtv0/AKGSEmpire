@@ -3,7 +3,7 @@
 1. Command: !project
    Response:
    🟢 GHOST EMPIRE هو أول مشروع Web3 + Gaming يربط بين المشاهدة والربح الحقيقي. 🎮💸 شاهد البث، شارك في المهام، واجمع النقاط التي يمكنك تحويلها إلى عملات $AKGS على الشبكة. 
-   � GHOST EMPIRE is the first Web3 + Gaming project that connects watching streams with real rewards. 🎮💸 Watch the stream, complete tasks, earn points, and convert them into $AKGS tokens. Start here: https://akgs-empire.onrender.com
+   � GHOST EMPIRE is the first Web3 + Gaming project that connects watching streams with real rewards. 🎮💸 Watch the stream, complete tasks, earn points, and convert them into $AKGS tokens. Start here: https://akgsempire.org
 
 -------------------------------------------------------
 
@@ -16,8 +16,8 @@
 
 3. Command: !link
    Response:
-   🌍 الموقع الرسمي للمشروع: https://akgs-empire.onrender.com تأكد دائمًا أنك داخل الموقع الرسمي لتحمي رصيدك وأموالك. 🛡️
-   🌍 Official website: https://akgs-empire.onrender.com — always double‑check the URL to protect your funds. 🛡️
+   🌍 الموقع الرسمي للمشروع: https://akgsempire.org تأكد دائمًا أنك داخل الموقع الرسمي لتحمي رصيدك وأموالك. 🛡️
+   🌍 Official website: https://akgsempire.org — always double‑check the URL to protect your funds. 🛡️
 
 -------------------------------------------------------
 

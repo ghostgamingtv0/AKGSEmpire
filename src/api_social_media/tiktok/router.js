@@ -17,7 +17,7 @@ export async function handleTikTokRequest(request, url, env) {
         url.pathname === "/empire/api/tiktok/login"
     ) {
         const csrfState = Math.random().toString(36).substring(7);
-        const origin = 'https://akgs-empire.pages.dev';
+        const origin = 'https://akgsempire.org';
         const redirectUri = `${origin}/empire/api/tiktok/callback`;
         const isDev = url.hostname.endsWith('pages.dev') && !url.hostname.includes('akgs-empire');
         
@@ -78,7 +78,7 @@ export async function handleTikTokRequest(request, url, env) {
             // OAuth Code Exchange (must use the SAME redirect_uri as login)
             if (code) {
                 try {
-                    const origin = 'https://akgs-empire.pages.dev';
+                    const origin = 'https://akgsempire.org';
                     const redirectUri = `${origin}/empire/api/tiktok/callback`;
                     const isDev = url.hostname.endsWith('pages.dev') && !url.hostname.includes('akgs-empire');
                     

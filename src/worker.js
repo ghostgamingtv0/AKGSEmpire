@@ -33,6 +33,53 @@ export default {
         headers: { "Content-Type": "text/plain" }
       });
     }
+
+    // =================================================================================
+    // 1. API PROXY (Redirect /api/* to Backend)
+    // =================================================================================
+    if (url.pathname.startsWith("/api/")) {
+      // Pass-through to social media handlers if they match
+      const kickRes = await handleKickRequest(request, url, env);
+      if (kickRes) return kickRes;
+
+      const fbRes = await handleFacebookRequest(request, url, env);
+      if (fbRes) return fbRes;
+
+      const igRes = await handleInstagramRequest(request, url, env);
+      if (igRes) return igRes;
+
+      // Default Proxy to Backend
+      const backendUrl = BACKEND_BASE.replace(/\/$/, "") + url.pathname + url.search;
+      
+      const modifiedRequest = new Request(backendUrl, {
+        method: request.method,
+        headers: request.headers,
+        body: request.body,
+        redirect: "manual" // Don't let the browser handle redirects to Render
+      });
+
+      // Add Cloudflare Security Headers to the backend request
+      modifiedRequest.headers.set("X-Forwarded-Host", "akgsempire.org");
+      modifiedRequest.headers.set("X-Forwarded-Proto", "https");
+
+      let response = await fetch(modifiedRequest);
+      
+      // Handle Render's "Waking up" page or redirects to Render domain
+      if (
+        response.status === 307 || 
+        (response.headers.get("Content-Type")?.includes("text/html") && response.status === 200)
+      ) {
+        const location = response.headers.get("Location");
+        if (location && location.includes("render.com")) {
+          // If it's a redirect to Render, rewrite it to Cloudflare
+          const newLocation = new URL(location);
+          newLocation.hostname = "akgsempire.org";
+          return Response.redirect(newLocation.toString(), response.status);
+        }
+      }
+
+      return response;
+    }
     if (url.pathname === "/czuudtyh60e6l29pldx1s2htix8oxz.html") {
       return new Response("czuudtyh60e6l29pldx1s2htix8oxz", {
         headers: { "Content-Type": "text/html" }
@@ -380,6 +427,20 @@ export default {
           const newLocation = new URL(location, "https://akgsempire.org");
           newLocation.hostname = "akgsempire.org";
           return Response.redirect(newLocation.toString(), response.status);
+        }
+      }
+
+      // If Render returns its "Waking Up" page (usually a 200 HTML with Render specific text)
+      // we can't easily wait forever, but we can at least ensure it doesn't break the SPA
+      const contentType = response.headers.get("Content-Type") || "";
+      if (contentType.includes("text/html") && response.status === 200) {
+        const text = await response.clone().text();
+        if (text.includes("Render") && text.includes("spinning up")) {
+           // Return a custom JSON error instead of HTML so the frontend can show a nice loader
+           return new Response(JSON.stringify({ success: false, error: "Backend is warming up, please wait...", retryAfter: 5 }), {
+             status: 503,
+             headers: { "Content-Type": "application/json" }
+           });
         }
       }
 
