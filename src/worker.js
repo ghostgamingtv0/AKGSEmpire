@@ -103,6 +103,20 @@ export default {
       }
     }
 
+    if (url.pathname === "/api/ping") {
+      try {
+        const backendUrl = BACKEND_BASE + "/api/ping";
+        const backendRes = await fetch(backendUrl);
+        const text = await backendRes.text();
+        return new Response(text, {
+          status: backendRes.status,
+          headers: { "Content-Type": "application/json" }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ success: false, error: "Backend sleeping" }), { status: 502, headers: { "Content-Type": "application/json" } });
+      }
+    }
+
     if (url.pathname === "/api/stats") {
       try {
         const backendUrl = BACKEND_BASE + "/api/stats" + url.search;

@@ -110,6 +110,11 @@ app.use(express.json());
 // Initialize DB
 initDB();
 
+// --- HEALTH CHECK / KEEP ALIVE ---
+app.get('/api/ping', (req, res) => {
+    res.json({ success: true, message: 'Server is awake', timestamp: new Date().toISOString() });
+});
+
 // --- AUTH ROUTES ---
 app.post('/api/auth/register', async (req, res) => {
     const { username, password, wallet_address, visitor_id } = req.body;
