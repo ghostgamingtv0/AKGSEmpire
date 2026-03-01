@@ -40,9 +40,23 @@ const GhostGate = () => {
         wallet: ''
     });
 
-    // Initialize FingerprintJS
+    // Initialize FingerprintJS and Session Check
     useEffect(() => {
-        const initFingerprint = async () => {
+        const initSession = async () => {
+            // Check for existing session first
+            const existingSession = localStorage.getItem('user_session');
+            if (existingSession) {
+                try {
+                    const user = JSON.parse(existingSession);
+                    if (user && user.username) {
+                        navigate('/empire/home');
+                        return;
+                    }
+                } catch (e) {
+                    localStorage.removeItem('user_session');
+                }
+            }
+
             const stored = getCookie('visitor_id');
             if (stored) {
                 setVisitorId(stored);
@@ -61,8 +75,8 @@ const GhostGate = () => {
                 setCookie('visitor_id', fallbackId, 365);
             }
         };
-        initFingerprint();
-    }, []);
+        initSession();
+    }, [navigate]);
 
     const [selectedPlatform, setSelectedPlatform] = useState('Kick'); // Default to Kick
     const [showPlatformMenu, setShowPlatformMenu] = useState(false);
