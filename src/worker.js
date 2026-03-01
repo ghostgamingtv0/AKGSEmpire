@@ -15,15 +15,10 @@ export default {
     }
 
     try {
-      const BACKEND_BASE = (env && env.BACKEND_BASE) || "https://site-akgs.onrender.com";
+      const BACKEND_BASE = (env && env.BACKEND_BASE) || "http://130.61.129.195:3001";
 
-      // --- AUTO WAKE-UP LOGIC ---
-      // Every time a user hits the site, we fire a background request to wake up Render
-      // We don't 'await' it so it doesn't slow down the user's initial load
-      if (url.pathname === "/" || url.pathname.includes("/empire")) {
-        const pingUrl = BACKEND_BASE.replace(/\/$/, "") + "/api/ping";
-        fetch(pingUrl).catch(() => {}); // Fire and forget
-      }
+      // --- WAKE-UP LOGIC NOT NEEDED FOR VPS ---
+      // Oracle VPS is always on, so we don't need ping logic, but we'll keep the /api/ping route for health checks.
 
       // =================================================================================
       // 0. STATIC VERIFICATION FILES (Bypass SPA Routing)

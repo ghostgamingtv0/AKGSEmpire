@@ -132,7 +132,7 @@ const initDB = async () => {
 
 // Middleware
 const corsOptions = {
-  origin: ['https://akgsempire.org', 'https://www.akgsempire.org', 'https://akgs-empire.pages.dev'],
+  origin: ['https://akgsempire.org', 'https://www.akgsempire.org', 'https://akgs-empire.pages.dev', 'http://130.61.129.195:3001', 'http://130.61.129.195:3000'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204
