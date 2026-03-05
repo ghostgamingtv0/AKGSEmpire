@@ -196,13 +196,21 @@ const Earn = () => {
 
   const getOrCreateViewCode = (platform) => {
     const key = platform.toLowerCase();
-    if (viewCodes[key]) return viewCodes[key];
+    
+    // Check if we have a cached code for the current post link
+    const currentPostLink = feedStatus[key]?.link || SOCIAL_LINKS[platform.toUpperCase()] || '';
+    const cacheKey = `viewCode_${key}_${currentPostLink.slice(-10)}`; // Link-specific cache
+    
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) return cached;
+
+    // Generate a fresh code if link changed or no cache
     const code = generateViewCode(platform);
-    setViewCodes(prev => {
-      const next = { ...prev, [key]: code };
-      localStorage.setItem('viewCodes', JSON.stringify(next));
-      return next;
-    });
+    localStorage.setItem(cacheKey, code);
+    
+    // Also update general viewCodes state for UI
+    setViewCodes(prev => ({ ...prev, [key]: code }));
+    
     return code;
   };
 
@@ -494,8 +502,8 @@ const Earn = () => {
       id: 8, 
       type: 'watch', 
       platform: 'TikTok', 
-      action: 'Like & Share Latest TikTok', 
-      instruction: 'MANDATORY: Comment your G-Code under the post',
+      action: 'Watch & Interact with Latest TikTok', 
+      instruction: 'MANDATORY: Comment your unique Watch Code',
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Reel', 
@@ -511,7 +519,7 @@ const Earn = () => {
       type: 'watch', 
       platform: 'Instagram', 
       action: 'Like & Share Latest Instagram Reel', 
-      instruction: 'MANDATORY: Comment your G-Code under the reel',
+      instruction: 'MANDATORY: Comment your unique Watch Code',
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Reel', 
@@ -527,7 +535,7 @@ const Earn = () => {
       type: 'watch', 
       platform: 'Twitter (X)', 
       action: 'Like & Repost Latest X Post', 
-      instruction: 'MANDATORY: Comment your G-Code in the thread',
+      instruction: 'MANDATORY: Comment your unique Watch Code',
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Post', 
@@ -543,7 +551,7 @@ const Earn = () => {
       type: 'watch', 
       platform: 'Threads', 
       action: 'Like & Share Latest Threads Post', 
-      instruction: 'MANDATORY: Comment your G-Code in the replies',
+      instruction: 'MANDATORY: Comment your unique Watch Code',
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Post', 
@@ -682,6 +690,19 @@ const Earn = () => {
             const res = await fetch(`${API_BASE}/api/feed-status`);
             const data = await res.json();
             setFeedStatus(data);
+            
+            // If we have a new post for a platform, update its link in the tasks array
+            // This ensures the button always opens the latest content
+            if (data) {
+                Object.keys(data).forEach(platform => {
+                    if (data[platform]?.isNew && data[platform]?.link) {
+                        const taskId = tasks.find(t => t.platform.toLowerCase().includes(platform))?.id;
+                        if (taskId) {
+                            console.log(`Updating ${platform} task with new link: ${data[platform].link}`);
+                        }
+                    }
+                });
+            }
         } catch (e) { console.error('Feed fetch error:', e); }
     };
     fetchFeeds();
@@ -1082,6 +1103,8 @@ const Earn = () => {
     }
 
     if (task.type === 'watch') {
+      // Clear previous generated code to force refresh based on latest feed
+      setGeneratedCode('');
       const code = getOrCreateViewCode(task.platform);
       setGeneratedCode(code);
       setCurrentTaskForModal(task);
@@ -1951,7 +1974,7 @@ const Earn = () => {
                 </div>
                 <div className="rounded-xl overflow-hidden min-h-[400px] flex flex-col items-center justify-center bg-white/5 border border-white/10 relative group">
                     <iframe 
-                        src="https://player.kick.com/ghostgamingtv" 
+                        src="https://player.kick.com/ghost_gamingtv" 
                         height="100%" 
                         width="100%" 
                         frameborder="0" 
