@@ -7,11 +7,11 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // 1. REDIRECT RENDER USERS TO CLOUDFLARE
-    if (url.hostname.includes("render.com")) {
-      const secureUrl = new URL(request.url);
-      secureUrl.hostname = "akgsempire.org";
-      return Response.redirect(secureUrl.toString(), 301);
+    // CRITICAL: Permanent redirect from old Render URL to the new Cloudflare domain
+    if (url.hostname.includes('render.com')) {
+      const newUrl = new URL(request.url);
+      newUrl.hostname = 'akgsempire.org';
+      return Response.redirect(newUrl.toString(), 301);
     }
 
     try {

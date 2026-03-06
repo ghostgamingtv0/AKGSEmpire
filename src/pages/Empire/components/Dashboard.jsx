@@ -691,9 +691,9 @@ const Dashboard = () => {
                 // Combine and sort by total_points for Global Leaderboard
                 // Filter out 'under' or any duplicate test entries if they are at 0 points
                 const filtered = leaderboard.filter(u => !u.isPlaceholder && (u.total_points > 0 || u.kick_username !== 'under'));
-                const sorted = filtered.sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 5);
+                const sorted = filtered.sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 10);
                 const display = [...sorted];
-                while (display.length < 5) {
+                while (display.length < 10) {
                     display.push({ isPlaceholder: true });
                 }
                 return display.map((user, idx) => (

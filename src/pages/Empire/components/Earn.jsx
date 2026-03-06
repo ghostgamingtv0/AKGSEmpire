@@ -192,28 +192,6 @@ const Earn = () => {
   const [currentViewCode, setCurrentViewCode] = useState(null);
   const [showViewCodeModal, setShowViewCodeModal] = useState(false);
 
-  // Generate G-Code
-  const generateGCode = (platform) => {
-      if (!username || !walletAddress) return '👻LOGIN-FIRST👻';
-      
-      const prefixes = {
-          'Discord': 'KGDS',
-          'Instagram': 'KGI',
-          'Twitter (X)': 'KGT',
-          'Facebook': 'KGF',
-          'TikTok': 'KGTK',
-          'Telegram': 'KGTM',
-          'Kick': 'KGKICK',
-          'Threads': 'KGTH'
-      };
-      
-      const prefix = prefixes[platform] || 'KG';
-      // User requested: Prefix of wallet (e.g. 0x123abc)
-      const walletPart = (typeof walletAddress === 'string' ? walletAddress : '').substring(0, 8); 
-      const random = Math.floor(100000 + Math.random() * 900000); // 6 digits
-      
-      return `👻${prefix}-${username}-${walletPart}-${random}👻`;
-  };
 
   const getPlatformTag = (platform) => {
     const key = platform.toLowerCase();
@@ -269,13 +247,11 @@ const Earn = () => {
 
   const handleOpenTaskModal = (task) => {
       if (task.type === 'watch') {
-          // Dynamic WATCH code
           const code = getOrCreateViewCode(task.platform);
           setGeneratedCode(code);
       } else {
-          // Fixed G-Code for registration tasks
           const existingCode = gCode || localStorage.getItem('gCode');
-          setGeneratedCode(existingCode || '👻G-NOT-SET👻');
+          setGeneratedCode(existingCode || 'G-CODE-NOT-FOUND');
       }
       
       setCurrentTaskForModal(task);
