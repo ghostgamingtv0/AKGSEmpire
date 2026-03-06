@@ -78,7 +78,8 @@ const getNextWeeklyReset = () => {
 };
 
 const Dashboard = () => {
-  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]); // Registered Users (KV)
+  const [kickLeaderboard, setKickLeaderboard] = useState([]); // Kick Platform Users
   const [userData, setUserData] = useState(null);
   const [copied, setCopied] = useState(false);
   const [globalStats, setGlobalStats] = useState(() => {
@@ -149,11 +150,17 @@ const Dashboard = () => {
             if (refCode) localStorage.removeItem('ref_code');
         }
 
-        // 4. Fetch Leaderboard
+        // 4. Fetch Leaderboards
         const lbRes = await fetch(`${API_BASE}/api/leaderboard`);
         const lbData = await lbRes.json();
         if (lbData.success) {
           setLeaderboard(lbData.leaderboard);
+        }
+
+        const kickLbRes = await fetch(`${API_BASE}/api/leaderboard/kick`);
+        const kickLbData = await kickLbRes.json();
+        if (kickLbData.success) {
+          setKickLeaderboard(kickLbData.leaderboard);
         }
 
         // 5. Fetch Global Stats (Kick + Others)
@@ -337,8 +344,8 @@ const Dashboard = () => {
   ];
 
   const renderLeaderboardList = (data, metricLabel, icon) => {
-    // Show top 5 users as requested for better UX and performance
-    const topUsers = data.slice(0, 5);
+    // Show top 10 users as requested for the full leaderboard view
+    const topUsers = data.slice(0, 10);
     
     return (
     <div className="space-y-3">
@@ -653,8 +660,8 @@ const Dashboard = () => {
                     <div className="flex items-center gap-3 relative z-10">
                         <Trophy className="text-yellow-400" size={28} />
                         <div>
-                            <h2 className="text-2xl font-bold tracking-tight brand-gradient-text">Monthly Global Elite | نخبة التصنيف الشهري</h2>
-                            <p className="text-xs text-gray-400 uppercase tracking-widest">Ascend the Ranks & Claim Glory | اصعد في التصنيف وسيطر على القمة</p>
+                            <h2 className="text-2xl font-bold tracking-tight brand-gradient-text">Kick Platform Elite | نخبة منصة كيك</h2>
+                            <p className="text-xs text-gray-400 uppercase tracking-widest">Top Kick.com Users | أفضل مستخدمي منصة كيك</p>
                         </div>
                     </div>
                 </div>
@@ -688,10 +695,58 @@ const Dashboard = () => {
             
             <div className="grid md:grid-cols-2 gap-4 relative z-10">
               {(() => {
-                // Combine and sort by total_points for Global Leaderboard
-                // Filter out 'under' or any duplicate test entries if they are at 0 points
-                const filtered = leaderboard.filter(u => !u.isPlaceholder && (u.total_points > 0 || u.kick_username !== 'under'));
-                const sorted = filtered.sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 10);
+                // Show Kick Platform Users
+                const display = [...kickLeaderboard];
+                while (display.length < 10) {
+                    display.push({ isPlaceholder: true });
+                }
+                return display.map((user, idx) => (
+                  <div key={idx} className={`flex items-center justify-between p-4 rounded-xl border ${user.isPlaceholder ? 'bg-white/5 border-dashed border-white/5' : 'bg-[#53FC18]/5 border-[#53FC18]/20 shadow-[0_0_15px_rgba(83,252,24,0.05)]'}`}>
+                    <div className="flex items-center gap-4">
+                      <span className={`font-bold w-6 text-center ${!user.isPlaceholder && idx < 3 ? 'text-[#53FC18]' : 'text-gray-600'}`}>
+                        #{idx + 1}
+                      </span>
+                      <div>
+                        <p className={`font-bold text-sm ${user.isPlaceholder ? 'text-gray-600 italic' : 'text-white'}`}>
+                          {!user.isPlaceholder ? user.kick_username : 'Loyal Follower'}
+                        </p>
+                        <p className="text-xs text-gray-600">{!user.isPlaceholder ? 'Total Score | مجموع النقاط' : 'Waiting for hero...'}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className={`block font-bold ${!user.isPlaceholder ? 'text-[#53FC18]' : 'text-gray-700'}`}>
+                        {!user.isPlaceholder ? `${(user.total_points || 0).toLocaleString()} pts` : '--'}
+                      </span>
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+        </motion.div>
+
+        {/* --- REGISTERED USERS LEADERBOARD (Site Users) --- */}
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="glass-panel p-6 mb-12 relative overflow-hidden"
+        >
+            <div className="flex flex-col gap-6 mb-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 relative z-10">
+                        <Users className="text-[#53FC18]" size={28} />
+                        <div>
+                            <h2 className="text-2xl font-bold tracking-tight brand-gradient-text">Registered Site Users | المستخدمين المسجلين</h2>
+                            <p className="text-xs text-gray-400 uppercase tracking-widest">Real-time Empire Leaderboard | لوحة الصدارة الحقيقية للإمبراطورية</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4 relative z-10">
+              {(() => {
+                // Show Registered Users from KV
+                const sorted = [...leaderboard].sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 10);
                 const display = [...sorted];
                 while (display.length < 10) {
                     display.push({ isPlaceholder: true });
@@ -708,7 +763,7 @@ const Dashboard = () => {
                             ? (user.kick_username ? user.kick_username : (user.username ? user.username : (user.wallet_address ? `${user.wallet_address.substring(0, 6)}...${user.wallet_address.substring(user.wallet_address.length - 4)}` : `User_${user.visitor_id?.substring(0,4)}`)))
                             : 'Loyal Follower'}
                         </p>
-                        <p className="text-xs text-gray-600">{!user.isPlaceholder ? 'Total Score | مجموع النقاط' : 'Waiting for hero...'}</p>
+                        <p className="text-xs text-gray-600">{!user.isPlaceholder ? 'Empire Score | مجموع النقاط' : 'Waiting for hero...'}</p>
                       </div>
                     </div>
                     <div className="text-right">

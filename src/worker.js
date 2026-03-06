@@ -97,6 +97,24 @@ export default {
                 await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(updatedUser));
                 return new Response(JSON.stringify({ success: true, user: updatedUser }), { headers: { "Content-Type": "application/json" } });
               }
+
+              // --- AUTO-RECOVERY ON INIT (If user has points on a different ID with same Kick username) ---
+              if (kick_username) {
+                const { keys } = await env.USERS.list({ prefix: "user_vId:" });
+                for (const key of keys) {
+                  const val = await env.USERS.get(key.name);
+                  if (val) {
+                    const oldUser = JSON.parse(val);
+                    if (oldUser.kick_username === kick_username) {
+                      // Found old data! Link it to the new visitor_id
+                      let mergedUser = { ...oldUser, visitor_id, is_merged: true };
+                      await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(mergedUser));
+                      await env.USERS.delete(key.name); // Clean up old ID
+                      return new Response(JSON.stringify({ success: true, user: mergedUser, recovered: true }), { headers: { "Content-Type": "application/json" } });
+                    }
+                  }
+                }
+              }
             }
 
             // If new user, create with a permanent G-Code
@@ -127,6 +145,27 @@ export default {
             if (env.USERS) {
               const existing = await env.USERS.get(`user_vId:${visitor_id}`);
               let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 1000 };
+              
+              // --- ACCOUNT MERGE LOGIC (Recover points from old ID if username matches) ---
+              if (kick_username && !user.is_merged) {
+                const { keys } = await env.USERS.list({ prefix: "user_vId:" });
+                for (const key of keys) {
+                  const val = await env.USERS.get(key.name);
+                  if (val) {
+                    const otherUser = JSON.parse(val);
+                    // If we find another ID with the same username and more points, merge it!
+                    if (otherUser.visitor_id !== visitor_id && otherUser.kick_username === kick_username) {
+                      user.total_points = Math.max(user.total_points || 0, otherUser.total_points || 0);
+                      user.g_code = otherUser.g_code || user.g_code; // Keep the old G-Code
+                      user.is_merged = true;
+                      // Delete old ID entry to prevent duplicates
+                      await env.USERS.delete(key.name);
+                      return new Response(JSON.stringify({ success: true, user, recovered: true }), { headers: { "Content-Type": "application/json" } });
+                    }
+                  }
+                }
+              }
+
               user = { ...user, kick_username, wallet_address };
               await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
               return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
@@ -186,55 +225,88 @@ export default {
           { visitor_id: 'v10', kick_username: 'Loyal_Viewer_AKGS', total_points: 5500, weekly_points: 500, tasks_completed: 8, weekly_comments: 18, chat_messages_count: 95, referral_count: 0, instagram_username: 'loyal_v' }
         ];
 
-        // Ensure leaderboard endpoint uses these users
-        if (url.pathname === "/api/leaderboard") {
+        // --- Leaderboard API ---
+        if (url.pathname === "/api/leaderboard" || url.pathname === "/api/leaderboard/registered") {
           try {
             if (!env.USERS) {
-              return new Response(JSON.stringify({ success: true, leaderboard: mockUsers }), { headers: { "Content-Type": "application/json" } });
+              return new Response(JSON.stringify({ success: true, leaderboard: [] }), { headers: { "Content-Type": "application/json" } });
             }
 
             const { keys } = await env.USERS.list({ prefix: "user_vId:" });
             const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
             
             const leaderboardData = users
-              .filter(u => u && u.kick_username) // Ensure user has a kick username to be on the leaderboard
+              .filter(u => u && (u.kick_username || u.visitor_id))
               .map(u => ({
-                username: u.kick_username,
+                username: u.kick_username || `User_${u.visitor_id.substring(0,5)}`,
                 total_points: u.total_points || 0,
                 kick_username: u.kick_username,
                 visitor_id: u.visitor_id
               }))
               .sort((a, b) => b.total_points - a.total_points)
-              .slice(0, 10); // Return top 10
+              .slice(0, 10);
 
             return new Response(JSON.stringify({
               success: true,
               leaderboard: leaderboardData
             }), { headers: { "Content-Type": "application/json" } });
-
           } catch (e) {
-            // Fallback to mocks on error
-            return new Response(JSON.stringify({ success: true, leaderboard: mockUsers }), { headers: { "Content-Type": "application/json" } });
+            return new Response(JSON.stringify({ success: false, error: "Leaderboard Error" }), { status: 500 });
           }
         }
 
-        if (url.pathname === "/api/leaderboard/tasks") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.tasks_completed - a.tasks_completed)), { headers: { "Content-Type": "application/json" } });
-        if (url.pathname === "/api/leaderboard/comments") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.weekly_comments - a.weekly_comments)), { headers: { "Content-Type": "application/json" } });
-        if (url.pathname === "/api/leaderboard/messages") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.chat_messages_count - a.chat_messages_count)), { headers: { "Content-Type": "application/json" } });
-        if (url.pathname === "/api/leaderboard/referrers") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.referral_count - a.referral_count)), { headers: { "Content-Type": "application/json" } });
+        // Kick Platform Leaderboard (Top users on Kick.com)
+        if (url.pathname === "/api/leaderboard/kick") {
+          return new Response(JSON.stringify({
+            success: true,
+            leaderboard: mockUsers.map(u => ({
+              username: u.kick_username,
+              total_points: u.total_points,
+              kick_username: u.kick_username
+            }))
+          }), { headers: { "Content-Type": "application/json" } });
+        }
+
+        // --- Category Leaderboards ---
+        if (url.pathname === "/api/leaderboard/tasks") {
+            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
+            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
+            const sorted = users.filter(u => u && u.tasks_completed !== undefined).sort((a,b) => (b.tasks_completed || 0) - (a.tasks_completed || 0)).slice(0, 10);
+            return new Response(JSON.stringify(sorted), { headers: { "Content-Type": "application/json" } });
+        }
+        if (url.pathname === "/api/leaderboard/comments") {
+            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
+            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
+            const sorted = users.filter(u => u && u.weekly_comments !== undefined).sort((a,b) => (b.weekly_comments || 0) - (a.weekly_comments || 0)).slice(0, 10);
+            return new Response(JSON.stringify(sorted), { headers: { "Content-Type": "application/json" } });
+        }
+        if (url.pathname === "/api/leaderboard/messages") {
+            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
+            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
+            const sorted = users.filter(u => u && u.chat_messages_count !== undefined).sort((a,b) => (b.chat_messages_count || 0) - (a.chat_messages_count || 0)).slice(0, 10);
+            return new Response(JSON.stringify(sorted), { headers: { "Content-Type": "application/json" } });
+        }
+        if (url.pathname === "/api/leaderboard/referrers") {
+            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
+            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
+            const sorted = users.filter(u => u && u.referral_count !== undefined).sort((a,b) => (b.referral_count || 0) - (a.referral_count || 0)).slice(0, 10);
+            return new Response(JSON.stringify(sorted), { headers: { "Content-Type": "application/json" } });
+        }
         
         if (url.pathname.startsWith("/api/users/platform/")) {
             const platform = url.pathname.split('/').pop();
-            const filtered = mockUsers.map(u => ({
-                ...u,
-                username: u.kick_username,
-                // Ensure every user appears in every platform for the showcase, 
-                // but in production this would filter by actual linked accounts.
-                twitter_username: u.twitter_username || u.kick_username,
-                instagram_username: u.instagram_username || u.kick_username,
-                threads_username: u.threads_username || u.kick_username,
-                kick_username: u.kick_username
-            }));
+            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
+            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
+            
+            const filtered = users.filter(u => {
+                if (platform === 'kick') return u.kick_username;
+                if (platform === 'twitter') return u.twitter_username;
+                if (platform === 'threads') return u.threads_username;
+                if (platform === 'instagram') return u.instagram_username;
+                return false;
+            }).slice(0, 10);
+
+            // If no real users for this platform yet, return empty array instead of mocks
             return new Response(JSON.stringify(filtered), { headers: { "Content-Type": "application/json" } });
         }
 

@@ -1292,7 +1292,7 @@ const Earn = () => {
       // Save to Backend
       try {
         if (visitorId) {
-          await fetch('/api/update-profile', {
+          const res = await fetch('/api/update-profile', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1301,6 +1301,16 @@ const Earn = () => {
               wallet_address: walletAddress
             })
           });
+          const data = await res.json();
+          if (data.recovered) {
+            alert('Welcome back! Your points and G-Code have been recovered successfully.');
+            if (data.user && data.user.total_points) {
+                // Update local state if needed (assuming there's a setTotalPoints or similar)
+                // For now, reload to get fresh data is safest
+                window.location.reload();
+                return;
+            }
+          }
         }
         localStorage.setItem('isProfileSaved', 'true');
         setIsProfileSaved(true);

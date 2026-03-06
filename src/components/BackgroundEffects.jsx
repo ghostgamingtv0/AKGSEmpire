@@ -171,7 +171,7 @@ const Ghost = ({ className = "", size = 64, showEyes = false, isOverload = false
 const BackgroundEffects = () => {
   // Always show eyes for Genesis as per prototype design
   const shouldShowEyes = false;
-  const ghostCount = 50; // Fixed at 50 ghosts for performance
+  const ghostCount = 30; // Reduced to 30 ghosts for better performance on all devices
 
   // Generate ghosts array based on fixed count
   const ghosts = useMemo(() => {
