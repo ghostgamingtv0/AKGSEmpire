@@ -694,44 +694,11 @@ const Dashboard = () => {
             </div>
             
             <div className="grid md:grid-cols-2 gap-4 relative z-10">
-              {(() => {
-                // Show Kick Platform Users
-                const display = [...kickLeaderboard];
-                while (display.length < 10) {
-                    display.push({ isPlaceholder: true });
-                }
-                return display.map((user, idx) => (
-                  <div key={idx} className={`flex items-center justify-between p-4 rounded-xl border ${user.isPlaceholder ? 'bg-white/5 border-dashed border-white/5' : 'bg-[#53FC18]/5 border-[#53FC18]/20 shadow-[0_0_15px_rgba(83,252,24,0.05)]'}`}>
-                    <div className="flex items-center gap-4">
-                      <span className={`font-bold w-6 text-center ${!user.isPlaceholder && idx < 3 ? 'text-[#53FC18]' : 'text-gray-600'}`}>
-                        #{idx + 1}
-                      </span>
-                      <div>
-                        <p className={`font-bold text-sm ${user.isPlaceholder ? 'text-gray-600 italic' : 'text-white'}`}>
-                          {!user.isPlaceholder ? user.kick_username : 'Loyal Follower'}
-                        </p>
-                        <p className="text-xs text-gray-600">{!user.isPlaceholder ? 'Total Score | مجموع النقاط' : 'Waiting for hero...'}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className={`block font-bold ${!user.isPlaceholder ? 'text-[#53FC18]' : 'text-gray-700'}`}>
-                        {!user.isPlaceholder ? `${(user.total_points || 0).toLocaleString()} pts` : '--'}
-                      </span>
-                    </div>
-                  </div>
-                ));
-              })()}
-            </div>
-
-            <div className="text-center mt-8">
-                <a 
-                    href="https://botrix.live/k/ghost_gamingtv/leaderboard" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="px-8 py-3 bg-[#53FC18] text-black font-bold rounded-xl hover:bg-[#45d415] transition-all hover:scale-105 shadow-[0_0_20px_rgba(83,252,24,0.4)] inline-flex items-center gap-2"
-                >
-                    <ExternalLink size={20} /> VIEW BOTRIX LEADERBOARD
-                </a>
+              <iframe 
+                src="https://botrix.live/k/ghost_gamingtv/leaderboard" 
+                className="w-full h-[600px] border-0 rounded-xl"
+                sandbox="allow-scripts allow-same-origin"
+              ></iframe>
             </div>
         </motion.div>
 
