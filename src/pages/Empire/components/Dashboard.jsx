@@ -188,9 +188,6 @@ const Dashboard = () => {
       localStorage.setItem('globalStats', JSON.stringify(globalStats));
     }
   }, [globalStats]);
-  const [topComments, setTopComments] = useState([]);
-  const [interactiveLeaderboard, setInteractiveLeaderboard] = useState([]);
-  const [referralLeaderboard, setReferralLeaderboard] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load Twitter Widget - REMOVED (Moved to Earn.jsx)
@@ -297,52 +294,6 @@ const Dashboard = () => {
     { label: 'Live Viewers', value: globalStats.kick_viewers?.toLocaleString() || '0', icon: <Activity className="text-red-500" />, change: isStreamLive ? 'LIVE' : 'Offline' },
     { label: 'Category', value: globalStats.kick_category || 'None', icon: <Flame className="text-orange-500" />, change: 'Stream' },
   ];
-
-  const renderLeaderboardList = (data, metricLabel, icon) => {
-    // Show top 10 users as requested for the full leaderboard view
-    const topUsers = data.slice(0, 10);
-    
-    return (
-    <div className="space-y-3">
-      {topUsers.length > 0 ? (
-        topUsers.map((item, idx) => (
-          <div key={idx} className="flex items-center justify-between p-3 rounded-lg border bg-white/10 border-[#53FC18]/20">
-            <div className="flex items-center gap-3">
-              <span className={`font-bold w-6 text-center ${idx < 3 ? 'text-[#53FC18]' : 'text-gray-500'}`}>
-                #{idx + 1}
-              </span>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center overflow-hidden">
-                 <img 
-                    src={`https://ui-avatars.com/api/?name=${item.username || item.kick_username}&background=53FC18&color=000`} 
-                    alt={item.username} 
-                    className="w-full h-full object-cover"
-                 />
-              </div>
-              <div>
-                 <p className="font-bold text-sm text-white">
-                    {item.username || item.kick_username}
-                 </p>
-                 {item.visitor_id && (
-                    <p className="text-[10px] text-gray-500">ID: {item.visitor_id.substring(0, 6)}</p>
-                 )}
-              </div>
-            </div>
-            <div className="text-right">
-               <p className="text-sm font-bold text-white">
-                 {item.total_points !== undefined ? item.total_points.toLocaleString() : (item.value || 0)}
-               </p>
-               <p className="text-[10px] text-gray-500">{metricLabel}</p>
-            </div>
-          </div>
-        ))
-      ) : (
-        <div className="p-4 text-center text-gray-500">
-            {isLoading ? 'Loading...' : 'No data yet'}
-        </div>
-      )}
-    </div>
-  );
-  };
 
   return (
     <div className="min-h-screen text-white pt-24 pb-12 px-4 relative overflow-hidden empire-gradient-page">
