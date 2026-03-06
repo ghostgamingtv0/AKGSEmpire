@@ -34,6 +34,11 @@ const CHANNEL_STATS = {
     { name: 'CHAMKAR2', chats: 273 },
     { name: 'SoulTheKing', chats: 268 },
     { name: 'slaycouper2', chats: 257 },
+    { name: 'undercover', chats: 245 },
+    { name: 'Kick_Ninja', chats: 232 },
+    { name: 'Z_Ghost', chats: 218 },
+    { name: 'AKGS_Fan_99', chats: 195 },
+    { name: 'Loyal_Follower_1', chats: 184 },
   ],
   weekAnalysis: {
     activeDays: [
