@@ -727,6 +727,74 @@ const Dashboard = () => {
 
 
 
+        {/* Global Monthly Leaderboard (Points) */}
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-panel p-6 mb-12 relative overflow-hidden border border-[#53FC18]/20 bg-black/40"
+        >
+            <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                <Trophy size={150} />
+            </div>
+            
+            <div className="flex flex-col gap-6 mb-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 relative z-10">
+                        <Trophy className="text-yellow-400" size={28} />
+                        <div>
+                            <h2 className="text-2xl font-bold tracking-tight brand-gradient-text">Kick Platform Elite | نخبة منصة كيك</h2>
+                            <p className="text-xs text-gray-400 uppercase tracking-widest">Combined Ranking: Top Commenters & Most Viewers (Top 5)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-[#53FC18]/10 via-black/40 to-transparent border-l-4 border-[#53FC18] p-5 rounded-r-xl relative z-10 flex flex-col md:flex-row justify-between items-center gap-6 shadow-[0_0_20px_rgba(83,252,24,0.05)]">
+                    <div className="flex-1 space-y-2">
+                        <h3 className="font-black text-lg flex items-center gap-2 uppercase tracking-wide brand-gradient-text">
+                            <Flame className="text-[#53FC18] fill-[#53FC18]/20" size={20} />
+                            Monthly Treasure Vault | خزانة الجوائز الشهرية
+                        </h3>
+                        <p className="text-sm text-gray-300 leading-relaxed">
+                            Top 5 Commanders secure <span className="text-[#53FC18] font-bold glow-text">Exclusive AKGS NFTs</span> & <span className="text-[#53FC18] font-bold glow-text">$AKGS Airdrops</span>.
+                        </p>
+                    </div>
+                    
+                    <div className="flex flex-col items-center gap-2 bg-black/60 px-5 py-3 rounded-xl border border-white/10 shadow-inner backdrop-blur-sm">
+                        <div className="flex items-center gap-2 text-[#53FC18] text-xs font-bold uppercase tracking-widest mb-1">
+                            <Clock size={12} />
+                            <span>Season Reset | تجديد الموسم</span>
+                        </div>
+                        <Countdown targetDate={getNextMonthlyReset()} />
+                    </div>
+                </div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4 relative z-10">
+              {kickLeaderboard.slice(0, 5).map((user, idx) => (
+                <div key={idx} className="flex items-center justify-between p-4 rounded-xl border bg-[#53FC18]/5 border-[#53FC18]/20 shadow-[0_0_15px_rgba(83,252,24,0.05)]">
+                  <div className="flex items-center gap-4">
+                    <span className={`font-bold w-6 text-center ${idx < 3 ? 'text-[#53FC18]' : 'text-gray-600'}`}>
+                      #{idx + 1}
+                    </span>
+                    <div>
+                      <p className="font-bold text-sm text-white">
+                        {user.kick_username}
+                      </p>
+                      <p className="text-[10px] text-gray-500 uppercase tracking-tighter">
+                        {user.reason}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="block font-bold text-[#53FC18]">
+                      {(user.total_points || 0).toLocaleString()} pts
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+        </motion.div>
+
         {/* Weekly Leaderboard Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
