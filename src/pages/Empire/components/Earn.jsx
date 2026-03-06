@@ -2379,8 +2379,23 @@ const Earn = () => {
                                <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
                            </p>
                        </div>
-                       <div className={`flex items-center gap-2 text-sm font-bold ${statusColor} group-hover:gap-4 transition-all`}>
-                           {statusText} <FaShareNodes />
+                       <div className={`flex flex-col gap-3 text-sm font-bold ${statusColor} transition-all`}>
+                           <div className="flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-widest">
+                               {statusText} <FaShareNodes />
+                           </div>
+                           
+                           {!isClaimed && (
+                               <button 
+                                 onClick={(e) => {
+                                     e.stopPropagation();
+                                     const code = getOrCreateViewCode(platformKey);
+                                     alert(`Your Verification Code for this post: ${code}\n\nCopy this code and comment it on the post!`);
+                                 }}
+                                 className="bg-[#983695]/20 hover:bg-[#983695]/40 text-[#983695] border border-[#983695]/30 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all uppercase text-[10px] tracking-widest"
+                               >
+                                   <Zap size={12} /> Get Watch Code
+                               </button>
+                           )}
                        </div>
                     </div>
                  </div>
