@@ -79,38 +79,43 @@ export default {
             const body = await request.json();
             const { visitor_id, wallet_address, kick_username } = body;
             
-            // Logic for a truly unique and permanent G-Code
-            // Prefix G + Random 6 Digits
-            const generateUniqueGCode = () => `G-${Math.floor(100000 + Math.random() * 900000)}`;
+            const generateUniqueGCode = () => {
+              const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+              let result = 'G-';
+              for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+              }
+              return result;
+            };
             
-            let user = { 
+            if (env.USERS) {
+              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
+              if (existing) {
+                const existingUser = JSON.parse(existing);
+                // If user exists, just update and return their data, NEVER change G-Code
+                const updatedUser = { ...existingUser, ...body };
+                await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(updatedUser));
+                return new Response(JSON.stringify({ success: true, user: updatedUser }), { headers: { "Content-Type": "application/json" } });
+              }
+            }
+
+            // If new user, create with a permanent G-Code
+            let newUser = { 
               visitor_id, 
               total_points: 1000, 
               weekly_points: 0,
               kick_username: kick_username || null,
               wallet_address: wallet_address || null,
               g_code: generateUniqueGCode(),
-              referral_code: null, // Unified into g_code
               referral_count: 0
             };
-            user.referral_code = user.g_code; // Ensure they are identical
+            newUser.referral_code = newUser.g_code; // Legacy support
 
             if (env.USERS) {
-              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
-              if (existing) {
-                const existingUser = JSON.parse(existing);
-                // Keep the old G-Code if it exists! NEVER CHANGE IT.
-                user = { 
-                  ...existingUser, 
-                  ...body,
-                  g_code: existingUser.g_code || user.g_code,
-                  referral_code: existingUser.g_code || user.g_code 
-                };
-              }
-              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
+              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
             }
             
-            return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
+            return new Response(JSON.stringify({ success: true, user: newUser }), { headers: { "Content-Type": "application/json" } });
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Init Error" }), { status: 500 }); }
         }
 
@@ -183,15 +188,34 @@ export default {
 
         // Ensure leaderboard endpoint uses these users
         if (url.pathname === "/api/leaderboard") {
-          return new Response(JSON.stringify({
-            success: true,
-            leaderboard: mockUsers.map(u => ({
+          try {
+            if (!env.USERS) {
+              return new Response(JSON.stringify({ success: true, leaderboard: mockUsers }), { headers: { "Content-Type": "application/json" } });
+            }
+
+            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
+            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
+            
+            const leaderboardData = users
+              .filter(u => u && u.kick_username) // Ensure user has a kick username to be on the leaderboard
+              .map(u => ({
                 username: u.kick_username,
-                total_points: u.total_points,
+                total_points: u.total_points || 0,
                 kick_username: u.kick_username,
                 visitor_id: u.visitor_id
-            })).sort((a, b) => b.total_points - a.total_points)
-          }), { headers: { "Content-Type": "application/json" } });
+              }))
+              .sort((a, b) => b.total_points - a.total_points)
+              .slice(0, 10); // Return top 10
+
+            return new Response(JSON.stringify({
+              success: true,
+              leaderboard: leaderboardData
+            }), { headers: { "Content-Type": "application/json" } });
+
+          } catch (e) {
+            // Fallback to mocks on error
+            return new Response(JSON.stringify({ success: true, leaderboard: mockUsers }), { headers: { "Content-Type": "application/json" } });
+          }
         }
 
         if (url.pathname === "/api/leaderboard/tasks") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.tasks_completed - a.tasks_completed)), { headers: { "Content-Type": "application/json" } });

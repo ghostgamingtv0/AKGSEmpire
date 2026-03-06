@@ -170,7 +170,7 @@ const Ghost = ({ className = "", size = 64, showEyes = false, isOverload = false
 
 const BackgroundEffects = () => {
   // Always show eyes for Genesis as per prototype design
-  const shouldShowEyes = true;
+  const shouldShowEyes = false;
   const ghostCount = 50; // Fixed at 50 ghosts for performance
 
   // Generate ghosts array based on fixed count

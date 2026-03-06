@@ -59,7 +59,7 @@ const Tokenomics = () => {
               width="100%" 
               id="birdeye-embed" 
               title="Birdeye Chart" 
-              src="https://birdeye.so/tv-widget/0xc291F63681Cd76383c3bDabE0B8E4bb072B4DF65?chain=polygon&viewMode=pair&pairAddress=0xd3bfe6273c8a2aecff5d1fdea6827c70478ccb4a7e25259b5f0e3933af3c573f"
+              src="https://birdeye.so/tv-widget/AKGSt-AKGSEmpire-0xc291F63681Cd76383c3bDabE0B8E4bb072B4DF65?chain=polygon"
               frameBorder="0" 
               allow="clipboard-write" 
               allowFullScreen
