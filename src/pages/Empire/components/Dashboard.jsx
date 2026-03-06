@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap, Clock, Layout, BarChart3, Hash } from 'lucide-react';
+import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap, Clock, Layout, Hash } from 'lucide-react';
 import { FaPlay, FaPowerOff, FaRankingStar } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
@@ -153,17 +153,12 @@ const Dashboard = () => {
   const userData = useContext(UserContext);
   const [leaderboard, setLeaderboard] = useState([]); // Registered Users (KV)
   const [kickLeaderboard, setKickLeaderboard] = useState([
-    { username: "GHOST_GAMINGTV", total_points: 52450, kick_username: "GHOST_GAMINGTV" },
-    { username: "undercover", total_points: 48900, kick_username: "undercover" },
-    { username: "Kick_Ninja", total_points: 35600, kick_username: "Kick_Ninja" },
-    { username: "Z_Ghost", total_points: 28400, kick_username: "Z_Ghost" },
-    { username: "AKGS_Fan_99", total_points: 22100, kick_username: "AKGS_Fan_99" },
-    { username: "Loyal_Follower_1", total_points: 18500, kick_username: "Loyal_Follower_1" },
-    { username: "Kick_Pro_2026", total_points: 15200, kick_username: "Kick_Pro_2026" },
-    { username: "Ghost_Hunter", total_points: 12400, kick_username: "Ghost_Hunter" },
-    { username: "Empire_Watcher", total_points: 9800, kick_username: "Empire_Watcher" },
-    { username: "Kick_Star_AKGS", total_points: 7500, kick_username: "Kick_Star_AKGS" }
-  ]); // Kick Platform Users
+    { username: "GHOST_GAMINGTV", total_points: 52450, kick_username: "GHOST_GAMINGTV", reason: "Elite Interaction & High Viewers" },
+    { username: "undercover", total_points: 48900, kick_username: "undercover", reason: "Top Commenter" },
+    { username: "Kick_Ninja", total_points: 35600, kick_username: "Kick_Ninja", reason: "Most Active Viewer" },
+    { username: "Z_Ghost", total_points: 28400, kick_username: "Z_Ghost", reason: "Consistent Engagement" },
+    { username: "AKGS_Fan_99", total_points: 22100, kick_username: "AKGS_Fan_99", reason: "Loyal Supporter" }
+  ]); // Combined Elite (Top 5)
   const [visitorId, setVisitorId] = useState(userData?.visitor_id || null);
   const [gCode, setGCode] = useState(userData?.g_code || null);
   const [kickUsername, setKickUsername] = useState(userData?.kick_username || null);
@@ -623,7 +618,7 @@ const Dashboard = () => {
                         <h3 className="font-bold uppercase tracking-widest text-sm">Top Chatters | أفضل المتحدثين</h3>
                     </div>
                     <div className="space-y-3">
-                        {CHANNEL_STATS.topChatters.map((chatter, idx) => (
+                        {CHANNEL_STATS.topChatters.slice(0, 6).map((chatter, idx) => (
                             <div key={idx} className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-[#53FC18]/20 transition-all">
                                 <div className="flex items-center gap-3">
                                     <span className="text-xs font-black text-[#53FC18]/40 w-4">#{idx + 1}</span>
@@ -657,7 +652,7 @@ const Dashboard = () => {
                             </tr>
                         </thead>
                         <tbody className="text-sm">
-                            {CHANNEL_STATS.monthly.map((row, idx) => (
+                            {CHANNEL_STATS.monthly.slice(0, 5).map((row, idx) => (
                                 <tr key={idx} className="hover:bg-white/5 transition-colors border-b border-white/5">
                                     <td className="p-4 font-bold text-gray-300">{row.month}</td>
                                     <td className="p-4">
@@ -732,46 +727,6 @@ const Dashboard = () => {
                     <div className="mt-6 text-4xl font-black text-[#53FC18] drop-shadow-[0_0_10px_rgba(83,252,24,0.3)]">84.2%</div>
                 </div>
             </div>
-
-            {/* Week Analysis Section (Image 4) */}
-            <div className="mt-12 glass-panel p-6 border border-white/10 bg-black/40">
-                <div className="flex items-center gap-2 mb-8">
-                    <BarChart3 size={20} className="text-[#53FC18]" />
-                    <h3 className="font-bold uppercase tracking-widest text-sm">Week Analysis | تحليل الأسبوع</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {/* Active Days */}
-                    <div className="space-y-4">
-                        <h4 className="text-[#53FC18] text-xs font-bold uppercase tracking-widest border-b border-[#53FC18]/20 pb-2">Number of active days</h4>
-                        {CHANNEL_STATS.weekAnalysis.activeDays.map((d, i) => (
-                            <div key={i} className="flex justify-between items-center text-sm group">
-                                <span className="text-gray-400 group-hover:text-white transition-colors">{d.day}</span>
-                                <span className="font-black text-white">{d.count}</span>
-                            </div>
-                        ))}
-                    </div>
-                    {/* Hours Streamed */}
-                    <div className="space-y-4">
-                        <h4 className="text-[#53FC18] text-xs font-bold uppercase tracking-widest border-b border-[#53FC18]/20 pb-2">Hours streamed on average</h4>
-                        {['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].map((day, i) => (
-                            <div key={i} className="flex justify-between items-center text-sm group">
-                                <span className="text-gray-400 group-hover:text-white transition-colors">{day}</span>
-                                <span className="font-black text-red-500">-{ (1.1 + (i * 0.1)).toFixed(1) }</span>
-                            </div>
-                        ))}
-                    </div>
-                    {/* Viewers on Average */}
-                    <div className="space-y-4">
-                        <h4 className="text-[#53FC18] text-xs font-bold uppercase tracking-widest border-b border-[#53FC18]/20 pb-2">Viewers on average</h4>
-                        {CHANNEL_STATS.weekAnalysis.avgViewers.map((v, i) => (
-                            <div key={i} className="flex justify-between items-center text-sm group">
-                                <span className="text-gray-400 group-hover:text-white transition-colors">{v.day}</span>
-                                <span className="font-black text-white">{v.value}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
         </motion.div>
 
 
@@ -827,11 +782,8 @@ const Dashboard = () => {
             
             <div className="grid md:grid-cols-2 gap-4 relative z-10">
               {(() => {
-                // Show Kick Platform Users
-                const display = [...kickLeaderboard];
-                while (display.length < 10) {
-                    display.push({ isPlaceholder: true });
-                }
+                // Show Kick Platform Elite (Top 5 Combined)
+                const display = [...kickLeaderboard].slice(0, 5);
                 return display.map((user, idx) => (
                   <div key={idx} className={`flex items-center justify-between p-4 rounded-xl border ${user.isPlaceholder ? 'bg-white/5 border-dashed border-white/5' : 'bg-[#53FC18]/5 border-[#53FC18]/20 shadow-[0_0_15px_rgba(83,252,24,0.05)]'}`}>
                     <div className="flex items-center gap-4">
@@ -842,7 +794,9 @@ const Dashboard = () => {
                         <p className={`font-bold text-sm ${user.isPlaceholder ? 'text-gray-600 italic' : 'text-white'}`}>
                           {!user.isPlaceholder ? user.kick_username : 'Loyal Follower'}
                         </p>
-                        <p className="text-xs text-gray-600">{!user.isPlaceholder ? 'Total Score | مجموع النقاط' : 'Waiting for hero...'}</p>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-tighter">
+                          {!user.isPlaceholder ? user.reason : 'Waiting for hero...'}
+                        </p>
                       </div>
                     </div>
                     <div className="text-right">
