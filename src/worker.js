@@ -118,25 +118,6 @@ export default {
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Update Error" }), { status: 500 }); }
         }
 
-        // --- Rotate G-Code API ---
-        if (url.pathname === "/api/rotate-gcode" && request.method === "POST") {
-          try {
-            const body = await request.json();
-            const { visitor_id } = body;
-            if (env.USERS) {
-              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
-              if (existing) {
-                let user = JSON.parse(existing);
-                user.g_code = `GHOST-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-                await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
-                return new Response(JSON.stringify({ success: true, g_code: user.g_code }), { headers: { "Content-Type": "application/json" } });
-              }
-            }
-            const newGCode = `GHOST-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-            return new Response(JSON.stringify({ success: true, g_code: newGCode }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Rotation Error" }), { status: 500 }); }
-        }
-
         // --- Claim Reward API ---
         if (url.pathname === "/api/claim" && request.method === "POST") {
           try {

@@ -1826,32 +1826,9 @@ const Earn = () => {
                    <Crown size={40} className="text-[#53FC18] relative z-10" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-300 mb-4 uppercase tracking-widest text-xs">Your Unique G-Code</h2>
-                <div className="bg-black/80 border border-[#53FC18] rounded-xl px-6 py-5 mb-3 shadow-inner shadow-[#53FC18]/10 relative overflow-hidden flex items-center justify-between">
+                <div className="bg-black/80 border border-[#53FC18] rounded-xl px-6 py-5 mb-3 shadow-inner shadow-[#53FC18]/10 relative overflow-hidden flex items-center justify-center">
                   <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
                   <span className="text-2xl md:text-3xl font-mono font-bold text-[#53FC18] tracking-widest relative z-10 select-all">{gCode}</span>
-                  <button 
-                    onClick={async () => {
-                        if (confirm('هل تريد تغيير كود G-Code الخاص بك؟ سيتم تحديثه فوراً.')) {
-                            try {
-                                const res = await fetch('/api/rotate-gcode', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ visitor_id: visitorId })
-                                });
-                                const data = await res.json();
-                                if (data.success) {
-                                    setGCode(data.g_code);
-                                    localStorage.setItem('gCode', data.g_code);
-                                    alert('تم تحديث الكود بنجاح! | G-Code Updated!');
-                                }
-                            } catch (e) { alert('خطأ في التحديث | Update Error'); }
-                        }
-                    }}
-                    className="relative z-20 p-2 hover:bg-white/10 rounded-lg transition-colors text-[#53FC18]"
-                    title="Refresh G-Code"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-                  </button>
                 </div>
                 <p className="text-[10px] text-gray-500 mb-6 uppercase tracking-widest font-bold">Permanent ID • Non-Renewable</p>
 
@@ -2168,8 +2145,23 @@ const Earn = () => {
                            </p>
                        </div>
 
-                       <div className={`flex items-center gap-2 text-sm font-bold ${statusColor} group-hover:gap-4 transition-all`}>
-                           {statusText} <FaShareNodes />
+                       <div className={`flex flex-col gap-3 text-sm font-bold ${statusColor} transition-all`}>
+                           <div className="flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-widest">
+                               {statusText} <FaShareNodes />
+                           </div>
+                           
+                           {!isClaimed && (
+                               <button 
+                                 onClick={(e) => {
+                                     e.stopPropagation();
+                                     const code = getOrCreateViewCode(platformKey);
+                                     alert(`Your Verification Code for this post: ${code}\n\nCopy this code and comment it on the post!`);
+                                 }}
+                                 className="bg-[#983695]/20 hover:bg-[#983695]/40 text-[#983695] border border-[#983695]/30 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all uppercase text-[10px] tracking-widest"
+                               >
+                                   <Zap size={12} /> Get Watch Code
+                               </button>
+                           )}
                        </div>
                     </div>
                  </div>
@@ -2231,8 +2223,23 @@ const Earn = () => {
                                <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
                            </p>
                        </div>
-                       <div className={`flex items-center gap-2 text-sm font-bold ${statusColor} group-hover:gap-4 transition-all`}>
-                           {statusText} <FaShareNodes />
+                       <div className={`flex flex-col gap-3 text-sm font-bold ${statusColor} transition-all`}>
+                           <div className="flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-widest">
+                               {statusText} <FaShareNodes />
+                           </div>
+                           
+                           {!isClaimed && (
+                               <button 
+                                 onClick={(e) => {
+                                     e.stopPropagation();
+                                     const code = getOrCreateViewCode(platformKey);
+                                     alert(`Your Verification Code for this post: ${code}\n\nCopy this code and comment it on the post!`);
+                                 }}
+                                 className="bg-[#983695]/20 hover:bg-[#983695]/40 text-[#983695] border border-[#983695]/30 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all uppercase text-[10px] tracking-widest"
+                               >
+                                   <Zap size={12} /> Get Watch Code
+                               </button>
+                           )}
                        </div>
                     </div>
                  </div>
@@ -2294,8 +2301,23 @@ const Earn = () => {
                                <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
                            </p>
                        </div>
-                       <div className={`flex items-center gap-2 text-sm font-bold ${statusColor} group-hover:gap-4 transition-all`}>
-                           {statusText} <FaShareNodes />
+                       <div className={`flex flex-col gap-3 text-sm font-bold ${statusColor} transition-all`}>
+                           <div className="flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-widest">
+                               {statusText} <FaShareNodes />
+                           </div>
+                           
+                           {!isClaimed && (
+                               <button 
+                                 onClick={(e) => {
+                                     e.stopPropagation();
+                                     const code = getOrCreateViewCode(platformKey);
+                                     alert(`Your Verification Code for this post: ${code}\n\nCopy this code and comment it on the post!`);
+                                 }}
+                                 className="bg-[#983695]/20 hover:bg-[#983695]/40 text-[#983695] border border-[#983695]/30 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all uppercase text-[10px] tracking-widest"
+                               >
+                                   <Zap size={12} /> Get Watch Code
+                               </button>
+                           )}
                        </div>
                     </div>
                  </div>
