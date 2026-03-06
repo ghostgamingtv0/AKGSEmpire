@@ -661,7 +661,7 @@ const Dashboard = () => {
                         <Trophy className="text-yellow-400" size={28} />
                         <div>
                             <h2 className="text-2xl font-bold tracking-tight brand-gradient-text">Kick Platform Elite | نخبة منصة كيك</h2>
-                            <p className="text-xs text-gray-400 uppercase tracking-widest">Top Kick.com Users | أفضل مستخدمي منصة كيك</p>
+                            <p className="text-xs text-gray-400 uppercase tracking-widest">View the real-time Botrix leaderboard | شاهد لوحة الصدارة الحقيقية من بوتركس</p>
                         </div>
                     </div>
                 </div>
@@ -721,6 +721,17 @@ const Dashboard = () => {
                   </div>
                 ));
               })()}
+            </div>
+
+            <div className="text-center mt-8">
+                <a 
+                    href="https://botrix.live/k/ghost_gamingtv/leaderboard" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="px-8 py-3 bg-[#53FC18] text-black font-bold rounded-xl hover:bg-[#45d415] transition-all hover:scale-105 shadow-[0_0_20px_rgba(83,252,24,0.4)] inline-flex items-center gap-2"
+                >
+                    <ExternalLink size={20} /> VIEW BOTRIX LEADERBOARD
+                </a>
             </div>
         </motion.div>
 
