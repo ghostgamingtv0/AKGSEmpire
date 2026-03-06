@@ -1,3 +1,4 @@
+import { handleTikTokRequest } from './api_social_media/tiktok/router.js';
 import { handleKickRequest, KICK_CONFIG } from './api_social_media/kick/router.js';
 import { handleFacebookRequest } from './api_social_media/facebook/router.js';
 import { handleInstagramRequest } from './api_social_media/instagram/router.js';
@@ -27,6 +28,10 @@ export default {
         const igRes = await handleInstagramRequest(request, url, env);
         if (igRes) return igRes;
       }
+      if (url.pathname.startsWith("/api/tiktok/")) {
+        const ttRes = await handleTikTokRequest(request, url, env);
+        if (ttRes) return ttRes;
+      }
 
       // =================================================================================
       // 0. STATIC VERIFICATION FILES (Bypass SPA Routing)
@@ -52,6 +57,70 @@ export default {
       // =================================================================================
       if (url.pathname.startsWith("/api/")) {
         
+        // --- Auth: Register ---
+        if (url.pathname === "/api/auth/register" && request.method === "POST") {
+          try {
+            const body = await request.json();
+            const { username, password, visitor_id, wallet_address } = body;
+            
+            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500 });
+            
+            const existing = await env.USERS.get(`auth_user:${username.toLowerCase()}`);
+            if (existing) return new Response(JSON.stringify({ success: false, error: "Username already exists" }), { status: 400 });
+            
+            const generateUniqueGCode = () => {
+              const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+              let result = 'G-';
+              for (let i = 0; i < 6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+              return result;
+            };
+
+            const newUser = {
+              username,
+              password, // In a real app, hash this!
+              visitor_id,
+              wallet_address,
+              kick_username: username,
+              total_points: 0,
+              weekly_points: 0,
+              g_code: generateUniqueGCode(),
+              referral_count: 0,
+              created_at: Date.now()
+            };
+            
+            await env.USERS.put(`auth_user:${username.toLowerCase()}`, JSON.stringify(newUser));
+            // Also link visitor_id to this user
+            await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
+            
+            return new Response(JSON.stringify({ success: true, user: newUser }), { headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Registration Error" }), { status: 500 }); }
+        }
+
+        // --- Auth: Login ---
+        if (url.pathname === "/api/auth/login" && request.method === "POST") {
+          try {
+            const body = await request.json();
+            const { username, password, visitor_id } = body;
+            
+            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500 });
+            
+            const data = await env.USERS.get(`auth_user:${username.toLowerCase()}`);
+            if (!data) return new Response(JSON.stringify({ success: false, error: "User not found" }), { status: 404 });
+            
+            const user = JSON.parse(data);
+            if (user.password !== password) return new Response(JSON.stringify({ success: false, error: "Invalid password" }), { status: 401 });
+            
+            // Update visitor_id if it changed
+            if (visitor_id && user.visitor_id !== visitor_id) {
+                user.visitor_id = visitor_id;
+                await env.USERS.put(`auth_user:${username.toLowerCase()}`, JSON.stringify(user));
+                await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
+            }
+            
+            return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Login Error" }), { status: 500 }); }
+        }
+
         // --- User Data API ---
         if (url.pathname === "/api/user-data") {
           const visitor_id = url.searchParams.get("visitor_id");
@@ -74,22 +143,31 @@ export default {
             const body = await request.json();
             const { visitor_id, wallet_address, kick_username } = body;
             
+            if (!env.USERS) return new Response(JSON.stringify({ success: true, user: { visitor_id, total_points: 0, g_code: 'G-LOCAL' } }));
+
+            const existing = await env.USERS.get(`user_vId:${visitor_id}`);
+            if (existing) {
+              const existingUser = JSON.parse(existing);
+              // Update with any new info provided (like wallet/kick if not set)
+              const updatedUser = { ...existingUser };
+              if (wallet_address && !updatedUser.wallet_address) updatedUser.wallet_address = wallet_address;
+              if (kick_username && !updatedUser.kick_username) updatedUser.kick_username = kick_username;
+              
+              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(updatedUser));
+              // Also sync to auth_user if username exists
+              if (updatedUser.username) {
+                  await env.USERS.put(`auth_user:${updatedUser.username.toLowerCase()}`, JSON.stringify(updatedUser));
+              }
+              
+              return new Response(JSON.stringify({ success: true, user: updatedUser }), { headers: { "Content-Type": "application/json" } });
+            }
+
             const generateUniqueGCode = () => {
               const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
               let result = 'G-';
               for (let i = 0; i < 6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
               return result;
             };
-            
-            if (env.USERS) {
-              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
-              if (existing) {
-                const existingUser = JSON.parse(existing);
-                const updatedUser = { ...existingUser, ...body };
-                await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(updatedUser));
-                return new Response(JSON.stringify({ success: true, user: updatedUser }), { headers: { "Content-Type": "application/json" } });
-              }
-            }
 
             let newUser = { 
               visitor_id, total_points: 0, weekly_points: 0,
@@ -98,9 +176,41 @@ export default {
             };
             newUser.referral_code = newUser.g_code;
 
-            if (env.USERS) await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
+            await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
             return new Response(JSON.stringify({ success: true, user: newUser }), { headers: { "Content-Type": "application/json" } });
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Init Error" }), { status: 500 }); }
+        }
+
+        // --- Update Profile API ---
+        if (url.pathname === "/api/update-profile" && request.method === "POST") {
+          try {
+            const body = await request.json();
+            const { visitor_id, kick_username, wallet_address } = body;
+            if (env.USERS) {
+              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
+              let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 0, g_code: 'G-TEMP' };
+              user = { ...user, kick_username: kick_username || user.kick_username, wallet_address: wallet_address || user.wallet_address };
+              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
+              return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
+            }
+            return new Response(JSON.stringify({ success: false, error: "KV not available" }), { status: 500 });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Update Error" }), { status: 500 }); }
+        }
+
+        // --- Claim Reward API ---
+        if (url.pathname === "/api/claim" && request.method === "POST") {
+          try {
+            const body = await request.json();
+            const { visitor_id, points } = body;
+            if (env.USERS) {
+              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
+              let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 0 };
+              user.total_points = (user.total_points || 0) + (points || 10);
+              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
+              return new Response(JSON.stringify({ success: true, total_points: user.total_points }), { headers: { "Content-Type": "application/json" } });
+            }
+            return new Response(JSON.stringify({ success: false, error: "KV not available" }), { status: 500 });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Claim Error" }), { status: 500 }); }
         }
 
         // --- Stats API ---
@@ -119,6 +229,12 @@ export default {
           } catch (e) {
             return new Response(JSON.stringify({ success: true, kick_followers: 1031, kick_is_live: false }), { headers: { "Content-Type": "application/json" } });
           }
+        }
+
+        // --- Update Kick Stats API (Internal sync) ---
+        if (url.pathname === "/api/update-kick-stats" && request.method === "POST") {
+            // This is just a placeholder to prevent 404s, real stats come from Kick API above
+            return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
         }
 
         // --- Leaderboard API (Registered) ---
