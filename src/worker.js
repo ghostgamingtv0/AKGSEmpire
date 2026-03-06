@@ -49,36 +49,89 @@ export default {
         const igRes = await handleInstagramRequest(request, url, env);
         if (igRes) return igRes;
 
-        // --- Auth: Register ---
-        if (url.pathname === "/api/auth/register" && request.method === "POST") {
-          try {
-            const body = await request.json();
-            const { username, password } = body;
-            if (env.USERS) {
-              const existing = await env.USERS.get(`user:${username}`);
-              if (existing) return new Response(JSON.stringify({ success: false, error: "Username taken" }), { status: 400 });
-              await env.USERS.put(`user:${username}`, JSON.stringify({ ...body, total_points: 1000 }));
-              return new Response(JSON.stringify({ success: true, message: "Registered on Edge" }), { headers: { "Content-Type": "application/json" } });
-            }
-            return new Response(JSON.stringify({ success: true, message: "Registered (Local Mode)" }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Auth Error" }), { status: 500 }); }
+        // --- User Data API ---
+        if (url.pathname === "/api/user-data") {
+          const visitor_id = url.searchParams.get("visitor_id");
+          if (!visitor_id) return new Response(JSON.stringify({ success: false, error: "Missing visitor_id" }), { status: 400 });
+          
+          // Try to get from KV if exists, otherwise return a structured default
+          if (env.USERS) {
+            const data = await env.USERS.get(`user_vId:${visitor_id}`);
+            if (data) return new Response(JSON.stringify({ success: true, user: JSON.parse(data) }), { headers: { "Content-Type": "application/json" } });
+          }
+          
+          return new Response(JSON.stringify({ 
+            success: true, 
+            user: { 
+              visitor_id, 
+              total_points: 1000, 
+              weekly_points: 0,
+              kick_username: null,
+              wallet_address: null,
+              g_code: null
+            } 
+          }), { headers: { "Content-Type": "application/json" } });
         }
 
-        // --- Auth: Login ---
-        if (url.pathname === "/api/auth/login" && request.method === "POST") {
+        // --- Init User API ---
+        if (url.pathname === "/api/init-user" && request.method === "POST") {
           try {
             const body = await request.json();
-            const { username, password } = body;
+            const { visitor_id, wallet_address, kick_username } = body;
+            
+            let user = { 
+              visitor_id, 
+              total_points: 1000, 
+              weekly_points: 0,
+              kick_username: kick_username || null,
+              wallet_address: wallet_address || null,
+              g_code: `GHOST-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+              referral_code: `REF-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+              referral_count: 0
+            };
+
             if (env.USERS) {
-              const data = await env.USERS.get(`user:${username}`);
-              if (data) {
-                const user = JSON.parse(data);
-                if (user.password === password) return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
+              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
+              if (existing) {
+                user = { ...JSON.parse(existing), ...body };
               }
-              return new Response(JSON.stringify({ success: false, error: "Invalid credentials" }), { status: 401 });
+              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
             }
-            return new Response(JSON.stringify({ success: true, user: { username: username || "Guest", total_points: 1000 } }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Auth Error" }), { status: 500 }); }
+            
+            return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Init Error" }), { status: 500 }); }
+        }
+
+        // --- Update Profile API ---
+        if (url.pathname === "/api/update-profile" && request.method === "POST") {
+          try {
+            const body = await request.json();
+            const { visitor_id, kick_username, wallet_address } = body;
+            if (env.USERS) {
+              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
+              let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 1000 };
+              user = { ...user, kick_username, wallet_address };
+              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
+              return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
+            }
+            return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Update Error" }), { status: 500 }); }
+        }
+
+        // --- Claim Reward API ---
+        if (url.pathname === "/api/claim" && request.method === "POST") {
+          try {
+            const body = await request.json();
+            const { visitor_id, task_id, points } = body;
+            if (env.USERS) {
+              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
+              let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 1000 };
+              user.total_points = (user.total_points || 0) + (points || 10);
+              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
+              return new Response(JSON.stringify({ success: true, message: "Claimed on Edge", total_points: user.total_points }), { headers: { "Content-Type": "application/json" } });
+            }
+            return new Response(JSON.stringify({ success: true, message: "Claimed (Local Mode)" }), { headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Claim Error" }), { status: 500 }); }
         }
 
         // --- Stats API ---
@@ -118,13 +171,19 @@ export default {
           }), { headers: { "Content-Type": "application/json" } });
         }
 
-        // Leaderboard Categories
+        // Leaderboard Categories - Merged Site & Kick Users
+        // In production, this would query the KV store for all users and sort them.
         const mockUsers = [
-          { visitor_id: 'v1', kick_username: 'KickMaster', total_points: 5000, weekly_points: 1200, tasks_completed: 15, weekly_comments: 45, chat_messages_count: 150, referral_count: 8, twitter_username: 'km_x', instagram_username: 'km_ig' },
-          { visitor_id: 'v2', kick_username: 'EmpireKing', total_points: 4200, weekly_points: 950, tasks_completed: 12, weekly_comments: 32, chat_messages_count: 120, referral_count: 5, threads_username: 'ek_th' },
-          { visitor_id: 'v3', kick_username: 'GhostHunter', total_points: 3800, weekly_points: 800, tasks_completed: 10, weekly_comments: 28, chat_messages_count: 95, referral_count: 3, twitter_username: 'gh_x' },
-          { visitor_id: 'v4', kick_username: 'TopG', total_points: 3500, weekly_points: 750, tasks_completed: 8, weekly_comments: 25, chat_messages_count: 85, referral_count: 2, instagram_username: 'tg_ig' },
-          { visitor_id: 'v5', kick_username: 'Shadow', total_points: 3200, weekly_points: 700, tasks_completed: 7, weekly_comments: 22, chat_messages_count: 75, referral_count: 1, threads_username: 'sh_th' }
+          { visitor_id: 'v1', kick_username: 'AKGS_Founder', total_points: 25400, weekly_points: 3200, tasks_completed: 45, weekly_comments: 120, chat_messages_count: 850, referral_count: 24, twitter_username: 'akgs_x', instagram_username: 'akgs_ig' },
+          { visitor_id: 'v2', kick_username: 'Empire_General', total_points: 18200, weekly_points: 2100, tasks_completed: 38, weekly_comments: 85, chat_messages_count: 620, referral_count: 15, threads_username: 'empire_th' },
+          { visitor_id: 'v3', kick_username: 'Ghost_Stalker', total_points: 12500, weekly_points: 1500, tasks_completed: 25, weekly_comments: 64, chat_messages_count: 410, referral_count: 9, twitter_username: 'ghost_s_x' },
+          { visitor_id: 'v4', kick_username: 'Shadow_Ninja', total_points: 9800, weekly_points: 1200, tasks_completed: 18, weekly_comments: 42, chat_messages_count: 280, referral_count: 5, instagram_username: 'shadow_ig' },
+          { visitor_id: 'v5', kick_username: 'Kick_Warrior', total_points: 7600, weekly_points: 950, tasks_completed: 12, weekly_comments: 31, chat_messages_count: 195, referral_count: 3, threads_username: 'kick_w_th' },
+          { visitor_id: 'v6', kick_username: 'Elite_Commander', total_points: 6200, weekly_points: 800, tasks_completed: 10, weekly_comments: 25, chat_messages_count: 150, referral_count: 2, twitter_username: 'elite_c' },
+          { visitor_id: 'v7', kick_username: 'Zoro_AKGS', total_points: 5400, weekly_points: 700, tasks_completed: 8, weekly_comments: 20, chat_messages_count: 120, referral_count: 1, instagram_username: 'zoro_ig' },
+          { visitor_id: 'v8', kick_username: 'Phantom_Ghost', total_points: 4800, weekly_points: 650, tasks_completed: 7, weekly_comments: 18, chat_messages_count: 95, referral_count: 1, threads_username: 'phantom_th' },
+          { visitor_id: 'v9', kick_username: 'King_Of_Empire', total_points: 4200, weekly_points: 600, tasks_completed: 6, weekly_comments: 15, chat_messages_count: 80, referral_count: 0, twitter_username: 'king_e_x' },
+          { visitor_id: 'v10', kick_username: 'Loyal_Soldier', total_points: 3500, weekly_points: 500, tasks_completed: 5, weekly_comments: 12, chat_messages_count: 65, referral_count: 0, instagram_username: 'loyal_s' }
         ];
 
         if (url.pathname === "/api/leaderboard/tasks") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.tasks_completed - a.tasks_completed)), { headers: { "Content-Type": "application/json" } });

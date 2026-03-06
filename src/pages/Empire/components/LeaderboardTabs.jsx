@@ -92,7 +92,7 @@ const LeaderboardTabs = () => {
         return false;
     });
 
-    return filtered.slice(0, 5);
+    return filtered.slice(0, 10);
   };
 
   const getMetricDisplay = (user, metricId) => {
