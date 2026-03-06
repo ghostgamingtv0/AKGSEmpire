@@ -8,7 +8,7 @@ import Earn from './components/Earn';
 import Tokenomics from './components/Tokenomics';
 import WalletModal from './components/WalletModal';
 import Login from './components/Login';
-import BackgroundEffects from './components/UnifiedBackground';
+import BackgroundEffects from '../../components/BackgroundEffects';
 import FacebookSDK from './components/FacebookSDK';
 import { ASSETS, SOCIAL_LINKS } from '../../config/constants';
 
@@ -160,7 +160,7 @@ const Navbar = ({ onConnect, walletAddress }) => {
 };
 
 const Footer = () => (
-  <footer className="bg-[#050505] border-t border-white/10 py-12 mt-20 relative z-10">
+  <footer className="bg-[#050505]/80 backdrop-blur-md border-t border-white/10 py-12 mt-20 relative z-10">
     <div className="max-w-7xl mx-auto px-4 text-center">
       <div className="mb-8 flex justify-center">
         <span className="text-2xl font-bold brand-gradient-text">AKGS EMPIRE</span>

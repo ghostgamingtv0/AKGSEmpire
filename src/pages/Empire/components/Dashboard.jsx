@@ -6,7 +6,6 @@ import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
 
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
-import MatrixBackground from '../../../components/MatrixBackground';
 import LeaderboardTabs from './LeaderboardTabs';
 
 // Countdown Helper Component
@@ -246,7 +245,7 @@ const Dashboard = () => {
   const handleCopy = () => {
     const code = userData?.g_code || userData?.referral_code;
     if (code) {
-      navigator.clipboard.writeText(`${window.location.origin}?ref=${code}`);
+      navigator.clipboard.writeText(`${window.location.origin}/?ref=${code}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -338,33 +337,37 @@ const Dashboard = () => {
   ];
 
   const renderLeaderboardList = (data, metricLabel, icon) => {
-    // Filter out placeholders to ensure only real data is shown
-    const realData = data.filter(item => !item.is_placeholder);
+    // Show top 5 users as requested for better UX and performance
+    const topUsers = data.slice(0, 5);
     
     return (
     <div className="space-y-3">
-      {realData.length > 0 ? (
-        realData.map((item, idx) => (
+      {topUsers.length > 0 ? (
+        topUsers.map((item, idx) => (
           <div key={idx} className="flex items-center justify-between p-3 rounded-lg border bg-white/10 border-[#53FC18]/20">
             <div className="flex items-center gap-3">
               <span className={`font-bold w-6 text-center ${idx < 3 ? 'text-[#53FC18]' : 'text-gray-500'}`}>
                 #{idx + 1}
               </span>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center">
-                 {/* Avatar placeholder if needed */}
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center overflow-hidden">
+                 <img 
+                    src={`https://ui-avatars.com/api/?name=${item.username || item.kick_username}&background=53FC18&color=000`} 
+                    alt={item.username} 
+                    className="w-full h-full object-cover"
+                 />
               </div>
               <div>
                  <p className="font-bold text-sm text-white">
-                    {item.username}
+                    {item.username || item.kick_username}
                  </p>
-                 {item.wallet && (
-                    <p className="text-[10px] text-gray-500">{item.wallet.substring(0, 6)}...</p>
+                 {item.visitor_id && (
+                    <p className="text-[10px] text-gray-500">ID: {item.visitor_id.substring(0, 6)}</p>
                  )}
               </div>
             </div>
             <div className="text-right">
                <p className="text-sm font-bold text-white">
-                 {item.value !== undefined ? item.value : (item.comments || 0)}
+                 {item.total_points !== undefined ? item.total_points.toLocaleString() : (item.value || 0)}
                </p>
                <p className="text-[10px] text-gray-500">{metricLabel}</p>
             </div>
@@ -380,8 +383,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white pt-24 pb-12 px-4 relative overflow-hidden empire-gradient-page">
-      <MatrixBackground />
+    <div className="min-h-screen text-white pt-24 pb-12 px-4 relative overflow-hidden empire-gradient-page">
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -665,11 +667,11 @@ const Dashboard = () => {
                             Monthly Treasure Vault | خزانة الجوائز الشهرية
                         </h3>
                         <p className="text-sm text-gray-300 leading-relaxed">
-                            Top 10 Commanders secure <span className="text-[#53FC18] font-bold glow-text">Exclusive AKGS NFTs</span> & <span className="text-[#53FC18] font-bold glow-text">$AKGS Airdrops</span>. 
+                            Top 5 Commanders secure <span className="text-[#53FC18] font-bold glow-text">Exclusive AKGS NFTs</span> & <span className="text-[#53FC18] font-bold glow-text">$AKGS Airdrops</span>. 
                             Dominance pays off.
                         </p>
                         <p className="text-sm text-gray-400 font-arabic leading-relaxed" dir="rtl">
-                            القادة العشرة الأوائل يضمنون <span className="text-[#53FC18] font-bold">AKGS NFTs حصرية</span> و <span className="text-[#53FC18] font-bold">توزيعات $AKGS</span>. 
+                            القادة الخمسة الأوائل يضمنون <span className="text-[#53FC18] font-bold">AKGS NFTs حصرية</span> و <span className="text-[#53FC18] font-bold">توزيعات $AKGS</span>. 
                             الهيمنة لها ثمنها.
                         </p>
                     </div>
@@ -689,9 +691,9 @@ const Dashboard = () => {
                 // Combine and sort by total_points for Global Leaderboard
                 // Filter out 'under' or any duplicate test entries if they are at 0 points
                 const filtered = leaderboard.filter(u => !u.isPlaceholder && (u.total_points > 0 || u.kick_username !== 'under'));
-                const sorted = filtered.sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 10);
+                const sorted = filtered.sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 5);
                 const display = [...sorted];
-                while (display.length < 10) {
+                while (display.length < 5) {
                     display.push({ isPlaceholder: true });
                 }
                 return display.map((user, idx) => (

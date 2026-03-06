@@ -122,16 +122,7 @@ const Hero = () => {
   ];
 
   return (
-    <div className="relative min-h-screen pt-20 pb-20 overflow-hidden bg-[#050505]">
-      {/* Background Effects with Eyes */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(83,252,24,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(83,252,24,0.03)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
-        
-        {/* Ambient Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_30%,rgba(83,252,24,0.05),transparent_60%)] pointer-events-none"></div>
-      </div>
-
+    <div className="relative min-h-screen pt-20 pb-20 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           variants={containerVariants}

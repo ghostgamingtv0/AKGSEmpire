@@ -79,22 +79,33 @@ export default {
             const body = await request.json();
             const { visitor_id, wallet_address, kick_username } = body;
             
-            const generatedGCode = `G-` + Math.random().toString(36).substring(2, 8).toUpperCase();
+            // Logic for a truly unique and permanent G-Code
+            // Prefix G + Random 6 Digits
+            const generateUniqueGCode = () => `G-${Math.floor(100000 + Math.random() * 900000)}`;
+            
             let user = { 
               visitor_id, 
               total_points: 1000, 
               weekly_points: 0,
               kick_username: kick_username || null,
               wallet_address: wallet_address || null,
-              g_code: generatedGCode,
-              referral_code: generatedGCode, // Use the same code for referral
+              g_code: generateUniqueGCode(),
+              referral_code: null, // Unified into g_code
               referral_count: 0
             };
+            user.referral_code = user.g_code; // Ensure they are identical
 
             if (env.USERS) {
               const existing = await env.USERS.get(`user_vId:${visitor_id}`);
               if (existing) {
-                user = { ...JSON.parse(existing), ...body };
+                const existingUser = JSON.parse(existing);
+                // Keep the old G-Code if it exists! NEVER CHANGE IT.
+                user = { 
+                  ...existingUser, 
+                  ...body,
+                  g_code: existingUser.g_code || user.g_code,
+                  referral_code: existingUser.g_code || user.g_code 
+                };
               }
               await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
             }

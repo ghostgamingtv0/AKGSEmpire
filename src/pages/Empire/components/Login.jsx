@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { ShieldCheck, Wallet, Lock, User, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { load } from '@fingerprintjs/fingerprintjs';
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
-import BackgroundEffects from '../../../components/BackgroundEffects';
 
 const API_BASE = '';
 
@@ -145,9 +144,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen text-white font-sans relative overflow-hidden flex items-center justify-center bg-gradient-to-b from-[#020308] via-[#050816] to-[#020308] empire-gradient-page">
-      <BackgroundEffects forceVisible={true} />
-      
+    <div className="min-h-screen text-white font-sans relative overflow-hidden flex items-center justify-center">
       <div className="relative z-10 w-full max-w-md p-6">
         <div className="text-center mb-10">
             <h1 className="text-5xl font-bold mb-4 brand-gradient-text">AKGS EMPIRE</h1>

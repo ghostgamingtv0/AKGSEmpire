@@ -231,16 +231,20 @@ const Earn = () => {
     const baseId = typeof baseIdSource === 'string' ? baseIdSource.slice(0, 8) : 'noWallet';
     const tag = getPlatformTag(platform);
 
-    // Use a stable hash based on ID and platform to avoid randomness
+    // Dynamic Watch Code for social engagement
+    // Logic: Post Link (last 10 chars) + Stable Seed
+    const currentPostLink = feedStatus[platform.toLowerCase()]?.link || SOCIAL_LINKS[platform.toUpperCase()] || '';
+    const postSeed = currentPostLink.slice(-10) || 'default';
+    
     let hash = 0;
-    const input = `${baseId}-${platform}`;
+    const input = `${baseId}-${platform}-${postSeed}`;
     for (let i = 0; i < input.length; i++) {
       hash = ((hash << 5) - hash) + input.charCodeAt(i);
       hash |= 0; 
     }
-    const digits = String(Math.abs(hash) % 900000 + 100000); // Stable 6-digit code
+    const digits = String(Math.abs(hash) % 900000 + 100000); 
 
-    return `👻${baseUsername}-${baseId}-${tag}-${digits}👻`;
+    return `WATCH-${tag}-${digits}`;
   };
 
   const getOrCreateViewCode = (platform) => {
@@ -248,7 +252,7 @@ const Earn = () => {
     
     // Check if we have a cached code for the current post link
     const currentPostLink = feedStatus[key]?.link || SOCIAL_LINKS[platform.toUpperCase()] || '';
-    const cacheKey = `viewCode_${key}_${currentPostLink.slice(-10)}`; // Link-specific cache
+    const cacheKey = `viewCode_${key}_${currentPostLink.slice(-10)}`; 
     
     const cached = localStorage.getItem(cacheKey);
     if (cached) return cached;
@@ -264,11 +268,16 @@ const Earn = () => {
   };
 
   const handleOpenTaskModal = (task) => {
-      // STRICT SYNC: Use existing G-Code from registration if available
-      const existingCode = localStorage.getItem('gCode');
-      const code = existingCode || generateGCode(task.platform);
+      if (task.type === 'watch') {
+          // Dynamic WATCH code
+          const code = getOrCreateViewCode(task.platform);
+          setGeneratedCode(code);
+      } else {
+          // Fixed G-Code for registration tasks
+          const existingCode = gCode || localStorage.getItem('gCode');
+          setGeneratedCode(existingCode || '👻G-NOT-SET👻');
+      }
       
-      setGeneratedCode(code);
       setCurrentTaskForModal(task);
       setShowCopyCodeModal(true);
   };
@@ -1518,7 +1527,7 @@ const Earn = () => {
   const isProfileLocked = kickUsername && walletAddress && isProfileSaved;
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 lg:p-8 pt-24 empire-gradient-page">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 pt-24">
       {showCopyCodeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-[#0a0a0a] border border-[#53FC18]/30 rounded-2xl w-full max-w-sm p-6 relative shadow-[0_0_30px_rgba(83,252,24,0.1)]">
@@ -1535,10 +1544,10 @@ const Earn = () => {
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Required Action</h3>
               <p className="text-gray-300 text-sm mb-4">
-                You must comment your G-Code on the post to verify this task.
+                You must comment your {currentTaskForModal?.type === 'watch' ? 'Watch Code' : 'G-Code'} on the post to verify this task.
               </p>
               <div className="bg-[#53FC18]/10 border border-[#53FC18]/30 p-3 rounded-lg mb-4">
-                 <span className="text-2xl md:text-3xl font-mono font-bold text-[#53FC18] tracking-widest relative z-10 select-all">{gCode || generatedCode}</span>
+                 <span className="text-2xl md:text-3xl font-mono font-bold text-[#53FC18] tracking-widest relative z-10 select-all">{generatedCode}</span>
             </div>
             <p className="text-xs text-gray-400 mb-1">
                Copy this code and paste it in the comments.
@@ -2141,7 +2150,7 @@ const Earn = () => {
                        <div>
                            <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-[#983695] transition-colors">Twitter (X)</h4>
                            <p className="text-gray-400 text-sm max-w-[80%]">
-                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
+                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your Watch Code.</>
                            </p>
                        </div>
 
@@ -2220,7 +2229,7 @@ const Earn = () => {
                        <div>
                            <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-[#983695] transition-colors">Instagram</h4>
                            <p className="text-gray-400 text-sm max-w-[80%]">
-                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
+                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your Watch Code.</>
                            </p>
                        </div>
                        <div className={`flex flex-col gap-3 text-sm font-bold ${statusColor} transition-all`}>
@@ -2298,7 +2307,7 @@ const Earn = () => {
                        <div>
                            <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-[#983695] transition-colors">TikTok</h4>
                            <p className="text-gray-400 text-sm max-w-[80%]">
-                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
+                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your Watch Code.</>
                            </p>
                        </div>
                        <div className={`flex flex-col gap-3 text-sm font-bold ${statusColor} transition-all`}>
@@ -2338,6 +2347,69 @@ const Earn = () => {
                  
                 let statusText = isNew ? "OPEN & EARN" : "VIEW FEED";
                 let statusColor = "text-white";
+                let borderClass = isNew ? 'bg-gradient-to-br from-[#983695]/20 to-black border-[#983695]/50 shadow-[0_0_30px_rgba(152,54,149,0.4)]' : 'bg-[#0A0A0A] border-white/5 hover:border-white/20';
+                 
+                if (isClaimed) {
+                    statusText = "COMPLETED";
+                    statusColor = "text-[#53FC18]";
+                    borderClass = "bg-[#0A0A0A] border-[#53FC18]/30 opacity-60";
+                 } else if (isReadyToConfirm) {
+                     statusText = "CLAIM REWARD";
+                     statusColor = "text-[#53FC18] animate-pulse";
+                     borderClass = "bg-[#0A0A0A] border-[#53FC18] shadow-[0_0_30px_rgba(83,252,24,0.4)]";
+                } else if (isTimerRunning) {
+                    statusText = `WAIT ${confirmState.timeLeft}s`;
+                    statusColor = "text-[#983695]";
+                    borderClass = "bg-[#0A0A0A] border-[#983695]/40";
+                 }
+
+                return (
+                <div 
+                  onClick={(e) => task && !isClaimed && handleTaskAction(e, task)}
+                  className={`relative overflow-hidden border rounded-2xl transition-all group h-[300px] cursor-pointer ${borderClass}`}
+                >
+                    <div className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-white/10 transition-colors transform rotate-12 scale-150">
+                        <FaThreads size={200} />
+                    </div>
+                    <div className="relative p-8 flex flex-col justify-between h-full">
+                       <div className="flex justify-between items-start">
+                           <div className="w-16 h-16 rounded-2xl bg-black border border-white/20 flex items-center justify-center text-white text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                               <FaThreads />
+                           </div>
+                           {isNew && !isClaimed && !isReadyToConfirm && !isTimerRunning && (
+                               <span className="flex items-center gap-1 text-[#983695] bg-[#983695]/10 px-3 py-1 rounded-full text-xs font-bold border border-[#983695]/20 animate-pulse">
+                                   <Bell size={12} /> NEW THREAD
+                               </span>
+                           )}
+                       </div>
+                       <div>
+                           <h4 className="text-white font-bold text-2xl mb-2 group-hover:text-[#983695] transition-colors">Threads</h4>
+                           <p className="text-gray-400 text-sm max-w-[80%]">
+                               <><span className="text-[#53FC18] font-bold">10 Points</span> - <span className="text-[#983695] font-bold">MANDATORY:</span> Comment your G-Code.</>
+                           </p>
+                       </div>
+                       <div className={`flex flex-col gap-3 text-sm font-bold ${statusColor} transition-all`}>
+                           <div className="flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-widest">
+                               {statusText} <FaShareNodes />
+                           </div>
+                           
+                           {!isClaimed && (
+                               <button 
+                                 onClick={(e) => {
+                                     e.stopPropagation();
+                                     const code = getOrCreateViewCode(platformKey);
+                                     alert(`Your Verification Code for this post: ${code}\n\nCopy this code and comment it on the post!`);
+                                 }}
+                                 className="bg-[#983695]/20 hover:bg-[#983695]/40 text-[#983695] border border-[#983695]/30 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all uppercase text-[10px] tracking-widest"
+                               >
+                                   <Zap size={12} /> Get Watch Code
+                               </button>
+                           )}
+                       </div>
+                    </div>
+                 </div>
+                 );
+             })()}
                 let borderClass = isNew ? 'bg-gradient-to-br from-[#983695]/20 to-black border-[#983695]/50 shadow-[0_0_30px_rgba(152,54,149,0.4)]' : 'bg-[#0A0A0A] border-white/5 hover:border-white/20';
                  
                 if (isClaimed) {

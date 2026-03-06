@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { Shield, Lock, Globe, ExternalLink, Flame } from 'lucide-react';
+import { Shield, Lock, Globe, ExternalLink, Flame, CheckCircle, Zap } from 'lucide-react';
 
 import { CONTRACT_ADDRESS } from '../../../constants';
 
@@ -63,7 +63,8 @@ const Tokenomics = () => {
               frameBorder="0" 
               allow="clipboard-write" 
               allowFullScreen
-              className="rounded-xl"
+              className="rounded-xl w-full h-full min-h-[500px]"
+              style={{ border: 'none' }}
             ></iframe>
           </div>
         </div>
