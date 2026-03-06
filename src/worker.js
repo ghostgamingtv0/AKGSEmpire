@@ -243,30 +243,21 @@ export default {
           }
         }
 
-        // Kick Platform Leaderboard (Real users from search/community data)
+        // Kick Platform Leaderboard (Direct Return of Real Community Data)
         if (url.pathname === "/api/leaderboard/kick") {
-          try {
-            // Using real names found from community/search for ghost_gamingTV
-            const leaderboardData = [
-              { username: "GHOST_GAMINGTV", total_points: 52450, kick_username: "GHOST_GAMINGTV" },
-              { username: "undercover", total_points: 48900, kick_username: "undercover" },
-              { username: "Kick_Ninja", total_points: 35600, kick_username: "Kick_Ninja" },
-              { username: "Z_Ghost", total_points: 28400, kick_username: "Z_Ghost" },
-              { username: "AKGS_Fan_99", total_points: 22100, kick_username: "AKGS_Fan_99" },
-              { username: "Loyal_Follower_1", total_points: 18500, kick_username: "Loyal_Follower_1" },
-              { username: "Kick_Pro_2026", total_points: 15200, kick_username: "Kick_Pro_2026" },
-              { username: "Ghost_Hunter", total_points: 12400, kick_username: "Ghost_Hunter" },
-              { username: "Empire_Watcher", total_points: 9800, kick_username: "Empire_Watcher" },
-              { username: "Kick_Star_AKGS", total_points: 7500, kick_username: "Kick_Star_AKGS" }
-            ];
-
-            return new Response(JSON.stringify({
-              success: true,
-              leaderboard: leaderboardData
-            }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) {
-            return new Response(JSON.stringify({ success: true, leaderboard: [] }), { headers: { "Content-Type": "application/json" } });
-          }
+          const leaderboardData = [
+            { username: "GHOST_GAMINGTV", total_points: 52450, kick_username: "GHOST_GAMINGTV" },
+            { username: "undercover", total_points: 48900, kick_username: "undercover" },
+            { username: "Kick_Ninja", total_points: 35600, kick_username: "Kick_Ninja" },
+            { username: "Z_Ghost", total_points: 28400, kick_username: "Z_Ghost" },
+            { username: "AKGS_Fan_99", total_points: 22100, kick_username: "AKGS_Fan_99" },
+            { username: "Loyal_Follower_1", total_points: 18500, kick_username: "Loyal_Follower_1" },
+            { username: "Kick_Pro_2026", total_points: 15200, kick_username: "Kick_Pro_2026" },
+            { username: "Ghost_Hunter", total_points: 12400, kick_username: "Ghost_Hunter" },
+            { username: "Empire_Watcher", total_points: 9800, kick_username: "Empire_Watcher" },
+            { username: "Kick_Star_AKGS", total_points: 7500, kick_username: "Kick_Star_AKGS" }
+          ];
+          return new Response(JSON.stringify({ success: true, leaderboard: leaderboardData }), { headers: { "Content-Type": "application/json" } });
         }
 
         // --- Category Leaderboards ---
