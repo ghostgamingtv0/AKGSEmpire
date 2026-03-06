@@ -190,13 +190,16 @@ export default {
         
         if (url.pathname.startsWith("/api/users/platform/")) {
             const platform = url.pathname.split('/').pop();
-            const filtered = mockUsers.filter(u => {
-                if (platform === 'kick') return u.kick_username;
-                if (platform === 'twitter') return u.twitter_username;
-                if (platform === 'threads') return u.threads_username;
-                if (platform === 'instagram') return u.instagram_username;
-                return false;
-            });
+            const filtered = mockUsers.map(u => ({
+                ...u,
+                username: u.kick_username,
+                // Ensure every user appears in every platform for the showcase, 
+                // but in production this would filter by actual linked accounts.
+                twitter_username: u.twitter_username || u.kick_username,
+                instagram_username: u.instagram_username || u.kick_username,
+                threads_username: u.threads_username || u.kick_username,
+                kick_username: u.kick_username
+            }));
             return new Response(JSON.stringify(filtered), { headers: { "Content-Type": "application/json" } });
         }
 

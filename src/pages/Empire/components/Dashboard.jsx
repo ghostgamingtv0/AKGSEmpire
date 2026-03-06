@@ -687,13 +687,15 @@ const Dashboard = () => {
             <div className="grid md:grid-cols-2 gap-4 relative z-10">
               {(() => {
                 // Combine and sort by total_points for Global Leaderboard
-                const sorted = [...leaderboard].sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 10);
+                // Filter out 'under' or any duplicate test entries if they are at 0 points
+                const filtered = leaderboard.filter(u => !u.isPlaceholder && (u.total_points > 0 || u.kick_username !== 'under'));
+                const sorted = filtered.sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 10);
                 const display = [...sorted];
                 while (display.length < 10) {
                     display.push({ isPlaceholder: true });
                 }
                 return display.map((user, idx) => (
-                  <div key={idx} className={`flex items-center justify-between p-4 rounded-xl border ${user.isPlaceholder ? 'bg-white/5 border-dashed border-white/5' : 'bg-white/5 border-white/5'}`}>
+                  <div key={idx} className={`flex items-center justify-between p-4 rounded-xl border ${user.isPlaceholder ? 'bg-white/5 border-dashed border-white/5' : 'bg-[#53FC18]/5 border-[#53FC18]/20 shadow-[0_0_15px_rgba(83,252,24,0.05)]'}`}>
                     <div className="flex items-center gap-4">
                       <span className={`font-bold w-6 text-center ${!user.isPlaceholder && idx < 3 ? 'text-[#53FC18]' : 'text-gray-600'}`}>
                         #{idx + 1}

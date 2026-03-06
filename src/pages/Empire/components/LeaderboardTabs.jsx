@@ -96,12 +96,12 @@ const LeaderboardTabs = () => {
   };
 
   const getMetricDisplay = (user, metricId) => {
-    if (metricId === 'points') return `${user.weekly_points} Pts`;
+    if (metricId === 'points') return `${user.weekly_points || 0} Pts`;
     if (metricId === 'comments') return `${user.weekly_comments || 0}`;
     if (metricId === 'messages') return `${user.chat_messages_count || 0}`;
     if (metricId === 'tasks') return `${user.tasks_completed || 0}`;
-    if (metricId === 'referrers') return `${user.referral_count}`;
-    return '';
+    if (metricId === 'referrers') return `${user.referral_count || 0}`;
+    return '0';
   };
 
   return (

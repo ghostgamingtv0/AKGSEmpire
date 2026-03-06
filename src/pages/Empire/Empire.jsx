@@ -299,7 +299,7 @@ function Empire() {
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-[#53FC18] selection:text-black relative">
       <FacebookSDK />
-      {!isHome && <BackgroundEffects />}
+      <BackgroundEffects />
       <Navbar 
         onConnect={() => setIsWalletModalOpen(true)} 
         walletAddress={walletAddress}
