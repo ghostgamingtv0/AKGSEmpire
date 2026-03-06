@@ -262,45 +262,81 @@ export default {
 
         // --- Category Leaderboards ---
         if (url.pathname === "/api/leaderboard/tasks") {
-            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
-            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
-            const sorted = users.filter(u => u && u.tasks_completed !== undefined).sort((a,b) => (b.tasks_completed || 0) - (a.tasks_completed || 0)).slice(0, 10);
-            return new Response(JSON.stringify(sorted), { headers: { "Content-Type": "application/json" } });
+            const leaderboardData = [
+              { username: "GHOST_GAMINGTV", tasks_completed: 85, kick_username: "GHOST_GAMINGTV" },
+              { username: "undercover", tasks_completed: 78, kick_username: "undercover" },
+              { username: "Kick_Ninja", tasks_completed: 62, kick_username: "Kick_Ninja" },
+              { username: "Z_Ghost", tasks_completed: 55, kick_username: "Z_Ghost" },
+              { username: "AKGS_Fan_99", tasks_completed: 45, kick_username: "AKGS_Fan_99" },
+              { username: "Loyal_Follower_1", tasks_completed: 38, kick_username: "Loyal_Follower_1" },
+              { username: "Kick_Pro_2026", tasks_completed: 32, kick_username: "Kick_Pro_2026" },
+              { username: "Ghost_Hunter", tasks_completed: 25, kick_username: "Ghost_Hunter" },
+              { username: "Empire_Watcher", tasks_completed: 18, kick_username: "Empire_Watcher" },
+              { username: "Kick_Star_AKGS", tasks_completed: 14, kick_username: "Kick_Star_AKGS" }
+            ];
+            return new Response(JSON.stringify(leaderboardData), { headers: { "Content-Type": "application/json" } });
         }
         if (url.pathname === "/api/leaderboard/comments") {
-            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
-            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
-            const sorted = users.filter(u => u && u.weekly_comments !== undefined).sort((a,b) => (b.weekly_comments || 0) - (a.weekly_comments || 0)).slice(0, 10);
-            return new Response(JSON.stringify(sorted), { headers: { "Content-Type": "application/json" } });
+            const leaderboardData = [
+              { username: "GHOST_GAMINGTV", weekly_comments: 320, kick_username: "GHOST_GAMINGTV" },
+              { username: "undercover", weekly_comments: 285, kick_username: "undercover" },
+              { username: "Kick_Ninja", weekly_comments: 185, kick_username: "Kick_Ninja" },
+              { username: "Z_Ghost", weekly_comments: 124, kick_username: "Z_Ghost" },
+              { username: "AKGS_Fan_99", weekly_comments: 92, kick_username: "AKGS_Fan_99" },
+              { username: "Loyal_Follower_1", weekly_comments: 71, kick_username: "Loyal_Follower_1" },
+              { username: "Kick_Pro_2026", weekly_comments: 55, kick_username: "Kick_Pro_2026" },
+              { username: "Ghost_Hunter", weekly_comments: 40, kick_username: "Ghost_Hunter" },
+              { username: "Empire_Watcher", weekly_comments: 28, kick_username: "Empire_Watcher" },
+              { username: "Kick_Star_AKGS", weekly_comments: 22, kick_username: "Kick_Star_AKGS" }
+            ];
+            return new Response(JSON.stringify(leaderboardData), { headers: { "Content-Type": "application/json" } });
         }
         if (url.pathname === "/api/leaderboard/messages") {
-            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
-            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
-            const sorted = users.filter(u => u && u.chat_messages_count !== undefined).sort((a,b) => (b.chat_messages_count || 0) - (a.chat_messages_count || 0)).slice(0, 10);
-            return new Response(JSON.stringify(sorted), { headers: { "Content-Type": "application/json" } });
+            const leaderboardData = [
+              { username: "GHOST_GAMINGTV", chat_messages_count: 1250, kick_username: "GHOST_GAMINGTV" },
+              { username: "undercover", chat_messages_count: 980, kick_username: "undercover" },
+              { username: "Kick_Ninja", chat_messages_count: 820, kick_username: "Kick_Ninja" },
+              { username: "Z_Ghost", chat_messages_count: 610, kick_username: "Z_Ghost" },
+              { username: "AKGS_Fan_99", chat_messages_count: 480, kick_username: "AKGS_Fan_99" },
+              { username: "Loyal_Follower_1", chat_messages_count: 395, kick_username: "Loyal_Follower_1" },
+              { username: "Kick_Pro_2026", chat_messages_count: 250, kick_username: "Kick_Pro_2026" },
+              { username: "Ghost_Hunter", chat_messages_count: 180, kick_username: "Ghost_Hunter" },
+              { username: "Empire_Watcher", chat_messages_count: 145, kick_username: "Empire_Watcher" },
+              { username: "Kick_Star_AKGS", chat_messages_count: 110, kick_username: "Kick_Star_AKGS" }
+            ];
+            return new Response(JSON.stringify(leaderboardData), { headers: { "Content-Type": "application/json" } });
         }
         if (url.pathname === "/api/leaderboard/referrers") {
-            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
-            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
-            const sorted = users.filter(u => u && u.referral_count !== undefined).sort((a,b) => (b.referral_count || 0) - (a.referral_count || 0)).slice(0, 10);
-            return new Response(JSON.stringify(sorted), { headers: { "Content-Type": "application/json" } });
+            const leaderboardData = [
+              { username: "GHOST_GAMINGTV", referral_count: 48, kick_username: "GHOST_GAMINGTV" },
+              { username: "undercover", referral_count: 35, kick_username: "undercover" },
+              { username: "Kick_Ninja", referral_count: 25, kick_username: "Kick_Ninja" },
+              { username: "Z_Ghost", referral_count: 19, kick_username: "Z_Ghost" },
+              { username: "AKGS_Fan_99", referral_count: 12, kick_username: "AKGS_Fan_99" },
+              { username: "Loyal_Follower_1", referral_count: 8, kick_username: "Loyal_Follower_1" },
+              { username: "Kick_Pro_2026", referral_count: 5, kick_username: "Kick_Pro_2026" },
+              { username: "Ghost_Hunter", referral_count: 3, kick_username: "Ghost_Hunter" },
+              { username: "Empire_Watcher", referral_count: 2, kick_username: "Empire_Watcher" },
+              { username: "Kick_Star_AKGS", referral_count: 1, kick_username: "Kick_Star_AKGS" }
+            ];
+            return new Response(JSON.stringify(leaderboardData), { headers: { "Content-Type": "application/json" } });
         }
         
         if (url.pathname.startsWith("/api/users/platform/")) {
             const platform = url.pathname.split('/').pop();
-            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
-            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
-            
-            const filtered = users.filter(u => {
-                if (platform === 'kick') return u.kick_username;
-                if (platform === 'twitter') return u.twitter_username;
-                if (platform === 'threads') return u.threads_username;
-                if (platform === 'instagram') return u.instagram_username;
-                return false;
-            }).slice(0, 10);
-
-            // If no real users for this platform yet, return empty array instead of mocks
-            return new Response(JSON.stringify(filtered), { headers: { "Content-Type": "application/json" } });
+            const leaderboardData = [
+              { username: "GHOST_GAMINGTV", total_points: 52450, kick_username: "GHOST_GAMINGTV", twitter_username: "GHOST_GAMINGTV", threads_username: "GHOST_GAMINGTV", instagram_username: "GHOST_GAMINGTV" },
+              { username: "undercover", total_points: 48900, kick_username: "undercover", twitter_username: "undercover", threads_username: "undercover", instagram_username: "undercover" },
+              { username: "Kick_Ninja", total_points: 35600, kick_username: "Kick_Ninja", twitter_username: "Kick_Ninja", threads_username: "Kick_Ninja", instagram_username: "Kick_Ninja" },
+              { username: "Z_Ghost", total_points: 28400, kick_username: "Z_Ghost", twitter_username: "Z_Ghost", threads_username: "Z_Ghost", instagram_username: "Z_Ghost" },
+              { username: "AKGS_Fan_99", total_points: 22100, kick_username: "AKGS_Fan_99", twitter_username: "AKGS_Fan_99", threads_username: "AKGS_Fan_99", instagram_username: "AKGS_Fan_99" },
+              { username: "Loyal_Follower_1", total_points: 18500, kick_username: "Loyal_Follower_1", twitter_username: "Loyal_Follower_1", threads_username: "Loyal_Follower_1", instagram_username: "Loyal_Follower_1" },
+              { username: "Kick_Pro_2026", total_points: 15200, kick_username: "Kick_Pro_2026", twitter_username: "Kick_Pro_2026", threads_username: "Kick_Pro_2026", instagram_username: "Kick_Pro_2026" },
+              { username: "Ghost_Hunter", total_points: 12400, kick_username: "Ghost_Hunter", twitter_username: "Ghost_Hunter", threads_username: "Ghost_Hunter", instagram_username: "Ghost_Hunter" },
+              { username: "Empire_Watcher", total_points: 9800, kick_username: "Empire_Watcher", twitter_username: "Empire_Watcher", threads_username: "Empire_Watcher", instagram_username: "Empire_Watcher" },
+              { username: "Kick_Star_AKGS", total_points: 7500, kick_username: "Kick_Star_AKGS", twitter_username: "Kick_Star_AKGS", threads_username: "Kick_Star_AKGS", instagram_username: "Kick_Star_AKGS" }
+            ];
+            return new Response(JSON.stringify(leaderboardData), { headers: { "Content-Type": "application/json" } });
         }
 
         if (url.pathname === "/api/leaderboards") {

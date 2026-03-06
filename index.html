@@ -80,6 +80,61 @@
       }
     }
     </script>
+    <!-- Analytics & SEO Scripts -->
+    <script defer data-domain="akgsempire.org" src="https://plausible.io/js/script.outbound-links.js"></script>
+    <script>
+      window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) };
+    </script>
+    <script src="https://analytics.ahrefs.com/analytics.js" data-key="1aVVKk1NpgATxbyqyp6zRA" defer="true"></script>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-16N80PCGNS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-16N80PCGNS');
+    </script>
+
+    <script>
+    !(function() { 
+         var t, n, e, i = document.currentScript, o = { domain: "akgsempire.org", endpoint: "/api/event" }; 
+         function a(t, n, e) { 
+             window.fetch && fetch(t, { 
+                 method: "POST", 
+                 headers: { "Content-Type": "text/plain" }, 
+                 keepalive: !0, 
+                 body: JSON.stringify(n) 
+             }).then(function(t) { e && e.callback && e.callback({ status: t.status }) }).catch(function(t) { e && e.callback && e.callback({ error: t }) }) 
+         } 
+         var r = !1, c = location.href, l = {}, d = -1, u = 0, s = 0; 
+         function p() { 
+             var i = w(); 
+             if (!t && (d < e || i >= 3e3)) { 
+                 d = e; 
+                 var r = { n: "engagement", sd: Math.round(e / n * 100), d: o.domain, u: c, p: l, e: i, v: 33 }; 
+                 u = 0, s = 0, a(o.endpoint, r) 
+             } 
+         } 
+         function f() { "visible" === document.visibilityState && document.hasFocus() && 0 === u ? u = Date.now() : "hidden" !== document.visibilityState && document.hasFocus() || (s = w(), u = 0, p()) } 
+         function w() { return u ? s + (Date.now() - u) : s } 
+         function v() { 
+             var t = document.body || {}, n = document.documentElement || {}; 
+             return Math.max(t.scrollHeight || 0, t.offsetHeight || 0, t.clientHeight || 0, n.scrollHeight || 0, n.offsetHeight || 0, n.clientHeight || 0) 
+         } 
+         function h() { 
+             var t = document.body || {}, e = document.documentElement || {}, i = window.innerHeight || e.clientHeight || 0, o = window.scrollY || e.scrollTop || t.scrollTop || 0; 
+             return n <= i ? n : o + i 
+         } 
+         function g(i, w) { 
+             var g = "pageview" === i; 
+             if (g && r && (p(), n = v(), e = h()), /^localhost$|^127(\.[0-9]+){0,2}\.[0-9]+$|^\[::1?\]$/.test(location.hostname) || "file:" === location.protocol) return; 
+             var b = { n: i, v: 33, u: location.href, d: o.domain, r: document.referrer || null }; 
+             if (g) { t = !1, c = b.u, l = b.p, d = -1, s = 0, u = Date.now(), r || (document.addEventListener("visibilitychange", f), window.addEventListener("blur", f), window.addEventListener("focus", f), r = !0) } 
+             a(o.endpoint, b, w) 
+         } 
+         window.plausible = g;
+    })();
+    </script>
   </head>
   <body class="bg-[#050505] text-white">
     <!-- Google Tag Manager (noscript) -->
