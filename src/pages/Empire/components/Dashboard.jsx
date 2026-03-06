@@ -587,7 +587,7 @@ const Dashboard = () => {
                     <div className="text-right bg-gradient-to-r from-transparent to-[#53FC18]/10 p-4 rounded-xl border-r-2 border-[#53FC18] w-full md:w-auto">
                         <p className="text-xs text-gray-400 mb-1 uppercase tracking-widest">Total Earned</p>
                         <p className="text-3xl font-black text-[#53FC18] drop-shadow-[0_0_15px_rgba(83,252,24,0.4)]">
-                            {((userData?.referral_count || 0) * 100).toLocaleString()} <span className="text-sm text-white/50 font-medium">PTS</span>
+                            {(userData?.total_points || 0).toLocaleString()} <span className="text-sm text-white/50 font-medium">PTS</span>
                         </p>
                     </div>
                 </div>
@@ -685,7 +685,8 @@ const Dashboard = () => {
             
             <div className="grid md:grid-cols-2 gap-4 relative z-10">
               {(() => {
-                const sorted = [...leaderboard].sort((a, b) => (b.weekly_points || 0) - (a.weekly_points || 0)).slice(0, 10);
+                // Combine and sort by total_points for Global Leaderboard
+                const sorted = [...leaderboard].sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 10);
                 const display = [...sorted];
                 while (display.length < 10) {
                     display.push({ isPlaceholder: true });
@@ -699,7 +700,7 @@ const Dashboard = () => {
                       <div>
                         <p className={`font-bold text-sm ${user.isPlaceholder ? 'text-gray-600 italic' : 'text-white'}`}>
                           {!user.isPlaceholder 
-                            ? (user.kick_username ? user.kick_username : (user.wallet_address ? `${user.wallet_address.substring(0, 6)}...${user.wallet_address.substring(user.wallet_address.length - 4)}` : user.visitor_id))
+                            ? (user.kick_username ? user.kick_username : (user.username ? user.username : (user.wallet_address ? `${user.wallet_address.substring(0, 6)}...${user.wallet_address.substring(user.wallet_address.length - 4)}` : `User_${user.visitor_id?.substring(0,4)}`)))
                             : 'Loyal Follower'}
                         </p>
                         <p className="text-xs text-gray-600">{!user.isPlaceholder ? 'Total Score | مجموع النقاط' : 'Waiting for hero...'}</p>
@@ -707,7 +708,7 @@ const Dashboard = () => {
                     </div>
                     <div className="text-right">
                       <span className={`block font-bold ${!user.isPlaceholder ? 'text-[#53FC18]' : 'text-gray-700'}`}>
-                        {!user.isPlaceholder ? `${user.weekly_points} pts` : '--'}
+                        {!user.isPlaceholder ? `${(user.total_points || 0).toLocaleString()} pts` : '--'}
                       </span>
                     </div>
                   </div>

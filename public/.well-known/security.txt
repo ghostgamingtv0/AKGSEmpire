@@ -1,0 +1,6 @@
+Contact: mailto:security@akgsempire.org
+Expires: 2027-03-01T00:00:00.000Z
+Preferred-Languages: en, ar
+Policy: https://akgsempire.org/security-policy
+Hiring: https://akgsempire.org/careers
+# AKGS Empire Security Policy - Protect the Ghost

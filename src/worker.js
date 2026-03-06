@@ -27,6 +27,12 @@ export default {
       if (url.pathname === "/tiktokLBOhRmLGMJ0y3f2BvRyYIXaLkNNKlRB7.txt") {
         return new Response("tiktok-developers-site-verification=LBOhRmLGMJ0y3f2BvRyYIXaLkNNKlRB7", { headers: { "Content-Type": "text/plain" } });
       }
+      if (url.pathname === "/.well-known/security.txt") {
+        return new Response("Contact: mailto:security@akgsempire.org\nExpires: 2027-03-01T00:00:00.000Z\nPreferred-Languages: en, ar", { headers: { "Content-Type": "text/plain" } });
+      }
+      if (url.pathname === "/robots.txt") {
+        return new Response("User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /_USER_DATA_ARCHIVE/\n\nUser-agent: GPTBot\nDisallow: /", { headers: { "Content-Type": "text/plain" } });
+      }
 
       // =================================================================================
       // 1. API ROUTES (Internal Cloudflare Backend)
@@ -97,11 +103,53 @@ export default {
 
         // --- Leaderboard API ---
         if (url.pathname === "/api/leaderboard") {
-          return new Response(JSON.stringify([
-            { username: "Ghost_Master", total_points: 15000 },
-            { username: "Empire_King", total_points: 12000 },
-            { username: "Shadow_Warrior", total_points: 9500 }
-          ]), { headers: { "Content-Type": "application/json" } });
+          const leaderboard = [
+            { username: "Ghost_Master", total_points: 15000, platform: 'site', kick_username: 'ghost_m' },
+            { username: "Empire_King", total_points: 12000, platform: 'site', kick_username: 'king_emp' },
+            { username: "Shadow_Warrior", total_points: 9500, platform: 'site', kick_username: 'shadow_w' },
+            { username: "Kick_Legend_01", total_points: 8200, platform: 'kick', kick_username: 'kick_legend' },
+            { username: "Ninja_Ghost", total_points: 7500, platform: 'kick', kick_username: 'ninja_g' },
+            { username: "Top_Viewer_99", total_points: 6800, platform: 'kick', kick_username: 'top_v' }
+          ].sort((a, b) => b.total_points - a.total_points);
+
+          return new Response(JSON.stringify({
+            success: true,
+            leaderboard: leaderboard
+          }), { headers: { "Content-Type": "application/json" } });
+        }
+
+        // Leaderboard Categories
+        const mockUsers = [
+          { visitor_id: 'v1', kick_username: 'KickMaster', total_points: 5000, weekly_points: 1200, tasks_completed: 15, weekly_comments: 45, chat_messages_count: 150, referral_count: 8, twitter_username: 'km_x', instagram_username: 'km_ig' },
+          { visitor_id: 'v2', kick_username: 'EmpireKing', total_points: 4200, weekly_points: 950, tasks_completed: 12, weekly_comments: 32, chat_messages_count: 120, referral_count: 5, threads_username: 'ek_th' },
+          { visitor_id: 'v3', kick_username: 'GhostHunter', total_points: 3800, weekly_points: 800, tasks_completed: 10, weekly_comments: 28, chat_messages_count: 95, referral_count: 3, twitter_username: 'gh_x' },
+          { visitor_id: 'v4', kick_username: 'TopG', total_points: 3500, weekly_points: 750, tasks_completed: 8, weekly_comments: 25, chat_messages_count: 85, referral_count: 2, instagram_username: 'tg_ig' },
+          { visitor_id: 'v5', kick_username: 'Shadow', total_points: 3200, weekly_points: 700, tasks_completed: 7, weekly_comments: 22, chat_messages_count: 75, referral_count: 1, threads_username: 'sh_th' }
+        ];
+
+        if (url.pathname === "/api/leaderboard/tasks") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.tasks_completed - a.tasks_completed)), { headers: { "Content-Type": "application/json" } });
+        if (url.pathname === "/api/leaderboard/comments") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.weekly_comments - a.weekly_comments)), { headers: { "Content-Type": "application/json" } });
+        if (url.pathname === "/api/leaderboard/messages") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.chat_messages_count - a.chat_messages_count)), { headers: { "Content-Type": "application/json" } });
+        if (url.pathname === "/api/leaderboard/referrers") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.referral_count - a.referral_count)), { headers: { "Content-Type": "application/json" } });
+        
+        if (url.pathname.startsWith("/api/users/platform/")) {
+            const platform = url.pathname.split('/').pop();
+            const filtered = mockUsers.filter(u => {
+                if (platform === 'kick') return u.kick_username;
+                if (platform === 'twitter') return u.twitter_username;
+                if (platform === 'threads') return u.threads_username;
+                if (platform === 'instagram') return u.instagram_username;
+                return false;
+            });
+            return new Response(JSON.stringify(filtered), { headers: { "Content-Type": "application/json" } });
+        }
+
+        if (url.pathname === "/api/leaderboards") {
+          return new Response(JSON.stringify({
+            success: true,
+            most_interactive: mockUsers.map(u => ({ username: u.kick_username, value: u.chat_messages_count, platform: 'kick' })),
+            top_referrers: mockUsers.map(u => ({ username: u.kick_username, value: u.referral_count, platform: 'site' }))
+          }), { headers: { "Content-Type": "application/json" } });
         }
 
         // --- Ping / Health ---

@@ -108,6 +108,31 @@ const Earn = () => {
     return saved ? parseInt(saved, 10) : 0;
   });
 
+  // Ensure points are synced with backend on load
+  useEffect(() => {
+    const syncPoints = async () => {
+        if (!visitorId) return;
+        try {
+            const API_BASE = '';
+            const res = await fetch(`${API_BASE}/api/user-data?visitor_id=${visitorId}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success && data.user) {
+                    if (typeof data.user.total_points === 'number') {
+                        setPoints(data.user.total_points);
+                        localStorage.setItem('user_points', data.user.total_points.toString());
+                    }
+                    if (data.user.kick_username) setKickUsername(data.user.kick_username);
+                    if (data.user.wallet_address) setWalletAddress(data.user.wallet_address);
+                }
+            }
+        } catch (e) {
+            console.error('Failed to sync points:', e);
+        }
+    };
+    syncPoints();
+  }, [visitorId]);
+
   // Persist points to localStorage
   useEffect(() => {
     localStorage.setItem('user_points', points.toString());
@@ -127,6 +152,30 @@ const Earn = () => {
   const [gCodeExpiresAt, setGCodeExpiresAt] = useState(() => parseInt(localStorage.getItem('kick_gcode_expires_at') || '0', 10));
   const [gCodeInput, setGCodeInput] = useState('');
   const [gCodeDigits, setGCodeDigits] = useState(() => localStorage.getItem('kick_gcode_digits') || '');
+  const [miningGCodeInput, setMiningGCodeInput] = useState('');
+  const [isVerifyingMining, setIsVerifyingMining] = useState(false);
+
+  const handleVerifyMiningGCode = async () => {
+    if (!miningGCodeInput) return;
+    
+    setIsVerifyingMining(true);
+    try {
+        // Logic: The G-Code for mining is the user's permanent G-Code
+        const correctCode = gCode || localStorage.getItem('gCode');
+        
+        if (miningGCodeInput.trim() === correctCode) {
+            setMiningUnlocked(true);
+            localStorage.setItem('kick_mining_unlocked', 'true');
+            alert('✅ Mining Feature Unlocked!');
+        } else {
+            alert('❌ Invalid G-Code. Please enter your unique G-Code found in the Identity section.');
+        }
+    } catch (e) {
+        console.error('Verification error:', e);
+    } finally {
+        setIsVerifyingMining(false);
+    }
+  };
   const [viewCodes, setViewCodes] = useState(() => {
     const saved = localStorage.getItem('viewCodes');
     return saved ? JSON.parse(saved) : {};
@@ -2366,7 +2415,52 @@ const Earn = () => {
         {/* Task Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {activeTab === 'mining' && (
-            <div className="md:col-span-2 lg:col-span-3 mb-4">
+            <div className="md:col-span-2 lg:col-span-3 mb-8">
+              {!miningUnlocked ? (
+                <div className="glass-panel p-8 border-2 border-[#53FC18]/30 bg-black/60 rounded-3xl text-center mb-8 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-10">
+                    <Lock size={120} className="text-[#53FC18]" />
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-4 uppercase tracking-widest">Unlock Mining Feature</h3>
+                  <p className="text-gray-400 mb-8 max-w-md mx-auto">
+                    Enter your unique <strong>G-Code</strong> to unlock the passive earning system. 
+                    You can find your G-Code in the <strong>User Identity</strong> section above.
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                    <input 
+                      type="text"
+                      value={miningGCodeInput}
+                      onChange={(e) => setMiningGCodeInput(e.target.value)}
+                      placeholder="Enter G-Code (e.g. 👻KG...👻)"
+                      className="flex-1 bg-black/50 border border-[#53FC18]/30 rounded-xl px-6 py-4 focus:border-[#53FC18] outline-none text-white font-mono text-center tracking-widest"
+                    />
+                    <button
+                      onClick={handleVerifyMiningGCode}
+                      disabled={isVerifyingMining || !miningGCodeInput}
+                      className="bg-[#53FC18] hover:bg-[#45d612] text-black font-black px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(83,252,24,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isVerifyingMining ? 'Verifying...' : 'Unlock Now'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="glass-panel p-6 border border-[#53FC18]/50 bg-[#53FC18]/5 rounded-2xl mb-8 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-[#53FC18] flex items-center justify-center text-black shadow-[0_0_15px_rgba(83,252,24,0.5)]">
+                            <Zap size={24} />
+                        </div>
+                        <div>
+                            <h3 className="text-[#53FC18] font-black uppercase tracking-widest">Mining System Active</h3>
+                            <p className="text-xs text-gray-400">Your browser is now generating points passively.</p>
+                        </div>
+                    </div>
+                    <div className="text-right">
+                        <span className="text-[10px] font-bold text-white bg-[#53FC18]/20 px-3 py-1 rounded-full border border-[#53FC18]/30">UNLOCKED</span>
+                    </div>
+                </div>
+              )}
+
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-bold text-white">Mining Boost NFTs</h3>
