@@ -195,7 +195,10 @@ const LeaderboardTabs = () => {
                             ) : topUsers.length > 0 ? (
                                 <div className="flex flex-col gap-1.5 py-4">
                                     {topUsers.map((user, idx) => {
-                                        const displayName = user.username || user.kick_username || user.visitor_id?.substring(0,8);
+                                        const displayName = user.username || user.kick_username;
+                                        // Skip users without a proper name (random/visitor IDs)
+                                        if (!displayName || displayName.startsWith('User_') || displayName.includes('-')) return null;
+                                        
                                         const isTop1 = idx === 0;
                                         
                                         return (
@@ -250,19 +253,22 @@ const LeaderboardTabs = () => {
                       <div className="text-center text-gray-600 text-[10px] py-2">Loading...</div>
                     ) : topUsers.length > 0 ? (
                       <div className="space-y-2">
-                        {topUsers.map((user, idx) => (
+                        {topUsers.map((user, idx) => {
+                          const displayName = user.username || user.kick_username;
+                          if (!displayName || displayName.startsWith('User_') || displayName.includes('-')) return null;
+                          return (
                           <div key={idx} className="flex items-center justify-between px-2 py-1.5 rounded-lg bg-black/20 border border-white/5">
                             <div className="flex items-center gap-2 min-w-0">
                               <span className="font-mono text-[10px] text-[#53FC18] font-bold">#{idx + 1}</span>
                               <span className="text-xs truncate text-gray-200">
-                                {user.username || user.kick_username || user.visitor_id?.substring(0,8)}
+                                {displayName}
                               </span>
                             </div>
                             <span className="text-[10px] font-mono text-[#53FC18]">
                               {getMetricDisplay(user, m.id)}
                             </span>
                           </div>
-                        ))}
+                        )})}
                       </div>
                     ) : (
                       <div className="text-center text-gray-700 text-[10px] italic py-1">Empty</div>
