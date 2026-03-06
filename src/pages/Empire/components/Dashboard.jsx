@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap, Clock } from 'lucide-react';
 import { FaPlay, FaPowerOff } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
+import { UserContext } from '../Empire';
 
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 import LeaderboardTabs from './LeaderboardTabs';
@@ -78,9 +79,13 @@ const getNextWeeklyReset = () => {
 };
 
 const Dashboard = () => {
+  const userData = useContext(UserContext);
   const [leaderboard, setLeaderboard] = useState([]); // Registered Users (KV)
   const [kickLeaderboard, setKickLeaderboard] = useState([]); // Kick Platform Users
-  const [userData, setUserData] = useState(null);
+  const [visitorId, setVisitorId] = useState(userData?.visitor_id || null);
+  const [gCode, setGCode] = useState(userData?.g_code || null);
+  const [kickUsername, setKickUsername] = useState(userData?.kick_username || null);
+  const [walletAddress, setWalletAddress] = useState(userData?.wallet_address || null);
   const [copied, setCopied] = useState(false);
   const [globalStats, setGlobalStats] = useState(() => {
     const saved = localStorage.getItem('globalStats');
@@ -109,145 +114,13 @@ const Dashboard = () => {
   // Load Twitter Widget - REMOVED (Moved to Earn.jsx)
 
   useEffect(() => {
-    const initData = async () => {
-      try {
-        // 1. Load Visitor ID
-        const fpPromise = load();
-        const { visitorId } = await (await fpPromise).get();
-        
-        // 2. Check for Referral Code
-        const refCode = localStorage.getItem('ref_code');
-
-        const API_BASE = ''; // Use relative path
-
-        // 3. Init/Load User
-        const res = await fetch(`${API_BASE}/api/init-user`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ 
-              visitor_id: visitorId, 
-              ref_code: refCode,
-              wallet_address: localStorage.getItem('walletAddress'),
-              kick_username: localStorage.getItem('kickUsername')
-            })
-        });
-        const data = await res.json();
-        
-        // Handle direct user object return or success wrapper
-        if (data && (data.visitor_id || data.success)) {
-            const user = data.user || data;
-            setUserData(user);
-            
-            // Persist for other pages (Earn.jsx, etc)
-            if (user.total_points !== undefined) {
-              localStorage.setItem('user_points', user.total_points.toString());
-            }
-            localStorage.setItem('user_session', JSON.stringify(user));
-            if (user.kick_username) localStorage.setItem('kickUsername', user.kick_username);
-            if (user.wallet_address) localStorage.setItem('walletAddress', user.wallet_address);
-            
-            // Clear ref code after successful use to avoid re-sending
-            if (refCode) localStorage.removeItem('ref_code');
-        }
-
-        // 4. Fetch Leaderboards
-        const lbRes = await fetch(`${API_BASE}/api/leaderboard`);
-        const lbData = await lbRes.json();
-        if (lbData.success) {
-          setLeaderboard(lbData.leaderboard);
-        }
-
-        const kickLbRes = await fetch(`${API_BASE}/api/leaderboard/kick`);
-        const kickLbData = await kickLbRes.json();
-        if (kickLbData.success) {
-          setKickLeaderboard(kickLbData.leaderboard);
-        }
-
-        // 5. Fetch Global Stats (Kick + Others)
-        try {
-          const statsRes = await fetch(`${API_BASE}/api/stats`);
-          if (statsRes.ok) {
-            const statsData = await statsRes.json();
-            if (statsData && (statsData.success || typeof statsData.kick_followers === 'number')) {
-              setGlobalStats(prev => ({
-                ...prev,
-                ...statsData
-              }));
-            }
-          }
-        } catch (e) {
-          console.error('Failed to fetch /api/stats, falling back to direct Kick API', e);
-        }
-
-        // 5b. Fallback: Always ensure Kick stats are fresh from Kick API
-        try {
-          const kickRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://kick.com/api/v1/channels/ghost_gamingtv')}`);
-          if (kickRes.ok) {
-            const kickData = await kickRes.json();
-            const followers =
-              kickData.followersCount ||
-              kickData.followers_count ||
-              0;
-            const isLive = !!kickData.livestream;
-            const viewers = isLive ? (kickData.livestream.viewer_count || 0) : 0;
-            const category =
-              (isLive && kickData.livestream && kickData.livestream.categories && kickData.livestream.categories[0]?.name) ||
-              (kickData.recent_categories && kickData.recent_categories[0]?.name) ||
-              'None';
-
-            setGlobalStats(prev => ({
-              ...prev,
-              kick_followers: followers,
-              kick_viewers: viewers,
-              kick_is_live: isLive,
-              kick_category: category
-            }));
-
-            try {
-              await fetch(`${API_BASE}/api/update-kick-stats`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  followers,
-                  viewers,
-                  is_live: isLive
-                })
-              });
-            } catch (e) {
-              console.error('Failed to sync Kick stats to backend', e);
-            }
-          }
-        } catch (e) {
-          console.error('Direct Kick API fetch failed', e);
-        }
-
-        // 6. Fetch Top Comments
-        const commentsRes = await fetch(`${API_BASE}/api/top-comments`);
-        const commentsData = await commentsRes.json();
-        if (commentsData.success) {
-          setTopComments(commentsData.topComments);
-        }
-
-        // 7. Fetch Extra Leaderboards (Interactive & Referral)
-        try {
-            const extraLbRes = await fetch(`${API_BASE}/api/leaderboards`);
-            const extraLbData = await extraLbRes.json();
-            if (extraLbData.success) {
-                setInteractiveLeaderboard(extraLbData.most_interactive);
-                setReferralLeaderboard(extraLbData.top_referrers);
-            }
-        } catch (e) {
-            console.error('Failed to fetch extra leaderboards', e);
-        }
-
-      } catch (error) {
-        console.error('Failed to init dashboard', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    initData();
-  }, []);
+    if (userData) {
+      setVisitorId(userData.visitor_id);
+      setGCode(userData.g_code);
+      setKickUsername(userData.kick_username);
+      setWalletAddress(userData.wallet_address);
+    }
+  }, [userData]);
 
   const handleCopy = () => {
     const code = userData?.g_code || userData?.referral_code;

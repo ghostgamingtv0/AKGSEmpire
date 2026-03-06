@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, Clock, Coins, Lock, Crown, Percent, Zap, Shield, ShieldCheck, Gem, Bell, PlayCircle, Video, Image as ImageIcon, Plus, Wallet, Ghost, Info, Share2, Youtube, Users, ExternalLink } from 'lucide-react';
@@ -6,6 +6,7 @@ import { FaInstagram, FaShareNodes, FaXTwitter, FaTiktok, FaThreads, FaFacebook 
 import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
+import { UserContext } from '../Empire';
 
 const NFT_IMAGE_MINING = "https://i.ibb.co/sv1qDbd0/E4gk6-In-WEAQ1s-JF.jpg";
 const NFT_IMAGE_REWARD = "https://i.ibb.co/dwzrDDGk/33710b273ed1e486862440e0446dfc18.jpg";
@@ -80,6 +81,7 @@ const ProjectNFTIcon = ({ color = "#53FC18", tier = "1", imageSrc = NFT_IMAGE_MA
 );
 
 const Earn = () => {
+  const userData = useContext(UserContext);
   resetLocalStorageIfNeeded();
   const [activeTab, setActiveTab] = useState(() => {
     const saved = localStorage.getItem('earn_active_tab');
@@ -87,56 +89,22 @@ const Earn = () => {
   });
   const [isKickLive, setIsKickLive] = useState(false); // State for stream status
   const [timeLeft, setTimeLeft] = useState('');
-  const [visitorId, setVisitorId] = useState(() => getCookie('visitor_id') || null);
-  const [kickUsername, setKickUsername] = useState(() => {
-        const sessionStr = localStorage.getItem('user_session') || getCookie('user_session');
-        const session = JSON.parse(sessionStr || '{}');
-        return session.username || localStorage.getItem('kickUsername') || '';
-    });
-  // Alias kickUsername to username for compatibility with existing code
+  const [visitorId, setVisitorId] = useState(userData?.visitor_id || getCookie('visitor_id') || null);
+  const [kickUsername, setKickUsername] = useState(userData?.kick_username || localStorage.getItem('kickUsername') || '');
   const username = kickUsername;
 
-  const [walletAddress, setWalletAddress] = useState(() => {
-      const sessionStr = localStorage.getItem('user_session') || getCookie('user_session');
-      const session = JSON.parse(sessionStr || '{}');
-      return session.wallet_address || localStorage.getItem('walletAddress') || '';
-  });
+  const [walletAddress, setWalletAddress] = useState(userData?.wallet_address || localStorage.getItem('walletAddress') || '');
   const [isProfileSaved, setIsProfileSaved] = useState(() => localStorage.getItem('isProfileSaved') === 'true');
-  const [gCode, setGCode] = useState(() => localStorage.getItem('gCode') || getCookie('gCode') || '');
-  const [points, setPoints] = useState(() => {
-    const saved = localStorage.getItem('user_points');
-    return saved ? parseInt(saved, 10) : 0;
-  });
-
-  // Ensure points are synced with backend on load
-  useEffect(() => {
-    const syncPoints = async () => {
-        if (!visitorId) return;
-        try {
-            const API_BASE = '';
-            const res = await fetch(`${API_BASE}/api/user-data?visitor_id=${visitorId}`);
-            if (res.ok) {
-                const data = await res.json();
-                if (data.success && data.user) {
-                    if (typeof data.user.total_points === 'number') {
-                        setPoints(data.user.total_points);
-                        localStorage.setItem('user_points', data.user.total_points.toString());
-                    }
-                    if (data.user.kick_username) setKickUsername(data.user.kick_username);
-                    if (data.user.wallet_address) setWalletAddress(data.user.wallet_address);
-                }
-            }
-        } catch (e) {
-            console.error('Failed to sync points:', e);
-        }
-    };
-    syncPoints();
-  }, [visitorId]);
+  const [gCode, setGCode] = useState(userData?.g_code || localStorage.getItem('gCode') || '');
+  const [points, setPoints] = useState(userData?.total_points || 0);
 
   // Persist points to localStorage
   useEffect(() => {
-    localStorage.setItem('user_points', points.toString());
-  }, [points]);
+    if (userData) {
+        setPoints(userData.total_points);
+        localStorage.setItem('user_points', userData.total_points.toString());
+    }
+  }, [userData]);
   const [showKickModal, setShowKickModal] = useState(false);
   const [tempKickUsername, setTempKickUsername] = useState('');
   const [showConsentModal, setShowConsentModal] = useState(false);
@@ -537,7 +505,7 @@ const Earn = () => {
       type: 'watch', 
       platform: 'TikTok', 
       action: 'Watch & Interact with Latest TikTok', 
-      instruction: 'MANDATORY: Comment your unique Watch Code',
+      instruction: 'MANDATORY: Comment your G-Code',
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Reel', 

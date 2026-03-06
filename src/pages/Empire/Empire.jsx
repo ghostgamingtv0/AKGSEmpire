@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutDashboard, Wallet, Menu, X, Users, Coins, Zap, User } from 'lucide-react';
@@ -11,6 +11,8 @@ import Login from './components/Login';
 import BackgroundEffects from '../../components/BackgroundEffects';
 import FacebookSDK from './components/FacebookSDK';
 import { ASSETS, SOCIAL_LINKS } from '../../config/constants';
+
+export const UserContext = createContext(null);
 
 const Navbar = ({ onConnect, walletAddress }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -292,33 +294,83 @@ function Empire() {
 
   const isHome = location.pathname === '/empire' || location.pathname === '/empire/' || location.pathname === '/empire/home';
 
+  const [userData, setUserData] = useState(null); // User data from backend
+  const [loadingUser, setLoadingUser] = useState(true);
+
+  useEffect(() => {
+    if (!isAuthChecked) return;
+
+    const initUser = async () => {
+      // NOTE: `load` from fingerprintjs needs to be imported at the top of the file.
+      try {
+        const fpPromise = load();
+        const { visitorId } = await (await fpPromise).get();
+        
+        const API_BASE = '';
+        const res = await fetch(`${API_BASE}/api/init-user`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ 
+              visitor_id: visitorId, 
+              wallet_address: localStorage.getItem('walletAddress'),
+              kick_username: localStorage.getItem('kickUsername')
+            })
+        });
+        const data = await res.json();
+        if (data.success && data.user) {
+            setUserData(data.user);
+            localStorage.setItem('user_session', JSON.stringify(data.user));
+            localStorage.setItem('gCode', data.user.g_code);
+            localStorage.setItem('kickUsername', data.user.kick_username || '');
+            localStorage.setItem('walletAddress', data.user.wallet_address || '');
+            localStorage.setItem('user_points', data.user.total_points.toString());
+        }
+      } catch (e) {
+        console.error("Failed to initialize user:", e);
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+    initUser();
+  }, [isAuthChecked]);
+
   if (!isAuthChecked && location.pathname !== '/empire/login') {
     return null;
   }
 
+  if (loadingUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-[#53FC18]">
+        Loading Empire...
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-[#53FC18] selection:text-black relative">
-      <FacebookSDK />
-      <BackgroundEffects />
-      <Navbar 
-        onConnect={() => setIsWalletModalOpen(true)} 
-        walletAddress={walletAddress}
-      />
-      <main className="flex-grow pt-20 relative z-10">
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route index element={<Navigate to="home" replace />} />
-            <Route path="home" element={<Hero />} />
-            <Route path="earn" element={<Earn />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="tokenomics" element={<Tokenomics />} />
-            <Route path="login" element={<Login />} />
-          </Routes>
-        </AnimatePresence>
-      </main>
-      <Footer />
-      <WalletModal isOpen={isWalletModalOpen} onClose={() => setIsWalletModalOpen(false)} />
-    </div>
+    <UserContext.Provider value={userData}>
+      <div className="min-h-screen flex flex-col font-sans selection:bg-[#53FC18] selection:text-black relative">
+        <FacebookSDK />
+        <BackgroundEffects />
+        <Navbar 
+          onConnect={() => setIsWalletModalOpen(true)} 
+          walletAddress={walletAddress}
+        />
+        <main className="flex-grow pt-20 relative z-10">
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route index element={<Navigate to="home" replace />} />
+              <Route path="home" element={<Hero />} />
+              <Route path="earn" element={<Earn />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="tokenomics" element={<Tokenomics />} />
+              <Route path="login" element={<Login />} />
+            </Routes>
+          </AnimatePresence>
+        </main>
+        <Footer />
+        <WalletModal isOpen={isWalletModalOpen} onClose={() => setIsWalletModalOpen(false)} />
+      </div>
+    </UserContext.Provider>
   )
 }
 
