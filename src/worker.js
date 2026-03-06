@@ -64,7 +64,7 @@ export default {
             success: true, 
             user: { 
               visitor_id, 
-              total_points: 1000, 
+              total_points: 0, 
               weekly_points: 0,
               kick_username: null,
               wallet_address: null,
@@ -120,7 +120,7 @@ export default {
             // If new user, create with a permanent G-Code
             let newUser = { 
               visitor_id, 
-              total_points: 1000, 
+              total_points: 0, 
               weekly_points: 0,
               kick_username: kick_username || null,
               wallet_address: wallet_address || null,
@@ -144,7 +144,7 @@ export default {
             const { visitor_id, kick_username, wallet_address } = body;
             if (env.USERS) {
               const existing = await env.USERS.get(`user_vId:${visitor_id}`);
-              let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 1000 };
+              let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 0 };
               
               // --- ACCOUNT MERGE LOGIC (Recover points from old ID if username matches) ---
               if (kick_username && !user.is_merged) {
@@ -181,7 +181,7 @@ export default {
             const { visitor_id, task_id, points } = body;
             if (env.USERS) {
               const existing = await env.USERS.get(`user_vId:${visitor_id}`);
-              let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 1000 };
+              let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 0 };
               user.total_points = (user.total_points || 0) + (points || 10);
               await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
               return new Response(JSON.stringify({ success: true, message: "Claimed on Edge", total_points: user.total_points }), { headers: { "Content-Type": "application/json" } });
@@ -210,20 +210,8 @@ export default {
           }
         }
 
-        // Leaderboard Categories - Merged Site & Kick Users
-        // In production, this would query the KV store for all users and sort them.
-        const mockUsers = [
-          { visitor_id: 'v1', kick_username: 'GHOST_GAMING', total_points: 45000, weekly_points: 5200, tasks_completed: 85, weekly_comments: 320, chat_messages_count: 1250, referral_count: 48, twitter_username: 'ghost_x', instagram_username: 'ghost_ig' },
-          { visitor_id: 'v2', kick_username: 'Empire_Commander', total_points: 32000, weekly_points: 3100, tasks_completed: 62, weekly_comments: 185, chat_messages_count: 820, referral_count: 25, threads_username: 'empire_th' },
-          { visitor_id: 'v3', kick_username: 'AKGS_Soldier', total_points: 22500, weekly_points: 2500, tasks_completed: 45, weekly_comments: 124, chat_messages_count: 610, referral_count: 19, twitter_username: 'akgs_s_x' },
-          { visitor_id: 'v4', kick_username: 'Shadow_Hunter', total_points: 18800, weekly_points: 1800, tasks_completed: 38, weekly_comments: 92, chat_messages_count: 480, referral_count: 12, instagram_username: 'shadow_ig' },
-          { visitor_id: 'v5', kick_username: 'Kick_King_99', total_points: 15600, weekly_points: 1450, tasks_completed: 32, weekly_comments: 71, chat_messages_count: 395, referral_count: 8, threads_username: 'kick_k_th' },
-          { visitor_id: 'v6', kick_username: 'Elite_Warrior', total_points: 12200, weekly_points: 1200, tasks_completed: 25, weekly_comments: 55, chat_messages_count: 250, referral_count: 5, twitter_username: 'elite_w' },
-          { visitor_id: 'v7', kick_username: 'Zoro_Empire', total_points: 9400, weekly_points: 900, tasks_completed: 18, weekly_comments: 40, chat_messages_count: 180, referral_count: 3, instagram_username: 'zoro_ig' },
-          { visitor_id: 'v8', kick_username: 'Phantom_Viewer', total_points: 7800, weekly_points: 750, tasks_completed: 14, weekly_comments: 28, chat_messages_count: 145, referral_count: 2, threads_username: 'phantom_th' },
-          { visitor_id: 'v9', kick_username: 'Ghost_Fan_01', total_points: 6200, weekly_points: 600, tasks_completed: 10, weekly_comments: 22, chat_messages_count: 110, referral_count: 1, twitter_username: 'ghost_f_x' },
-          { visitor_id: 'v10', kick_username: 'Loyal_Viewer_AKGS', total_points: 5500, weekly_points: 500, tasks_completed: 8, weekly_comments: 18, chat_messages_count: 95, referral_count: 0, instagram_username: 'loyal_v' }
-        ];
+        // Leaderboard Categories - Real Users only
+        const mockUsers = []; // REMOVED MOCKS PERMANENTLY
 
         // --- Leaderboard API ---
         if (url.pathname === "/api/leaderboard" || url.pathname === "/api/leaderboard/registered") {
@@ -255,16 +243,33 @@ export default {
           }
         }
 
-        // Kick Platform Leaderboard (Top users on Kick.com)
+        // Kick Platform Leaderboard (Top users from our DB who have Kick accounts)
         if (url.pathname === "/api/leaderboard/kick") {
-          return new Response(JSON.stringify({
-            success: true,
-            leaderboard: mockUsers.map(u => ({
-              username: u.kick_username,
-              total_points: u.total_points,
-              kick_username: u.kick_username
-            }))
-          }), { headers: { "Content-Type": "application/json" } });
+          try {
+            if (!env.USERS) {
+              return new Response(JSON.stringify({ success: true, leaderboard: [] }), { headers: { "Content-Type": "application/json" } });
+            }
+
+            const { keys } = await env.USERS.list({ prefix: "user_vId:" });
+            const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
+            
+            const leaderboardData = users
+              .filter(u => u && u.kick_username) // Only real users with Kick accounts
+              .map(u => ({
+                username: u.kick_username,
+                total_points: u.total_points || 0,
+                kick_username: u.kick_username
+              }))
+              .sort((a, b) => b.total_points - a.total_points)
+              .slice(0, 10);
+
+            return new Response(JSON.stringify({
+              success: true,
+              leaderboard: leaderboardData
+            }), { headers: { "Content-Type": "application/json" } });
+          } catch (e) {
+            return new Response(JSON.stringify({ success: true, leaderboard: [] }), { headers: { "Content-Type": "application/json" } });
+          }
         }
 
         // --- Category Leaderboards ---
