@@ -105,7 +105,7 @@ export default {
                   const val = await env.USERS.get(key.name);
                   if (val) {
                     const oldUser = JSON.parse(val);
-                    if (oldUser.kick_username === kick_username) {
+                    if (oldUser.kick_username?.toLowerCase() === kick_username?.toLowerCase()) {
                       // Found old data! Link it to the new visitor_id
                       let mergedUser = { ...oldUser, visitor_id, is_merged: true };
                       await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(mergedUser));

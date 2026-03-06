@@ -1,13 +1,79 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap, Clock } from 'lucide-react';
-import { FaPlay, FaPowerOff } from 'react-icons/fa6';
+import { FaPlay, FaPowerOff, FaRankingStar } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
 import { UserContext } from '../Empire';
 
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 import LeaderboardTabs from './LeaderboardTabs';
+
+const CHANNEL_STATS = {
+  rank: 6419,
+  general: [
+    { label: 'Hours Watched', value: '3 414', icon: <Clock size={16} /> },
+    { label: 'Peak Viewers', value: '149', icon: <TrendingUp size={16} /> },
+    { label: 'Average Viewers', value: '79', icon: <Activity size={16} /> },
+    { label: 'Follower Count', value: '1031', icon: <Users size={16} /> },
+    { label: 'Airtime', value: '43h 13m', icon: <Activity size={16} /> },
+    { label: 'AVG Stream Duration', value: '2h 24m', icon: <Clock size={16} /> },
+    { label: 'Total Messages', value: '9 425', icon: <MessageCircle size={16} /> },
+    { label: 'Unique Chatters', value: '998', icon: <Users size={16} /> },
+    { label: 'Total Streams', value: '18', icon: <Activity size={16} /> },
+    { label: 'Total Subscriptions', value: '35', icon: <Trophy size={16} /> },
+  ],
+  categories: [
+    { name: 'Marvel Rivals', av: 85, at: '35h', pv: 167, color: '#f43f5e', image: 'https://i.ibb.co/Roots-Marvel-Rivals.png' },
+    { name: 'EA Sports FC 26', av: 90, at: '24h', pv: 137, color: '#3b82f6', image: 'https://i.ibb.co/FC25-EA-Sports.png' },
+    { name: 'Where Winds Meet', av: 69, at: '14h', pv: 112, color: '#eab308', image: 'https://i.ibb.co/Where-Winds-Meet.png' },
+  ],
+  topChatters: [
+    { name: 'BotRix', chats: 739 },
+    { name: 'VNDTAA', chats: 321 },
+    { name: 'CHAMKAR2', chats: 273 },
+    { name: 'SoulTheKing', chats: 268 },
+    { name: 'slaycouper2', chats: 257 },
+  ],
+  weekAnalysis: {
+    activeDays: [
+      { day: 'Saturday', count: 23 },
+      { day: 'Sunday', count: 25 },
+      { day: 'Monday', count: 28 },
+      { day: 'Tuesday', count: 25 },
+      { day: 'Wednesday', count: 21 },
+      { day: 'Thursday', count: 22 },
+    ],
+    avgViewers: [
+      { day: 'Saturday', value: 50 },
+      { day: 'Sunday', value: 45 },
+      { day: 'Monday', value: 54 },
+      { day: 'Tuesday', value: 40 },
+      { day: 'Wednesday', value: 38 },
+      { day: 'Thursday', value: 42 },
+    ]
+  },
+  monthly: [
+    { month: 'mars 2026', avg: 77, gain: '+30', gainPct: '+63.8%', peak: 114, followers: '1.0K', fGain: '+48', perHour: 77, watched: 518, wGain: '-2846' },
+    { month: 'févr. 2026', avg: 81, gain: '-6', gainPct: '-6.9%', peak: 149, followers: 983, fGain: '+151', perHour: 81, watched: '3.4K', wGain: '-983' },
+    { month: 'janv. 2026', avg: 87, gain: '+29', gainPct: '+50.0%', peak: 167, followers: 832, fGain: '+61', perHour: 87, watched: '4.3K', wGain: '-536' },
+    { month: 'déc. 2025', avg: 58, gain: '-2', gainPct: '-3.3%', peak: 177, followers: 771, fGain: '+134', perHour: 58, watched: '4.9K', wGain: '+1.2K' },
+    { month: 'nov. 2025', avg: 60, gain: '+17', gainPct: '+39.5%', peak: 226, followers: 637, fGain: '+93', perHour: 60, watched: '3.7K', wGain: '+556' },
+    { month: 'oct. 2025', avg: 43, gain: '+35', gainPct: '+437.5%', peak: 306, followers: 544, fGain: '+150', perHour: 43, watched: '3.2K', wGain: '-1440' },
+    { month: 'sept. 2025', avg: 47, gain: '+26', gainPct: '+123.8%', peak: 171, followers: 394, fGain: '+184', perHour: 47, watched: '4.6K', wGain: '+2.9K' },
+    { month: 'août 2025', avg: 21, gain: '-60', gainPct: '-74.1%', peak: 49, followers: 210, fGain: '+74', perHour: 21, watched: '1.7K', wGain: '+1.1K' },
+    { month: 'juil. 2025', avg: 8, gain: '+1', gainPct: '+14.3%', peak: 26, followers: 136, fGain: '+118', perHour: 8, watched: 624, wGain: '+354' },
+    { month: 'juin 2025', avg: 7, gain: '+0', gainPct: '+0.0%', peak: 17, followers: 18, fGain: '+18', perHour: 7, watched: 270, wGain: '+270' },
+  ],
+  overlap: [
+    { name: 'SMAYKA4', unique: 58, shared: '100.0%', totalShared: 2, unreached: 0, color: '#ef4444' },
+    { name: 'andadronextrem', unique: 145, shared: '100.0%', totalShared: 2, unreached: 0, color: '#3b82f6' },
+    { name: 'Bourkabbx', unique: 91, shared: '50.0%', totalShared: 1, unreached: 2, color: '#84cc16' },
+    { name: 'gamemixtreize', unique: 814, shared: '50.0%', totalShared: 1, unreached: 12, color: '#f59e0b' },
+    { name: 'COUDINO', unique: 93, shared: '50.0%', totalShared: 1, unreached: 2, color: '#f97316' },
+    { name: 'ZaNouNi', unique: 1295, shared: '50.0%', totalShared: 1, unreached: 3, color: '#22c55e' },
+  ]
+};
 
 // Countdown Helper Component
 const Countdown = ({ targetDate }) => {
@@ -525,6 +591,192 @@ const Dashboard = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* --- NEW: COMPREHENSIVE CHANNEL INSIGHTS (From StreamerStats) --- */}
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16"
+        >
+            <div className="flex items-center justify-between mb-8">
+                <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+                    <Activity className="text-[#53FC18]" size={32} />
+                    إحصائيات القناة الشاملة | Channel Insights
+                </h2>
+                <div className="flex items-center gap-2 bg-[#53FC18] text-black px-4 py-1.5 rounded-lg font-bold shadow-[0_0_15px_rgba(83,252,24,0.4)]">
+                    <FaRankingStar />
+                    <span>Rank {CHANNEL_STATS.rank}</span>
+                </div>
+            </div>
+
+            {/* General Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                {CHANNEL_STATS.general.map((stat, idx) => (
+                    <div key={idx} className="bg-black/40 border border-white/10 p-4 rounded-xl hover:border-[#53FC18]/30 transition-colors">
+                        <div className="flex items-center gap-2 text-gray-400 mb-2">
+                            <span className="text-[#53FC18]">{stat.icon}</span>
+                            <span className="text-[10px] uppercase font-bold tracking-wider">{stat.label}</span>
+                        </div>
+                        <p className="text-xl font-black text-white">{stat.value}</p>
+                    </div>
+                ))}
+            </div>
+
+            {/* Categories & Top Chatters Grid */}
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+                {/* Categories Streamed */}
+                <div className="glass-panel p-6 border border-white/10">
+                    <div className="flex items-center gap-2 mb-6">
+                        <Layout size={20} className="text-[#53FC18]" />
+                        <h3 className="font-bold uppercase tracking-widest text-sm">Categories Streamed | الفئات</h3>
+                    </div>
+                    <div className="flex flex-col sm:flex-row items-center gap-8">
+                        <div className="relative w-40 h-40">
+                            <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f43f5e" strokeWidth="3" strokeDasharray="48, 100" />
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#3b82f6" strokeWidth="3" strokeDasharray="32, 100" strokeDashoffset="-48" />
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#eab308" strokeWidth="3" strokeDasharray="20, 100" strokeDashoffset="-80" />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <span className="text-2xl font-black text-white">3</span>
+                                <span className="text-[8px] text-gray-500 uppercase">Games</span>
+                            </div>
+                        </div>
+                        <div className="flex-1 space-y-4 w-full">
+                            {CHANNEL_STATS.categories.map((cat, idx) => (
+                                <div key={idx} className="flex items-center justify-between group">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-1.5 h-8 rounded-full" style={{ backgroundColor: cat.color }}></div>
+                                        <div>
+                                            <p className="text-sm font-bold text-white group-hover:text-[#53FC18] transition-colors">{cat.name}</p>
+                                            <p className="text-[10px] text-gray-500 uppercase tracking-tighter">AV: {cat.av} | AT: {cat.at} | PV: {cat.pv}</p>
+                                        </div>
+                                    </div>
+                                    <TrendingUp size={14} className="text-green-500" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Top Chatters */}
+                <div className="glass-panel p-6 border border-white/10">
+                    <div className="flex items-center gap-2 mb-6">
+                        <MessageCircle size={20} className="text-[#53FC18]" />
+                        <h3 className="font-bold uppercase tracking-widest text-sm">Top Chatters | أفضل المتحدثين</h3>
+                    </div>
+                    <div className="space-y-3">
+                        {CHANNEL_STATS.topChatters.map((chatter, idx) => (
+                            <div key={idx} className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-[#53FC18]/20 transition-all">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-xs font-black text-[#53FC18]/40 w-4">#{idx + 1}</span>
+                                    <span className="font-bold text-gray-200">{chatter.name}</span>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-white font-black">{chatter.chats}</span>
+                                    <span className="text-[8px] text-gray-500 block uppercase">Messages</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Monthly Stats Table */}
+            <div className="glass-panel overflow-hidden border border-white/10 mb-8">
+                <div className="bg-white/5 p-4 border-b border-white/10 flex items-center gap-2">
+                    <Clock size={18} className="text-[#53FC18]" />
+                    <h3 className="font-bold uppercase tracking-widest text-sm">Monthly Performance | الأداء الشهري</h3>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-black/20 text-[10px] uppercase text-gray-500 font-bold">
+                                <th className="p-4 border-b border-white/5">Month</th>
+                                <th className="p-4 border-b border-white/5">Avg Viewers</th>
+                                <th className="p-4 border-b border-white/5">Peak Viewers</th>
+                                <th className="p-4 border-b border-white/5">Followers</th>
+                                <th className="p-4 border-b border-white/5">Hours Watched</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-sm">
+                            {CHANNEL_STATS.monthly.map((row, idx) => (
+                                <tr key={idx} className="hover:bg-white/5 transition-colors border-b border-white/5">
+                                    <td className="p-4 font-bold text-gray-300">{row.month}</td>
+                                    <td className="p-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-white font-bold">{row.avg}</span>
+                                            <span className={`text-[10px] ${row.gain.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
+                                                {row.gain} ({row.gainPct})
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="p-4 text-white">{row.peak}</td>
+                                    <td className="p-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-white">{row.followers}</span>
+                                            <span className="text-[10px] text-green-500">{row.fGain}</span>
+                                        </div>
+                                    </td>
+                                    <td className="p-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-white">{row.watched}</span>
+                                            <span className={`text-[10px] ${row.wGain.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
+                                                {row.wGain}
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Audience Overlap Section */}
+            <div className="grid md:grid-cols-3 gap-8">
+                <div className="md:col-span-2 glass-panel p-6 border border-white/10">
+                    <div className="flex items-center gap-2 mb-6">
+                        <Users size={20} className="text-[#53FC18]" />
+                        <h3 className="font-bold uppercase tracking-widest text-sm">Audience Overlap | تداخل الجمهور</h3>
+                    </div>
+                    <div className="space-y-4">
+                        {CHANNEL_STATS.overlap.map((item, idx) => (
+                            <div key={idx} className="relative">
+                                <div className="flex justify-between text-xs mb-1">
+                                    <span className="font-bold text-gray-300">{item.name}</span>
+                                    <span className="text-gray-500">{item.shared} Shared Chatters</span>
+                                </div>
+                                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <motion.div 
+                                        initial={{ width: 0 }}
+                                        whileInView={{ width: item.shared }}
+                                        transition={{ duration: 1, delay: idx * 0.1 }}
+                                        className="h-full rounded-full"
+                                        style={{ backgroundColor: item.color }}
+                                    />
+                                </div>
+                                <div className="flex justify-between mt-1 text-[9px] text-gray-600 uppercase font-bold tracking-tighter">
+                                    <span>{item.unique} Unique Viewers</span>
+                                    <span>Unreached: {item.unreached}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="glass-panel p-6 border border-white/10 flex flex-col items-center justify-center text-center">
+                    <div className="w-32 h-32 rounded-full border-8 border-[#53FC18]/20 flex items-center justify-center relative mb-4">
+                        <div className="absolute inset-0 rounded-full border-8 border-[#53FC18] border-t-transparent animate-spin-slow"></div>
+                        <Trophy size={48} className="text-[#53FC18]" />
+                    </div>
+                    <h4 className="text-xl font-black text-white mb-2">Dominance Index</h4>
+                    <p className="text-gray-400 text-xs">Based on shared chatters and community engagement</p>
+                    <div className="mt-6 text-4xl font-black text-[#53FC18]">84.2%</div>
+                </div>
+            </div>
+        </motion.div>
 
 
 

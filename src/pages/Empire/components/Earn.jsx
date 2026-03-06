@@ -177,7 +177,7 @@ const Earn = () => {
     const baseId = typeof baseIdSource === 'string' ? baseIdSource.slice(0, 8) : 'noWallet';
     const tag = getPlatformTag(platform);
 
-    // Dynamic Watch Code for social engagement
+    // Dynamic G-Code for social engagement
     // Logic: Post Link (last 10 chars) + Stable Seed
     const currentPostLink = feedStatus[platform.toLowerCase()]?.link || SOCIAL_LINKS[platform.toUpperCase()] || '';
     const postSeed = currentPostLink.slice(-10) || 'default';
@@ -190,7 +190,7 @@ const Earn = () => {
     }
     const digits = String(Math.abs(hash) % 900000 + 100000); 
 
-    return `WATCH-${tag}-${digits}`;
+    return `G-${tag}-${digits}`;
   };
 
   const getOrCreateViewCode = (platform) => {
@@ -521,7 +521,7 @@ const Earn = () => {
       type: 'watch', 
       platform: 'Instagram', 
       action: 'Like & Share Latest Instagram Reel', 
-      instruction: 'MANDATORY: Comment your unique Watch Code',
+      instruction: 'MANDATORY: Comment your unique G-Code',
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Reel', 
@@ -537,7 +537,7 @@ const Earn = () => {
       type: 'watch', 
       platform: 'Twitter (X)', 
       action: 'Like & Repost Latest X Post', 
-      instruction: 'MANDATORY: Comment your unique Watch Code',
+      instruction: 'MANDATORY: Comment your unique G-Code',
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Post', 
@@ -553,7 +553,7 @@ const Earn = () => {
       type: 'watch', 
       platform: 'Threads', 
       action: 'Like & Share Latest Threads Post', 
-      instruction: 'MANDATORY: Comment your unique Watch Code',
+      instruction: 'MANDATORY: Comment your unique G-Code',
       reward: '10 Points', 
       status: 'new_content',
       contentType: 'Post', 

@@ -265,6 +265,20 @@ function Empire() {
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('wallet-connection-update', handleStorageChange); // Custom event
 
+    // Security: Disable Right-Click and F12
+    const handleContextMenu = (e) => e.preventDefault();
+    const handleKeyDown = (e) => {
+      if (
+        e.keyCode === 123 || // F12
+        (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || // Ctrl+Shift+I/J
+        (e.ctrlKey && e.keyCode === 85) // Ctrl+U
+      ) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+
     // Check for referral code in URL
     const params = new URLSearchParams(window.location.search);
     const refCode = params.get('ref');
