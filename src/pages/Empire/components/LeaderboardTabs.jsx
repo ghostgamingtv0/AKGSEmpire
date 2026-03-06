@@ -87,16 +87,23 @@ const LeaderboardTabs = () => {
       twitter: [
         { username: 'GHOST_GAMINGTV', weekly_points: 15400, tasks_completed: 45 },
         { username: 'undercover', weekly_points: 8300, tasks_completed: 32 },
-        { username: 'Kick_Ninja', weekly_points: 7200, tasks_completed: 28 }
+        { username: 'Kick_Ninja', weekly_points: 7200, tasks_completed: 28 },
+        { username: 'Z_Ghost', weekly_points: 6400, tasks_completed: 25 },
+        { username: 'AKGS_Fan_99', weekly_points: 5100, tasks_completed: 22 }
       ],
       threads: [
         { username: 'GHOST_GAMINGTV', weekly_points: 12400, tasks_completed: 35 },
-        { username: 'undercover', weekly_points: 7300, tasks_completed: 28 }
+        { username: 'undercover', weekly_points: 7300, tasks_completed: 28 },
+        { username: 'Kick_Ninja', weekly_points: 6200, tasks_completed: 24 },
+        { username: 'Z_Ghost', weekly_points: 5400, tasks_completed: 21 },
+        { username: 'AKGS_Fan_99', weekly_points: 4100, tasks_completed: 18 }
       ],
       instagram: [
         { username: 'GHOST_GAMINGTV', weekly_points: 18450, tasks_completed: 55 },
         { username: 'undercover', weekly_points: 10300, tasks_completed: 42 },
-        { username: 'Kick_Ninja', weekly_points: 9200, tasks_completed: 38 }
+        { username: 'Kick_Ninja', weekly_points: 9200, tasks_completed: 38 },
+        { username: 'Z_Ghost', weekly_points: 8400, tasks_completed: 35 },
+        { username: 'AKGS_Fan_99', weekly_points: 7100, tasks_completed: 32 }
       ]
     };
 
