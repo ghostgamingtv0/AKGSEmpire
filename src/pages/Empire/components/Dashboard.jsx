@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap, Clock, Layout } from 'lucide-react';
+import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, TrendingUp, MessageCircle, Zap, Clock, Layout, BarChart3 } from 'lucide-react';
 import { FaPlay, FaPowerOff, FaRankingStar } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
@@ -741,7 +741,7 @@ const Dashboard = () => {
 
             {/* Audience Overlap Section */}
             <div className="grid md:grid-cols-3 gap-8">
-                <div className="md:col-span-2 glass-panel p-6 border border-white/10">
+                <div className="md:col-span-2 glass-panel p-6 border border-white/10 bg-black/40">
                     <div className="flex items-center gap-2 mb-6">
                         <Users size={20} className="text-[#53FC18]" />
                         <h3 className="font-bold uppercase tracking-widest text-sm">Audience Overlap | تداخل الجمهور</h3>
@@ -771,14 +771,54 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                <div className="glass-panel p-6 border border-white/10 flex flex-col items-center justify-center text-center">
+                <div className="glass-panel p-6 border border-white/10 bg-black/40 flex flex-col items-center justify-center text-center">
                     <div className="w-32 h-32 rounded-full border-8 border-[#53FC18]/20 flex items-center justify-center relative mb-4">
                         <div className="absolute inset-0 rounded-full border-8 border-[#53FC18] border-t-transparent animate-spin-slow"></div>
                         <Trophy size={48} className="text-[#53FC18]" />
                     </div>
                     <h4 className="text-xl font-black text-white mb-2">Dominance Index</h4>
-                    <p className="text-gray-400 text-xs">Based on shared chatters and community engagement</p>
-                    <div className="mt-6 text-4xl font-black text-[#53FC18]">84.2%</div>
+                    <p className="text-gray-400 text-xs uppercase tracking-widest">Based on shared chatters and community engagement</p>
+                    <div className="mt-6 text-4xl font-black text-[#53FC18] drop-shadow-[0_0_10px_rgba(83,252,24,0.3)]">84.2%</div>
+                </div>
+            </div>
+
+            {/* Week Analysis Section (Image 4) */}
+            <div className="mt-12 glass-panel p-6 border border-white/10 bg-black/40">
+                <div className="flex items-center gap-2 mb-8">
+                    <BarChart3 size={20} className="text-[#53FC18]" />
+                    <h3 className="font-bold uppercase tracking-widest text-sm">Week Analysis | تحليل الأسبوع</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {/* Active Days */}
+                    <div className="space-y-4">
+                        <h4 className="text-[#53FC18] text-xs font-bold uppercase tracking-widest border-b border-[#53FC18]/20 pb-2">Number of active days</h4>
+                        {CHANNEL_STATS.weekAnalysis.activeDays.map((d, i) => (
+                            <div key={i} className="flex justify-between items-center text-sm group">
+                                <span className="text-gray-400 group-hover:text-white transition-colors">{d.day}</span>
+                                <span className="font-black text-white">{d.count}</span>
+                            </div>
+                        ))}
+                    </div>
+                    {/* Hours Streamed */}
+                    <div className="space-y-4">
+                        <h4 className="text-[#53FC18] text-xs font-bold uppercase tracking-widest border-b border-[#53FC18]/20 pb-2">Hours streamed on average</h4>
+                        {['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].map((day, i) => (
+                            <div key={i} className="flex justify-between items-center text-sm group">
+                                <span className="text-gray-400 group-hover:text-white transition-colors">{day}</span>
+                                <span className="font-black text-red-500">-{ (1.1 + (i * 0.1)).toFixed(1) }</span>
+                            </div>
+                        ))}
+                    </div>
+                    {/* Viewers on Average */}
+                    <div className="space-y-4">
+                        <h4 className="text-[#53FC18] text-xs font-bold uppercase tracking-widest border-b border-[#53FC18]/20 pb-2">Viewers on average</h4>
+                        {CHANNEL_STATS.weekAnalysis.avgViewers.map((v, i) => (
+                            <div key={i} className="flex justify-between items-center text-sm group">
+                                <span className="text-gray-400 group-hover:text-white transition-colors">{v.day}</span>
+                                <span className="font-black text-white">{v.value}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </motion.div>
