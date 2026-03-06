@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, MessageCircle, Users, Instagram, Twitter, Hash, MonitorPlay, ExternalLink, CheckSquare, MessageSquare } from 'lucide-react';
+import { Trophy, MessageCircle, Users, Instagram, Twitter, Hash, MonitorPlay, ExternalLink, CheckSquare, MessageSquare, Clock } from 'lucide-react';
 
 const API_BASE = ''; // Use relative path
 
