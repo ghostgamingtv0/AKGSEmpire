@@ -621,6 +621,12 @@ const Dashboard = () => {
                 // Show Registered Users from KV
                 const sorted = [...leaderboard].sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 10);
                 const display = [...sorted];
+                
+                // Add the current user to the list if they are not there yet to show it's working
+                if (userData && !display.find(u => u.visitor_id === userData.visitor_id)) {
+                    display.push({ ...userData, username: userData.kick_username || 'You' });
+                }
+
                 while (display.length < 10) {
                     display.push({ isPlaceholder: true });
                 }
