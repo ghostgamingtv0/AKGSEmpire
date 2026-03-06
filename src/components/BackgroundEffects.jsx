@@ -171,41 +171,15 @@ const Ghost = ({ className = "", size = 64, showEyes = false, isOverload = false
 const BackgroundEffects = () => {
   // Always show eyes for Genesis as per prototype design
   const shouldShowEyes = true;
-  const [ghostCount, setGhostCount] = useState(5); // Start with 5 ghosts
+  const ghostCount = 50; // Fixed at 50 ghosts for performance
 
-  // Handle click or keypress to increase ghosts
-  const handleInteraction = (e) => {
-    // Prevent typing from triggering
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-    // Allow any key press (removed Space restriction)
-    
-    setGhostCount(prev => {
-        if (prev >= 100) return 5; // Reset to 5 if reached 100
-        return prev + 1;
-    });
-  };
-
-  // Add event listener for global clicks and key presses
-  useEffect(() => {
-    window.addEventListener('click', handleInteraction);
-    window.addEventListener('keydown', handleInteraction);
-    return () => {
-        window.removeEventListener('click', handleInteraction);
-        window.removeEventListener('keydown', handleInteraction);
-    };
-  }, []);
-
-  // Check if overload mode (reached 100)
-  const isOverload = ghostCount === 100;
-
-  // Generate ghosts array based on count
+  // Generate ghosts array based on fixed count
   const ghosts = useMemo(() => {
     return Array.from({ length: ghostCount }).map((_, i) => ({
       id: i,
       size: Math.random() * 40 + 40, 
     }));
-  }, [ghostCount]);
+  }, []);
 
   const particles = useMemo(() => [...Array(30)].map((_, i) => ({
     id: i,
@@ -272,7 +246,7 @@ const BackgroundEffects = () => {
         {/* Ghosts Layer */}
         <div className="relative z-10 w-full h-full">
             {ghosts.map(ghost => (
-                <Ghost key={ghost.id} {...ghost} showEyes={shouldShowEyes} isOverload={isOverload} />
+                <Ghost key={ghost.id} {...ghost} showEyes={shouldShowEyes} isOverload={false} />
             ))}
         </div>
     </div>

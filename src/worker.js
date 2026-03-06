@@ -118,6 +118,25 @@ export default {
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Update Error" }), { status: 500 }); }
         }
 
+        // --- Rotate G-Code API ---
+        if (url.pathname === "/api/rotate-gcode" && request.method === "POST") {
+          try {
+            const body = await request.json();
+            const { visitor_id } = body;
+            if (env.USERS) {
+              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
+              if (existing) {
+                let user = JSON.parse(existing);
+                user.g_code = `GHOST-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+                await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
+                return new Response(JSON.stringify({ success: true, g_code: user.g_code }), { headers: { "Content-Type": "application/json" } });
+              }
+            }
+            const newGCode = `GHOST-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+            return new Response(JSON.stringify({ success: true, g_code: newGCode }), { headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Rotation Error" }), { status: 500 }); }
+        }
+
         // --- Claim Reward API ---
         if (url.pathname === "/api/claim" && request.method === "POST") {
           try {
@@ -154,37 +173,33 @@ export default {
           }
         }
 
-        // --- Leaderboard API ---
-        if (url.pathname === "/api/leaderboard") {
-          const leaderboard = [
-            { username: "Ghost_Master", total_points: 15000, platform: 'site', kick_username: 'ghost_m' },
-            { username: "Empire_King", total_points: 12000, platform: 'site', kick_username: 'king_emp' },
-            { username: "Shadow_Warrior", total_points: 9500, platform: 'site', kick_username: 'shadow_w' },
-            { username: "Kick_Legend_01", total_points: 8200, platform: 'kick', kick_username: 'kick_legend' },
-            { username: "Ninja_Ghost", total_points: 7500, platform: 'kick', kick_username: 'ninja_g' },
-            { username: "Top_Viewer_99", total_points: 6800, platform: 'kick', kick_username: 'top_v' }
-          ].sort((a, b) => b.total_points - a.total_points);
-
-          return new Response(JSON.stringify({
-            success: true,
-            leaderboard: leaderboard
-          }), { headers: { "Content-Type": "application/json" } });
-        }
-
         // Leaderboard Categories - Merged Site & Kick Users
         // In production, this would query the KV store for all users and sort them.
         const mockUsers = [
-          { visitor_id: 'v1', kick_username: 'AKGS_Founder', total_points: 25400, weekly_points: 3200, tasks_completed: 45, weekly_comments: 120, chat_messages_count: 850, referral_count: 24, twitter_username: 'akgs_x', instagram_username: 'akgs_ig' },
-          { visitor_id: 'v2', kick_username: 'Empire_General', total_points: 18200, weekly_points: 2100, tasks_completed: 38, weekly_comments: 85, chat_messages_count: 620, referral_count: 15, threads_username: 'empire_th' },
-          { visitor_id: 'v3', kick_username: 'Ghost_Stalker', total_points: 12500, weekly_points: 1500, tasks_completed: 25, weekly_comments: 64, chat_messages_count: 410, referral_count: 9, twitter_username: 'ghost_s_x' },
-          { visitor_id: 'v4', kick_username: 'Shadow_Ninja', total_points: 9800, weekly_points: 1200, tasks_completed: 18, weekly_comments: 42, chat_messages_count: 280, referral_count: 5, instagram_username: 'shadow_ig' },
-          { visitor_id: 'v5', kick_username: 'Kick_Warrior', total_points: 7600, weekly_points: 950, tasks_completed: 12, weekly_comments: 31, chat_messages_count: 195, referral_count: 3, threads_username: 'kick_w_th' },
-          { visitor_id: 'v6', kick_username: 'Elite_Commander', total_points: 6200, weekly_points: 800, tasks_completed: 10, weekly_comments: 25, chat_messages_count: 150, referral_count: 2, twitter_username: 'elite_c' },
-          { visitor_id: 'v7', kick_username: 'Zoro_AKGS', total_points: 5400, weekly_points: 700, tasks_completed: 8, weekly_comments: 20, chat_messages_count: 120, referral_count: 1, instagram_username: 'zoro_ig' },
-          { visitor_id: 'v8', kick_username: 'Phantom_Ghost', total_points: 4800, weekly_points: 650, tasks_completed: 7, weekly_comments: 18, chat_messages_count: 95, referral_count: 1, threads_username: 'phantom_th' },
-          { visitor_id: 'v9', kick_username: 'King_Of_Empire', total_points: 4200, weekly_points: 600, tasks_completed: 6, weekly_comments: 15, chat_messages_count: 80, referral_count: 0, twitter_username: 'king_e_x' },
-          { visitor_id: 'v10', kick_username: 'Loyal_Soldier', total_points: 3500, weekly_points: 500, tasks_completed: 5, weekly_comments: 12, chat_messages_count: 65, referral_count: 0, instagram_username: 'loyal_s' }
+          { visitor_id: 'v1', kick_username: 'GHOST_GAMING', total_points: 45000, weekly_points: 5200, tasks_completed: 85, weekly_comments: 320, chat_messages_count: 1250, referral_count: 48, twitter_username: 'ghost_x', instagram_username: 'ghost_ig' },
+          { visitor_id: 'v2', kick_username: 'Empire_Commander', total_points: 32000, weekly_points: 3100, tasks_completed: 62, weekly_comments: 185, chat_messages_count: 820, referral_count: 25, threads_username: 'empire_th' },
+          { visitor_id: 'v3', kick_username: 'AKGS_Soldier', total_points: 22500, weekly_points: 2500, tasks_completed: 45, weekly_comments: 124, chat_messages_count: 610, referral_count: 19, twitter_username: 'akgs_s_x' },
+          { visitor_id: 'v4', kick_username: 'Shadow_Hunter', total_points: 18800, weekly_points: 1800, tasks_completed: 38, weekly_comments: 92, chat_messages_count: 480, referral_count: 12, instagram_username: 'shadow_ig' },
+          { visitor_id: 'v5', kick_username: 'Kick_King_99', total_points: 15600, weekly_points: 1450, tasks_completed: 32, weekly_comments: 71, chat_messages_count: 395, referral_count: 8, threads_username: 'kick_k_th' },
+          { visitor_id: 'v6', kick_username: 'Elite_Warrior', total_points: 12200, weekly_points: 1200, tasks_completed: 25, weekly_comments: 55, chat_messages_count: 250, referral_count: 5, twitter_username: 'elite_w' },
+          { visitor_id: 'v7', kick_username: 'Zoro_Empire', total_points: 9400, weekly_points: 900, tasks_completed: 18, weekly_comments: 40, chat_messages_count: 180, referral_count: 3, instagram_username: 'zoro_ig' },
+          { visitor_id: 'v8', kick_username: 'Phantom_Viewer', total_points: 7800, weekly_points: 750, tasks_completed: 14, weekly_comments: 28, chat_messages_count: 145, referral_count: 2, threads_username: 'phantom_th' },
+          { visitor_id: 'v9', kick_username: 'Ghost_Fan_01', total_points: 6200, weekly_points: 600, tasks_completed: 10, weekly_comments: 22, chat_messages_count: 110, referral_count: 1, twitter_username: 'ghost_f_x' },
+          { visitor_id: 'v10', kick_username: 'Loyal_Viewer_AKGS', total_points: 5500, weekly_points: 500, tasks_completed: 8, weekly_comments: 18, chat_messages_count: 95, referral_count: 0, instagram_username: 'loyal_v' }
         ];
+
+        // Ensure leaderboard endpoint uses these users
+        if (url.pathname === "/api/leaderboard") {
+          return new Response(JSON.stringify({
+            success: true,
+            leaderboard: mockUsers.map(u => ({
+                username: u.kick_username,
+                total_points: u.total_points,
+                kick_username: u.kick_username,
+                visitor_id: u.visitor_id
+            })).sort((a, b) => b.total_points - a.total_points)
+          }), { headers: { "Content-Type": "application/json" } });
+        }
 
         if (url.pathname === "/api/leaderboard/tasks") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.tasks_completed - a.tasks_completed)), { headers: { "Content-Type": "application/json" } });
         if (url.pathname === "/api/leaderboard/comments") return new Response(JSON.stringify(mockUsers.sort((a,b) => b.weekly_comments - a.weekly_comments)), { headers: { "Content-Type": "application/json" } });
