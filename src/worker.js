@@ -154,7 +154,7 @@ export default {
                   if (val) {
                     const otherUser = JSON.parse(val);
                     // If we find another ID with the same username and more points, merge it!
-                    if (otherUser.visitor_id !== visitor_id && otherUser.kick_username === kick_username) {
+                    if (otherUser.visitor_id !== visitor_id && otherUser.kick_username?.toLowerCase() === kick_username?.toLowerCase()) {
                       user.total_points = Math.max(user.total_points || 0, otherUser.total_points || 0);
                       user.g_code = otherUser.g_code || user.g_code; // Keep the old G-Code
                       user.is_merged = true;
