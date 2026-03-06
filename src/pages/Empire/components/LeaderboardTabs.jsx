@@ -125,7 +125,12 @@ const LeaderboardTabs = () => {
 
     // If real data from API is empty, use community fallbacks to keep site look professional
     const finalData = filtered.length > 0 ? filtered : (communityFallbacks[platformId] || []);
-    return finalData; // Return only existing real data
+    
+    // FINAL SAFETY FILTER: Remove anything that looks like a random ID or placeholder
+    return finalData.filter(user => {
+        const name = user.username || user.kick_username || '';
+        return name && !name.startsWith('User_') && !name.includes('-') && name.length < 30;
+    });
   };
 
   const getMetricDisplay = (user, metricId) => {

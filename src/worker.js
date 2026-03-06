@@ -1,4 +1,3 @@
-import { handleTikTokRequest } from './api_social_media/tiktok/router.js';
 import { handleKickRequest, KICK_CONFIG } from './api_social_media/kick/router.js';
 import { handleFacebookRequest } from './api_social_media/facebook/router.js';
 import { handleInstagramRequest } from './api_social_media/instagram/router.js';
@@ -15,6 +14,20 @@ export default {
     }
 
     try {
+      // --- Social Media Handlers (Bypass for API) ---
+      if (url.pathname.startsWith("/api/kick/")) {
+        const kickRes = await handleKickRequest(request, url, env);
+        if (kickRes) return kickRes;
+      }
+      if (url.pathname.startsWith("/api/facebook/")) {
+        const fbRes = await handleFacebookRequest(request, url, env);
+        if (fbRes) return fbRes;
+      }
+      if (url.pathname.startsWith("/api/instagram/")) {
+        const igRes = await handleInstagramRequest(request, url, env);
+        if (igRes) return igRes;
+      }
+
       // =================================================================================
       // 0. STATIC VERIFICATION FILES (Bypass SPA Routing)
       // =================================================================================
@@ -39,22 +52,11 @@ export default {
       // =================================================================================
       if (url.pathname.startsWith("/api/")) {
         
-        // --- Social Media Handlers ---
-        const kickRes = await handleKickRequest(request, url, env);
-        if (kickRes) return kickRes;
-
-        const fbRes = await handleFacebookRequest(request, url, env);
-        if (fbRes) return fbRes;
-
-        const igRes = await handleInstagramRequest(request, url, env);
-        if (igRes) return igRes;
-
         // --- User Data API ---
         if (url.pathname === "/api/user-data") {
           const visitor_id = url.searchParams.get("visitor_id");
           if (!visitor_id) return new Response(JSON.stringify({ success: false, error: "Missing visitor_id" }), { status: 400 });
           
-          // Try to get from KV if exists, otherwise return a structured default
           if (env.USERS) {
             const data = await env.USERS.get(`user_vId:${visitor_id}`);
             if (data) return new Response(JSON.stringify({ success: true, user: JSON.parse(data) }), { headers: { "Content-Type": "application/json" } });
@@ -62,14 +64,7 @@ export default {
           
           return new Response(JSON.stringify({ 
             success: true, 
-            user: { 
-              visitor_id, 
-              total_points: 0, 
-              weekly_points: 0,
-              kick_username: null,
-              wallet_address: null,
-              g_code: null
-            } 
+            user: { visitor_id, total_points: 0, weekly_points: 0, kick_username: null, wallet_address: null, g_code: null } 
           }), { headers: { "Content-Type": "application/json" } });
         }
 
@@ -82,9 +77,7 @@ export default {
             const generateUniqueGCode = () => {
               const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
               let result = 'G-';
-              for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-              }
+              for (let i = 0; i < 6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
               return result;
             };
             
@@ -92,157 +85,54 @@ export default {
               const existing = await env.USERS.get(`user_vId:${visitor_id}`);
               if (existing) {
                 const existingUser = JSON.parse(existing);
-                // If user exists, just update and return their data, NEVER change G-Code
                 const updatedUser = { ...existingUser, ...body };
                 await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(updatedUser));
                 return new Response(JSON.stringify({ success: true, user: updatedUser }), { headers: { "Content-Type": "application/json" } });
               }
-
-              // --- AUTO-RECOVERY ON INIT (If user has points on a different ID with same Kick username) ---
-              if (kick_username) {
-                const { keys } = await env.USERS.list({ prefix: "user_vId:" });
-                for (const key of keys) {
-                  const val = await env.USERS.get(key.name);
-                  if (val) {
-                    const oldUser = JSON.parse(val);
-                    if (oldUser.kick_username?.toLowerCase() === kick_username?.toLowerCase()) {
-                      // Found old data! Link it to the new visitor_id
-                      let mergedUser = { ...oldUser, visitor_id, is_merged: true };
-                      await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(mergedUser));
-                      await env.USERS.delete(key.name); // Clean up old ID
-                      return new Response(JSON.stringify({ success: true, user: mergedUser, recovered: true }), { headers: { "Content-Type": "application/json" } });
-                    }
-                  }
-                }
-              }
             }
 
-            // If new user, create with a permanent G-Code
             let newUser = { 
-              visitor_id, 
-              total_points: 0, 
-              weekly_points: 0,
-              kick_username: kick_username || null,
-              wallet_address: wallet_address || null,
-              g_code: generateUniqueGCode(),
-              referral_count: 0
+              visitor_id, total_points: 0, weekly_points: 0,
+              kick_username: kick_username || null, wallet_address: wallet_address || null,
+              g_code: generateUniqueGCode(), referral_count: 0
             };
-            newUser.referral_code = newUser.g_code; // Legacy support
+            newUser.referral_code = newUser.g_code;
 
-            if (env.USERS) {
-              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
-            }
-            
+            if (env.USERS) await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
             return new Response(JSON.stringify({ success: true, user: newUser }), { headers: { "Content-Type": "application/json" } });
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Init Error" }), { status: 500 }); }
         }
 
-        // --- Update Profile API ---
-        if (url.pathname === "/api/update-profile" && request.method === "POST") {
-          try {
-            const body = await request.json();
-            const { visitor_id, kick_username, wallet_address } = body;
-            if (env.USERS) {
-              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
-              let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 0 };
-              
-              // --- ACCOUNT MERGE LOGIC (Recover points from old ID if username matches) ---
-              if (kick_username && !user.is_merged) {
-                const { keys } = await env.USERS.list({ prefix: "user_vId:" });
-                for (const key of keys) {
-                  const val = await env.USERS.get(key.name);
-                  if (val) {
-                    const otherUser = JSON.parse(val);
-                    // If we find another ID with the same username and more points, merge it!
-                    if (otherUser.visitor_id !== visitor_id && otherUser.kick_username?.toLowerCase() === kick_username?.toLowerCase()) {
-                      user.total_points = Math.max(user.total_points || 0, otherUser.total_points || 0);
-                      user.g_code = otherUser.g_code || user.g_code; // Keep the old G-Code
-                      user.is_merged = true;
-                      // Delete old ID entry to prevent duplicates
-                      await env.USERS.delete(key.name);
-                      return new Response(JSON.stringify({ success: true, user, recovered: true }), { headers: { "Content-Type": "application/json" } });
-                    }
-                  }
-                }
-              }
-
-              user = { ...user, kick_username, wallet_address };
-              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
-              return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
-            }
-            return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Update Error" }), { status: 500 }); }
-        }
-
-        // --- Claim Reward API ---
-        if (url.pathname === "/api/claim" && request.method === "POST") {
-          try {
-            const body = await request.json();
-            const { visitor_id, task_id, points } = body;
-            if (env.USERS) {
-              const existing = await env.USERS.get(`user_vId:${visitor_id}`);
-              let user = existing ? JSON.parse(existing) : { visitor_id, total_points: 0 };
-              user.total_points = (user.total_points || 0) + (points || 10);
-              await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
-              return new Response(JSON.stringify({ success: true, message: "Claimed on Edge", total_points: user.total_points }), { headers: { "Content-Type": "application/json" } });
-            }
-            return new Response(JSON.stringify({ success: true, message: "Claimed (Local Mode)" }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Claim Error" }), { status: 500 }); }
-        }
-
         // --- Stats API ---
-        if (url.pathname === "/api/stats" || url.pathname === "/empire/earn/api/stats") {
+        if (url.pathname === "/api/stats") {
           try {
-            const kickApi = await fetch("https://kick.com/api/v1/channels/ghost_gamingtv", {
-              headers: { "User-Agent": "Mozilla/5.0" }
-            });
+            const kickApi = await fetch("https://kick.com/api/v1/channels/ghost_gamingtv", { headers: { "User-Agent": "Mozilla/5.0" } });
             const kickData = await kickApi.json();
             return new Response(JSON.stringify({
               success: true,
-              kick_followers: kickData.followersCount || 850,
+              kick_followers: kickData.followersCount || 1031,
               kick_viewers: kickData.livestream ? kickData.livestream.viewer_count : 0,
               kick_is_live: !!kickData.livestream,
               kick_category: kickData.livestream ? kickData.livestream.categories[0].name : "Gaming",
               weekly_growth: 15
             }), { headers: { "Content-Type": "application/json" } });
           } catch (e) {
-            return new Response(JSON.stringify({ success: true, kick_followers: 850, kick_is_live: false }), { headers: { "Content-Type": "application/json" } });
+            return new Response(JSON.stringify({ success: true, kick_followers: 1031, kick_is_live: false }), { headers: { "Content-Type": "application/json" } });
           }
         }
 
-        // Leaderboard Categories - Real Users only
-        const mockUsers = []; // REMOVED MOCKS PERMANENTLY
-
-        // --- Leaderboard API ---
+        // --- Leaderboard API (Registered) ---
         if (url.pathname === "/api/leaderboard" || url.pathname === "/api/leaderboard/registered") {
           try {
-            if (!env.USERS) {
-              return new Response(JSON.stringify({ success: true, leaderboard: [] }), { headers: { "Content-Type": "application/json" } });
-            }
-
+            if (!env.USERS) return new Response(JSON.stringify({ success: true, leaderboard: [] }), { headers: { "Content-Type": "application/json" } });
             const { keys } = await env.USERS.list({ prefix: "user_vId:" });
             const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
-            
-            const leaderboardData = users
-              .filter(u => u && u.kick_username) // Only users with real Kick usernames
-              .map(u => ({
-                username: u.kick_username,
-                total_points: u.total_points || 0,
-                kick_username: u.kick_username,
-                visitor_id: u.visitor_id
-              }))
-              .sort((a, b) => b.total_points - a.total_points);
-
-            return new Response(JSON.stringify({
-              success: true,
-              leaderboard: leaderboardData
-            }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) {
-            return new Response(JSON.stringify({ success: false, error: "Leaderboard Error" }), { status: 500 });
-          }
+            const leaderboardData = users.filter(u => u && u.kick_username).map(u => ({ username: u.kick_username, total_points: u.total_points || 0, visitor_id: u.visitor_id })).sort((a, b) => b.total_points - a.total_points);
+            return new Response(JSON.stringify({ success: true, leaderboard: leaderboardData }), { headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Leaderboard Error" }), { status: 500 }); }
         }
 
-        // Kick Platform Leaderboard (Direct Return of Real Community Data)
+        // --- Kick Platform Leaderboard (Top 5 Only) ---
         if (url.pathname === "/api/leaderboard/kick") {
           const leaderboardData = [
             { username: "GHOST_GAMINGTV", total_points: 52450, kick_username: "GHOST_GAMINGTV" },
@@ -254,80 +144,34 @@ export default {
           return new Response(JSON.stringify({ success: true, leaderboard: leaderboardData }), { headers: { "Content-Type": "application/json" } });
         }
 
-        // --- Category Leaderboards ---
-        if (url.pathname === "/api/leaderboard/tasks") {
-            const leaderboardData = [
-              { username: "GHOST_GAMINGTV", tasks_completed: 85, kick_username: "GHOST_GAMINGTV" },
-              { username: "undercover", tasks_completed: 78, kick_username: "undercover" },
-              { username: "Kick_Ninja", tasks_completed: 62, kick_username: "Kick_Ninja" },
-              { username: "Z_Ghost", tasks_completed: 55, kick_username: "Z_Ghost" },
-              { username: "AKGS_Fan_99", tasks_completed: 45, kick_username: "AKGS_Fan_99" }
-            ];
-            return new Response(JSON.stringify(leaderboardData), { headers: { "Content-Type": "application/json" } });
+        // --- Categories Leaderboards (Top 5 Only) ---
+        const categoryData = [
+          { username: "GHOST_GAMINGTV", value: 85, kick_username: "GHOST_GAMINGTV" },
+          { username: "undercover", value: 78, kick_username: "undercover" },
+          { username: "Kick_Ninja", value: 62, kick_username: "Kick_Ninja" },
+          { username: "Z_Ghost", value: 55, kick_username: "Z_Ghost" },
+          { username: "AKGS_Fan_99", value: 45, kick_username: "AKGS_Fan_99" }
+        ];
+
+        if (url.pathname.startsWith("/api/leaderboard/")) {
+            return new Response(JSON.stringify(categoryData), { headers: { "Content-Type": "application/json" } });
         }
-        if (url.pathname === "/api/leaderboard/comments") {
-            const leaderboardData = [
-              { username: "GHOST_GAMINGTV", weekly_comments: 320, kick_username: "GHOST_GAMINGTV" },
-              { username: "undercover", weekly_comments: 285, kick_username: "undercover" },
-              { username: "Kick_Ninja", weekly_comments: 185, kick_username: "Kick_Ninja" },
-              { username: "Z_Ghost", weekly_comments: 124, kick_username: "Z_Ghost" },
-              { username: "AKGS_Fan_99", weekly_comments: 92, kick_username: "AKGS_Fan_99" }
-            ];
-            return new Response(JSON.stringify(leaderboardData), { headers: { "Content-Type": "application/json" } });
-        }
-        if (url.pathname === "/api/leaderboard/messages") {
-            const leaderboardData = [
-              { username: "GHOST_GAMINGTV", chat_messages_count: 1250, kick_username: "GHOST_GAMINGTV" },
-              { username: "undercover", chat_messages_count: 980, kick_username: "undercover" },
-              { username: "Kick_Ninja", chat_messages_count: 820, kick_username: "Kick_Ninja" },
-              { username: "Z_Ghost", chat_messages_count: 610, kick_username: "Z_Ghost" },
-              { username: "AKGS_Fan_99", chat_messages_count: 480, kick_username: "AKGS_Fan_99" }
-            ];
-            return new Response(JSON.stringify(leaderboardData), { headers: { "Content-Type": "application/json" } });
-        }
-        if (url.pathname === "/api/leaderboard/referrers") {
-            const leaderboardData = [
-              { username: "GHOST_GAMINGTV", referral_count: 48, kick_username: "GHOST_GAMINGTV" },
-              { username: "undercover", referral_count: 35, kick_username: "undercover" },
-              { username: "Kick_Ninja", referral_count: 25, kick_username: "Kick_Ninja" },
-              { username: "Z_Ghost", referral_count: 19, kick_username: "Z_Ghost" },
-              { username: "AKGS_Fan_99", referral_count: 12, kick_username: "AKGS_Fan_99" }
-            ];
-            return new Response(JSON.stringify(leaderboardData), { headers: { "Content-Type": "application/json" } });
-        }
-        
+
         if (url.pathname.startsWith("/api/users/platform/")) {
-            const platform = url.pathname.split('/').pop();
-            const leaderboardData = [
-              { username: "GHOST_GAMINGTV", total_points: 52450, kick_username: "GHOST_GAMINGTV", twitter_username: "GHOST_GAMINGTV", threads_username: "GHOST_GAMINGTV", instagram_username: "GHOST_GAMINGTV" },
-              { username: "undercover", total_points: 48900, kick_username: "undercover", twitter_username: "undercover", threads_username: "undercover", instagram_username: "undercover" },
-              { username: "Kick_Ninja", total_points: 35600, kick_username: "Kick_Ninja", twitter_username: "Kick_Ninja", threads_username: "Kick_Ninja", instagram_username: "Kick_Ninja" },
-              { username: "Z_Ghost", total_points: 28400, kick_username: "Z_Ghost", twitter_username: "Z_Ghost", threads_username: "Z_Ghost", instagram_username: "Z_Ghost" },
-              { username: "AKGS_Fan_99", total_points: 22100, kick_username: "AKGS_Fan_99", twitter_username: "AKGS_Fan_99", threads_username: "AKGS_Fan_99", instagram_username: "AKGS_Fan_99" }
-            ];
-            return new Response(JSON.stringify(leaderboardData), { headers: { "Content-Type": "application/json" } });
+            return new Response(JSON.stringify(categoryData), { headers: { "Content-Type": "application/json" } });
         }
 
-        if (url.pathname === "/api/leaderboards") {
-          return new Response(JSON.stringify({
-            success: true,
-            most_interactive: mockUsers.map(u => ({ username: u.kick_username, value: u.chat_messages_count, platform: 'kick' })),
-            top_referrers: mockUsers.map(u => ({ username: u.kick_username, value: u.referral_count, platform: 'site' }))
-          }), { headers: { "Content-Type": "application/json" } });
-        }
-
-        // --- Ping / Health ---
-        if (url.pathname === "/api/ping") {
-          return new Response(JSON.stringify({ status: "Cloudflare Edge Active", timestamp: Date.now() }), { headers: { "Content-Type": "application/json" } });
-        }
-
-        // 404 for unknown API
         return new Response(JSON.stringify({ error: "API Route Not Found" }), { status: 404, headers: { "Content-Type": "application/json" } });
       }
 
       // =================================================================================
       // 2. SPA ROUTING (Fallback to Frontend)
       // =================================================================================
+      // Ensure we only serve assets for GET requests to prevent 405 on static files
+      if (request.method !== "GET" && request.method !== "HEAD") {
+          return new Response("Method Not Allowed", { status: 405 });
+      }
+
       return env.ASSETS.fetch(request);
 
     } catch (e) {
