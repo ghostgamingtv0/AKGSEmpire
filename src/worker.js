@@ -79,14 +79,15 @@ export default {
             const body = await request.json();
             const { visitor_id, wallet_address, kick_username } = body;
             
+            const generatedGCode = `G-` + Math.random().toString(36).substring(2, 8).toUpperCase();
             let user = { 
               visitor_id, 
               total_points: 1000, 
               weekly_points: 0,
               kick_username: kick_username || null,
               wallet_address: wallet_address || null,
-              g_code: `GHOST-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-              referral_code: `REF-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+              g_code: generatedGCode,
+              referral_code: generatedGCode, // Use the same code for referral
               referral_count: 0
             };
 

@@ -244,8 +244,9 @@ const Dashboard = () => {
   }, []);
 
   const handleCopy = () => {
-    if (userData?.referral_code) {
-      navigator.clipboard.writeText(`${window.location.origin}?ref=${userData.referral_code}`);
+    const code = userData?.g_code || userData?.referral_code;
+    if (code) {
+      navigator.clipboard.writeText(`${window.location.origin}?ref=${code}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -483,7 +484,7 @@ const Dashboard = () => {
                 <p className="text-gray-300 text-base font-medium">Your Referral Link</p>
                 <div className="flex gap-3">
                   <div className="flex-1 bg-black/40 border border-white/10 rounded-xl px-5 py-4 text-gray-200 font-mono text-base overflow-hidden text-ellipsis whitespace-nowrap shadow-inner">
-                    {`${window.location.origin}?ref=${userData.referral_code}`}
+                    {`${window.location.origin}?ref=${userData.g_code || userData.referral_code}`}
                   </div>
                   <button 
                     type="button"
@@ -578,7 +579,7 @@ const Dashboard = () => {
                          <div className="flex items-center justify-between gap-4 bg-white/5 px-4 py-2 rounded-lg border border-white/5 min-w-[200px]">
                             <span className="text-xs text-gray-400">My Code</span>
                             <span className="font-bold text-white tracking-wider text-sm">
-                                {userData?.referral_code || '---'}
+                                {userData?.g_code || '---'}
                             </span>
                          </div>
                     </div>
