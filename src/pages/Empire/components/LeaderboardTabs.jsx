@@ -125,7 +125,7 @@ const LeaderboardTabs = () => {
 
     // If real data from API is empty, use community fallbacks to keep site look professional
     const finalData = filtered.length > 0 ? filtered : (communityFallbacks[platformId] || []);
-    return finalData.slice(0, 10);
+    return finalData; // Return only existing real data
   };
 
   const getMetricDisplay = (user, metricId) => {
@@ -139,47 +139,6 @@ const LeaderboardTabs = () => {
 
   return (
     <div className="glass-panel p-4 md:p-6 mb-12 border border-white/10 bg-black/40">
-      {/* Registered Site Users Section - Neon Glow Style */}
-      <div className="mb-16">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="p-2 bg-[#53FC18]/10 rounded-lg border border-[#53FC18]/30">
-            <Users className="text-[#53FC18]" size={24} />
-          </div>
-          <div>
-            <h2 className="text-2xl font-black text-white uppercase tracking-tighter leading-none">Registered Site Users | المستخدمين المسجلين</h2>
-            <p className="text-[10px] text-[#53FC18] font-bold uppercase tracking-widest mt-1 opacity-60">Real-Time Empire Leaderboard | لوحة الصدارة الحقيقية</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            { name: 'GHOST_GAMINGTV', points: '52 450' },
-            { name: 'undercover', points: '48 900' },
-            { name: 'Kick_Ninja', points: '35 600' },
-            { name: 'Z_Ghost', points: '28 400' },
-            { name: 'AKGS_Fan_99', points: '22 100' }
-          ].map((user, idx) => (
-            <div key={idx} className="group relative overflow-hidden bg-black/60 border border-[#53FC18]/20 rounded-xl p-4 hover:border-[#53FC18] transition-all duration-300 shadow-[0_0_15px_rgba(83,252,24,0.05)] hover:shadow-[0_0_20px_rgba(83,252,24,0.15)]">
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-4">
-                  <span className="text-xl font-black text-[#53FC18]/30 italic group-hover:text-[#53FC18] transition-colors">#{idx + 1}</span>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-black text-white tracking-tight uppercase group-hover:text-[#53FC18] transition-colors">{user.name}</span>
-                    <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Total Earn: {user.points} pts</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-[#53FC18] font-black text-xl">{user.points} <span className="text-[10px] opacity-60">pts</span></span>
-                </div>
-              </div>
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#53FC18]/5 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-[#53FC18]/10 transition-colors"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#53FC18]/20 to-transparent mb-16"></div>
-
       {/* Weekly Leaderboard Section */}
       <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
         <div className="flex items-center gap-3">

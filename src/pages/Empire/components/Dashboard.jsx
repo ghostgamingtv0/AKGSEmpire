@@ -630,57 +630,6 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* Monthly Stats Table */}
-            <div className="glass-panel overflow-hidden border border-white/10 mb-8">
-                <div className="bg-white/5 p-4 border-b border-white/10 flex items-center gap-2">
-                    <Clock size={18} className="text-[#53FC18]" />
-                    <h3 className="font-bold uppercase tracking-widest text-sm">Monthly Performance | الأداء الشهري</h3>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-black/20 text-[10px] uppercase text-gray-500 font-bold">
-                                <th className="p-4 border-b border-white/5">Month</th>
-                                <th className="p-4 border-b border-white/5">Avg Viewers</th>
-                                <th className="p-4 border-b border-white/5">Peak Viewers</th>
-                                <th className="p-4 border-b border-white/5">Followers</th>
-                                <th className="p-4 border-b border-white/5">Hours Watched</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-sm">
-                            {CHANNEL_STATS.monthly.slice(0, 5).map((row, idx) => (
-                                <tr key={idx} className="hover:bg-white/5 transition-colors border-b border-white/5">
-                                    <td className="p-4 font-bold text-gray-300">{row.month}</td>
-                                    <td className="p-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-white font-bold">{row.avg}</span>
-                                            <span className={`text-[10px] ${row.gain.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
-                                                {row.gain} ({row.gainPct})
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="p-4 text-white">{row.peak}</td>
-                                    <td className="p-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-white">{row.followers}</span>
-                                            <span className="text-[10px] text-green-500">{row.fGain}</span>
-                                        </div>
-                                    </td>
-                                    <td className="p-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-white">{row.watched}</span>
-                                            <span className={`text-[10px] ${row.wGain.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
-                                                {row.wGain}
-                                            </span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
             {/* Audience Overlap Section */}
             <div className="grid md:grid-cols-3 gap-8">
                 <div className="md:col-span-2 glass-panel p-6 border border-white/10 bg-black/40">

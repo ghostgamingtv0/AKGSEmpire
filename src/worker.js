@@ -224,15 +224,14 @@ export default {
             const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
             
             const leaderboardData = users
-              .filter(u => u && (u.kick_username || u.visitor_id))
+              .filter(u => u && u.kick_username) // Only users with real Kick usernames
               .map(u => ({
-                username: u.kick_username || `User_${u.visitor_id.substring(0,5)}`,
+                username: u.kick_username,
                 total_points: u.total_points || 0,
                 kick_username: u.kick_username,
                 visitor_id: u.visitor_id
               }))
-              .sort((a, b) => b.total_points - a.total_points)
-              .slice(0, 10);
+              .sort((a, b) => b.total_points - a.total_points);
 
             return new Response(JSON.stringify({
               success: true,
