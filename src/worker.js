@@ -6,6 +6,12 @@ import { handleInstagramRequest } from './api_social_media/instagram/router.js';
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    let path = url.pathname;
+
+    // Normalize path: Remove /empire prefix if it exists for API matching
+    if (path.startsWith("/empire/api/")) {
+      path = path.replace("/empire/api/", "/api/");
+    }
 
     // CRITICAL: Permanent redirect from old Render URL to the new Cloudflare domain
     if (url.hostname.includes('render.com')) {
@@ -16,19 +22,19 @@ export default {
 
     try {
       // --- Social Media Handlers (Bypass for API) ---
-      if (url.pathname.startsWith("/api/kick/")) {
+      if (path.startsWith("/api/kick/")) {
         const kickRes = await handleKickRequest(request, url, env);
         if (kickRes) return kickRes;
       }
-      if (url.pathname.startsWith("/api/facebook/")) {
+      if (path.startsWith("/api/facebook/")) {
         const fbRes = await handleFacebookRequest(request, url, env);
         if (fbRes) return fbRes;
       }
-      if (url.pathname.startsWith("/api/instagram/")) {
+      if (path.startsWith("/api/instagram/")) {
         const igRes = await handleInstagramRequest(request, url, env);
         if (igRes) return igRes;
       }
-      if (url.pathname.startsWith("/api/tiktok/")) {
+      if (path.startsWith("/api/tiktok/")) {
         const ttRes = await handleTikTokRequest(request, url, env);
         if (ttRes) return ttRes;
       }
@@ -36,37 +42,40 @@ export default {
       // =================================================================================
       // 0. STATIC VERIFICATION FILES (Bypass SPA Routing)
       // =================================================================================
-      if (url.pathname === "/czuudtyh60e6l29pldx1s2htix8oxz") {
+      if (path === "/czuudtyh60e6l29pldx1s2htix8oxz") {
         return new Response("czuudtyh60e6l29pldx1s2htix8oxz", { headers: { "Content-Type": "text/plain" } });
       }
-      if (url.pathname === "/czuudtyh60e6l29pldx1s2htix8oxz.html") {
+      if (path === "/czuudtyh60e6l29pldx1s2htix8oxz.html") {
         return new Response("czuudtyh60e6l29pldx1s2htix8oxz", { headers: { "Content-Type": "text/html" } });
       }
-      if (url.pathname === "/tiktokLBOhRmLGMJ0y3f2BvRyYIXaLkNNKlRB7.txt") {
+      if (path === "/tiktokLBOhRmLGMJ0y3f2BvRyYIXaLkNNKlRB7.txt") {
         return new Response("tiktok-developers-site-verification=LBOhRmLGMJ0y3f2BvRyYIXaLkNNKlRB7", { headers: { "Content-Type": "text/plain" } });
       }
-      if (url.pathname === "/.well-known/security.txt") {
+      if (path === "/.well-known/security.txt") {
         return new Response("Contact: mailto:security@akgsempire.org\nExpires: 2027-03-01T00:00:00.000Z\nPreferred-Languages: en, ar", { headers: { "Content-Type": "text/plain" } });
       }
-      if (url.pathname === "/robots.txt") {
+      if (path === "/robots.txt") {
         return new Response("User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /_USER_DATA_ARCHIVE/\n\nUser-agent: GPTBot\nDisallow: /", { headers: { "Content-Type": "text/plain" } });
       }
 
       // =================================================================================
       // 1. API ROUTES (Internal Cloudflare Backend)
       // =================================================================================
-      if (url.pathname.startsWith("/api/")) {
+      if (path.startsWith("/api/")) {
         
+        // Normalize path to remove trailing slash for matching
+        const cleanPath = path.endsWith("/") ? path.slice(0, -1) : path;
+
         // --- Auth: Register ---
-        if (url.pathname === "/api/auth/register" && request.method === "POST") {
+        if (cleanPath === "/api/auth/register" && request.method === "POST") {
           try {
             const body = await request.json();
             const { username, password, visitor_id, wallet_address } = body;
             
-            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500 });
+            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500, headers: { "Content-Type": "application/json" } });
             
             const existing = await env.USERS.get(`auth_user:${username.toLowerCase()}`);
-            if (existing) return new Response(JSON.stringify({ success: false, error: "Username already exists" }), { status: 400 });
+            if (existing) return new Response(JSON.stringify({ success: false, error: "Username already exists" }), { status: 400, headers: { "Content-Type": "application/json" } });
             
             const generateUniqueGCode = () => {
               const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -89,28 +98,26 @@ export default {
             };
             
             await env.USERS.put(`auth_user:${username.toLowerCase()}`, JSON.stringify(newUser));
-            // Also link visitor_id to this user
             await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
             
             return new Response(JSON.stringify({ success: true, user: newUser }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Registration Error" }), { status: 500 }); }
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Registration Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
         // --- Auth: Login ---
-        if (url.pathname === "/api/auth/login" && request.method === "POST") {
+        if (cleanPath === "/api/auth/login" && request.method === "POST") {
           try {
             const body = await request.json();
             const { username, password, visitor_id } = body;
             
-            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500 });
+            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500, headers: { "Content-Type": "application/json" } });
             
             const data = await env.USERS.get(`auth_user:${username.toLowerCase()}`);
-            if (!data) return new Response(JSON.stringify({ success: false, error: "User not found" }), { status: 404 });
+            if (!data) return new Response(JSON.stringify({ success: false, error: "User not found" }), { status: 404, headers: { "Content-Type": "application/json" } });
             
             const user = JSON.parse(data);
-            if (user.password !== password) return new Response(JSON.stringify({ success: false, error: "Invalid password" }), { status: 401 });
+            if (user.password !== password) return new Response(JSON.stringify({ success: false, error: "Invalid password" }), { status: 401, headers: { "Content-Type": "application/json" } });
             
-            // Update visitor_id if it changed
             if (visitor_id && user.visitor_id !== visitor_id) {
                 user.visitor_id = visitor_id;
                 await env.USERS.put(`auth_user:${username.toLowerCase()}`, JSON.stringify(user));
@@ -118,37 +125,37 @@ export default {
             }
             
             return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Login Error" }), { status: 500 }); }
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Login Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
         // --- Genesis: Stats ---
-        if (url.pathname === "/api/genesis/stats") {
+        if (cleanPath === "/api/genesis/stats") {
             return new Response(JSON.stringify({ success: true, spotsLeft: 50 }), { headers: { "Content-Type": "application/json" } });
         }
 
-        // --- Genesis: Login (Legacy support for GhostGate) ---
-        if (url.pathname === "/api/genesis/login" && request.method === "POST") {
+        // --- Genesis: Login ---
+        if (cleanPath === "/api/genesis/login" && request.method === "POST") {
           try {
             const body = await request.json();
             const { username, password } = body;
-            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500 });
+            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500, headers: { "Content-Type": "application/json" } });
             const data = await env.USERS.get(`auth_user:${username.toLowerCase()}`);
-            if (!data) return new Response(JSON.stringify({ success: false, error: "User not found" }), { status: 404 });
+            if (!data) return new Response(JSON.stringify({ success: false, error: "User not found" }), { status: 404, headers: { "Content-Type": "application/json" } });
             const user = JSON.parse(data);
-            if (user.password !== password) return new Response(JSON.stringify({ success: false, error: "Invalid password" }), { status: 401 });
+            if (user.password !== password) return new Response(JSON.stringify({ success: false, error: "Invalid password" }), { status: 401, headers: { "Content-Type": "application/json" } });
             return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Login Error" }), { status: 500 }); }
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Login Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
-        // --- Genesis: Register (Legacy support for GhostGate) ---
-        if (url.pathname === "/api/genesis/test-register" && request.method === "POST") {
+        // --- Genesis: Register ---
+        if (cleanPath === "/api/genesis/test-register" && request.method === "POST") {
           try {
             const body = await request.json();
             const { nickname, password, visitor_id, wallet } = body;
-            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500 });
+            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500, headers: { "Content-Type": "application/json" } });
             
             const existing = await env.USERS.get(`auth_user:${nickname.toLowerCase()}`);
-            if (existing) return new Response(JSON.stringify({ success: false, error: "Username already exists" }), { status: 400 });
+            if (existing) return new Response(JSON.stringify({ success: false, error: "Username already exists" }), { status: 400, headers: { "Content-Type": "application/json" } });
 
             const generateUniqueGCode = () => {
               const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -175,18 +182,18 @@ export default {
             await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
             
             return new Response(JSON.stringify({ success: true, gCode: newUser.g_code, rank: newUser.rank, spotsLeft: 49 }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Registration Error" }), { status: 500 }); }
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Registration Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
         // --- Log API ---
-        if (url.pathname === "/api/log" && request.method === "POST") {
+        if (cleanPath === "/api/log" && request.method === "POST") {
             return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
         }
 
         // --- User Data API ---
-        if (url.pathname === "/api/user-data") {
+        if (cleanPath === "/api/user-data") {
           const visitor_id = url.searchParams.get("visitor_id");
-          if (!visitor_id) return new Response(JSON.stringify({ success: false, error: "Missing visitor_id" }), { status: 400 });
+          if (!visitor_id) return new Response(JSON.stringify({ success: false, error: "Missing visitor_id" }), { status: 400, headers: { "Content-Type": "application/json" } });
           
           if (env.USERS) {
             const data = await env.USERS.get(`user_vId:${visitor_id}`);
@@ -200,26 +207,22 @@ export default {
         }
 
         // --- Init User API ---
-        if (url.pathname === "/api/init-user" && request.method === "POST") {
+        if (cleanPath === "/api/init-user" && request.method === "POST") {
           try {
             const body = await request.json();
             const { visitor_id, wallet_address, kick_username } = body;
             
-            if (!env.USERS) return new Response(JSON.stringify({ success: true, user: { visitor_id, total_points: 0, g_code: 'G-LOCAL' } }));
+            if (!env.USERS) return new Response(JSON.stringify({ success: true, user: { visitor_id, total_points: 0, g_code: 'G-LOCAL' } }), { headers: { "Content-Type": "application/json" } });
 
             const existing = await env.USERS.get(`user_vId:${visitor_id}`);
             if (existing) {
               const existingUser = JSON.parse(existing);
-              // Update with any new info provided (like wallet/kick if not set)
               const updatedUser = { ...existingUser };
               if (wallet_address && !updatedUser.wallet_address) updatedUser.wallet_address = wallet_address;
               if (kick_username && !updatedUser.kick_username) updatedUser.kick_username = kick_username;
               
               await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(updatedUser));
-              // Also sync to auth_user if username exists
-              if (updatedUser.username) {
-                  await env.USERS.put(`auth_user:${updatedUser.username.toLowerCase()}`, JSON.stringify(updatedUser));
-              }
+              if (updatedUser.username) await env.USERS.put(`auth_user:${updatedUser.username.toLowerCase()}`, JSON.stringify(updatedUser));
               
               return new Response(JSON.stringify({ success: true, user: updatedUser }), { headers: { "Content-Type": "application/json" } });
             }
@@ -240,11 +243,11 @@ export default {
 
             await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
             return new Response(JSON.stringify({ success: true, user: newUser }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Init Error" }), { status: 500 }); }
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Init Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
         // --- Update Profile API ---
-        if (url.pathname === "/api/update-profile" && request.method === "POST") {
+        if (cleanPath === "/api/update-profile" && request.method === "POST") {
           try {
             const body = await request.json();
             const { visitor_id, kick_username, wallet_address } = body;
@@ -255,12 +258,12 @@ export default {
               await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
               return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
             }
-            return new Response(JSON.stringify({ success: false, error: "KV not available" }), { status: 500 });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Update Error" }), { status: 500 }); }
+            return new Response(JSON.stringify({ success: false, error: "KV not available" }), { status: 500, headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Update Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
         // --- Claim Reward API ---
-        if (url.pathname === "/api/claim" && request.method === "POST") {
+        if (cleanPath === "/api/claim" && request.method === "POST") {
           try {
             const body = await request.json();
             const { visitor_id, points } = body;
@@ -271,12 +274,12 @@ export default {
               await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
               return new Response(JSON.stringify({ success: true, total_points: user.total_points }), { headers: { "Content-Type": "application/json" } });
             }
-            return new Response(JSON.stringify({ success: false, error: "KV not available" }), { status: 500 });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Claim Error" }), { status: 500 }); }
+            return new Response(JSON.stringify({ success: false, error: "KV not available" }), { status: 500, headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Claim Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
         // --- Stats API ---
-        if (url.pathname === "/api/stats") {
+        if (cleanPath === "/api/stats") {
           try {
             const kickApi = await fetch("https://kick.com/api/v1/channels/ghost_gamingtv", { headers: { "User-Agent": "Mozilla/5.0" } });
             const kickData = await kickApi.json();
@@ -293,25 +296,18 @@ export default {
           }
         }
 
-        // --- Update Kick Stats API (Internal sync) ---
-        if (url.pathname === "/api/update-kick-stats" && request.method === "POST") {
-            // This is just a placeholder to prevent 404s, real stats come from Kick API above
-            return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
-        }
-
-        // --- Leaderboard API (Registered) ---
-        if (url.pathname === "/api/leaderboard" || url.pathname === "/api/leaderboard/registered") {
+        // --- Leaderboards ---
+        if (cleanPath === "/api/leaderboard" || cleanPath === "/api/leaderboard/registered") {
           try {
             if (!env.USERS) return new Response(JSON.stringify({ success: true, leaderboard: [] }), { headers: { "Content-Type": "application/json" } });
             const { keys } = await env.USERS.list({ prefix: "user_vId:" });
             const users = await Promise.all(keys.map(key => env.USERS.get(key.name).then(val => JSON.parse(val))));
             const leaderboardData = users.filter(u => u && u.kick_username).map(u => ({ username: u.kick_username, total_points: u.total_points || 0, visitor_id: u.visitor_id })).sort((a, b) => b.total_points - a.total_points);
             return new Response(JSON.stringify({ success: true, leaderboard: leaderboardData }), { headers: { "Content-Type": "application/json" } });
-          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Leaderboard Error" }), { status: 500 }); }
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Leaderboard Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
-        // --- Kick Platform Leaderboard (Top 5 Only) ---
-        if (url.pathname === "/api/leaderboard/kick") {
+        if (cleanPath === "/api/leaderboard/kick") {
           const leaderboardData = [
             { username: "GHOST_GAMINGTV", total_points: 52450, kick_username: "GHOST_GAMINGTV" },
             { username: "undercover", total_points: 48900, kick_username: "undercover" },
@@ -322,38 +318,31 @@ export default {
           return new Response(JSON.stringify({ success: true, leaderboard: leaderboardData }), { headers: { "Content-Type": "application/json" } });
         }
 
-        // --- Categories Leaderboards (Top 5 Only) ---
-        const categoryData = [
-          { username: "GHOST_GAMINGTV", value: 85, kick_username: "GHOST_GAMINGTV" },
-          { username: "undercover", value: 78, kick_username: "undercover" },
-          { username: "Kick_Ninja", value: 62, kick_username: "Kick_Ninja" },
-          { username: "Z_Ghost", value: 55, kick_username: "Z_Ghost" },
-          { username: "AKGS_Fan_99", value: 45, kick_username: "AKGS_Fan_99" }
-        ];
-
-        if (url.pathname.startsWith("/api/leaderboard/")) {
+        if (cleanPath.startsWith("/api/leaderboard/") || cleanPath.startsWith("/api/users/platform/")) {
+            const categoryData = [
+              { username: "GHOST_GAMINGTV", value: 85, kick_username: "GHOST_GAMINGTV" },
+              { username: "undercover", value: 78, kick_username: "undercover" },
+              { username: "Kick_Ninja", value: 62, kick_username: "Kick_Ninja" },
+              { username: "Z_Ghost", value: 55, kick_username: "Z_Ghost" },
+              { username: "AKGS_Fan_99", value: 45, kick_username: "AKGS_Fan_99" }
+            ];
             return new Response(JSON.stringify(categoryData), { headers: { "Content-Type": "application/json" } });
         }
 
-        if (url.pathname.startsWith("/api/users/platform/")) {
-            return new Response(JSON.stringify(categoryData), { headers: { "Content-Type": "application/json" } });
-        }
-
-        return new Response(JSON.stringify({ error: "API Route Not Found" }), { status: 404, headers: { "Content-Type": "application/json" } });
+        return new Response(JSON.stringify({ error: "API Route Not Found", path: cleanPath }), { status: 404, headers: { "Content-Type": "application/json" } });
       }
 
       // =================================================================================
       // 2. SPA ROUTING (Fallback to Frontend)
       // =================================================================================
-      // Ensure we only serve assets for GET requests to prevent 405 on static files
       if (request.method !== "GET" && request.method !== "HEAD") {
-          return new Response("Method Not Allowed", { status: 405 });
+          return new Response(JSON.stringify({ error: "Method Not Allowed", method: request.method }), { status: 405, headers: { "Content-Type": "application/json" } });
       }
 
       return env.ASSETS.fetch(request);
 
     } catch (e) {
-      return new Response(`Cloudflare Worker Error: ${e.message}`, { status: 500 });
+      return new Response(JSON.stringify({ error: "Worker Error", message: e.message }), { status: 500, headers: { "Content-Type": "application/json" } });
     }
   }
 };
