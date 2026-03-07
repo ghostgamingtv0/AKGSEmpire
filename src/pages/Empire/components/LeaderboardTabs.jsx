@@ -157,8 +157,13 @@ const LeaderboardTabs = () => {
     });
 
     // If real data from API is empty, use community fallbacks to keep site look professional
-    const finalData = filtered.length > 0 ? filtered : (communityFallbacks[platformId] || []);
+    let finalData = filtered.length > 0 ? filtered : (communityFallbacks[platformId] || []);
     
+    // For Kick, if we have real data from API, don't use fallbacks
+    if (platformId === 'kick' && platformPoints.kick.length > 0) {
+        finalData = platformPoints.kick;
+    }
+
     // FINAL SAFETY FILTER: Remove anything that looks like a random ID or placeholder
     return finalData.filter(user => {
         const name = (user.username || user.kick_username || user.nickname || '').toLowerCase();

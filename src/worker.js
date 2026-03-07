@@ -205,8 +205,31 @@ export default {
         if (path === "/api/genesis/stats") return jsonRes({ success: true, spotsLeft: 50 });
 
         // --- Leaderboard & Tasks ---
-        if (path.startsWith("/api/leaderboard/")) return jsonRes([]);
-        if (path.startsWith("/api/users/platform/")) return jsonRes([]);
+        if (path.startsWith("/api/leaderboard/") || path.startsWith("/api/users/platform/")) {
+          if (!env.USERS) return jsonRes([]);
+          
+          const users = [];
+          const list = await env.USERS.list({ prefix: "auth_user:" });
+          
+          for (const key of list.keys) {
+            const data = await env.USERS.get(key.name);
+            if (data) {
+              const user = JSON.parse(data);
+              // Simple heuristic to filter by platform or metric
+              if (path.includes("kick") && !user.kick_username) continue;
+              if (path.includes("twitter") && !user.twitter_username) continue;
+              if (path.includes("threads") && !user.threads_username) continue;
+              if (path.includes("instagram") && !user.instagram_username) continue;
+              
+              users.push(user);
+            }
+          }
+          
+          // Sort by points descending
+          users.sort((a, b) => (b.total_points || 0) - (a.total_points || 0));
+          return jsonRes(users.slice(0, 10));
+        }
+
         if (path === "/api/verify-task") return jsonRes({ success: true, points_added: 10 });
         if (path === "/api/log") return jsonRes({ success: true });
         if (path.startsWith("/api/social/")) return jsonRes({ success: true });
