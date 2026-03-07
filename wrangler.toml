@@ -1,0 +1,10 @@
+name = "akgsempire"
+compatibility_date = "2024-03-01"
+
+[pages_build_config]
+build_command = "npm run build"
+build_output_directory = "dist"
+
+[[kv_namespaces]]
+binding = "USERS"
+id = "77c68884964348569438ef8cef2bc4f3" # Placeholder - user must update if they know the real ID, but the binding name is key
