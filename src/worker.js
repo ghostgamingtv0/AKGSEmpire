@@ -107,22 +107,19 @@ export default {
           if (!nickname || !password || !visitor_id) {
             return jsonRes({ success: false, error: "Missing nickname, password or visitor_id" }, 400);
           }
+          if (!env.USERS) return jsonRes({ success: false, error: "Database not available" }, 500);
           
-          // GENERATE SUCCESS EVEN IF KV IS MISSING (For testing/recovery)
+          const uKey = `auth_user:${nickname.toLowerCase()}`;
+          const vKey = `user_vid:${visitor_id.toLowerCase()}`;
+          const existing = await env.USERS.get(uKey);
+          if (existing) return jsonRes({ success: false, error: "Username already exists" }, 400);
+
           const gCode = 'G-' + Math.random().toString(36).substring(2, 8).toUpperCase();
           const rank = Math.floor(Math.random() * 50) + 1;
           const newUser = { username: nickname, password, visitor_id, wallet_address: wallet || null, kick_username: nickname, total_points: 0, weekly_points: 0, g_code: gCode, referral_count: 0, created_at: Date.now(), rank };
 
-          if (env.USERS) {
-            const uKey = `auth_user:${nickname.toLowerCase()}`;
-            const vKey = `user_vid:${visitor_id.toLowerCase()}`;
-            const existing = await env.USERS.get(uKey);
-            if (existing) return jsonRes({ success: false, error: "Username already exists" }, 400);
-            await env.USERS.put(uKey, JSON.stringify(newUser));
-            await env.USERS.put(vKey, JSON.stringify(newUser));
-          } else {
-            console.warn("KV USERS not bound. Returning simulated success.");
-          }
+          await env.USERS.put(uKey, JSON.stringify(newUser));
+          await env.USERS.put(vKey, JSON.stringify(newUser));
           
           return jsonRes({ success: true, gCode, rank, spotsLeft: 49 });
         }
@@ -130,20 +127,18 @@ export default {
         if (path === "/api/auth/register" && method === "POST") {
           const { username, password, visitor_id, wallet_address } = body;
           if (!username || !password || !visitor_id) return jsonRes({ success: false, error: "Missing required fields" }, 400);
-          
+          if (!env.USERS) return jsonRes({ success: false, error: "Database not available" }, 500);
+
+          const uKey = `auth_user:${username.toLowerCase()}`;
+          const vKey = `user_vid:${visitor_id.toLowerCase()}`;
+          const existing = await env.USERS.get(uKey);
+          if (existing) return jsonRes({ success: false, error: "Username already exists" }, 400);
+
           const gCode = 'G-' + Math.random().toString(36).substring(2, 8).toUpperCase();
           const newUser = { username, password, visitor_id, wallet_address: wallet_address || null, total_points: 0, g_code: gCode };
 
-          if (env.USERS) {
-            const uKey = `auth_user:${username.toLowerCase()}`;
-            const vKey = `user_vid:${visitor_id.toLowerCase()}`;
-            const existing = await env.USERS.get(uKey);
-            if (existing) return jsonRes({ success: false, error: "Username already exists" }, 400);
-            await env.USERS.put(uKey, JSON.stringify(newUser));
-            await env.USERS.put(vKey, JSON.stringify(newUser));
-          } else {
-            console.warn("KV USERS not bound. Simulated register.");
-          }
+          await env.USERS.put(uKey, JSON.stringify(newUser));
+          await env.USERS.put(vKey, JSON.stringify(newUser));
           
           return jsonRes({ success: true, user: newUser });
         }
@@ -152,22 +147,19 @@ export default {
           const { username, password, visitor_id } = body;
           if (!username || !password) return jsonRes({ success: false, error: "Missing username or password" }, 400);
           
-          if (env.USERS) {
-            const uKey = `auth_user:${username.toLowerCase()}`;
-            const data = await env.USERS.get(uKey);
-            if (!data) return jsonRes({ success: false, error: "User not found" }, 404);
-            const user = JSON.parse(data);
-            if (user.password !== password) return jsonRes({ success: false, error: "Invalid password" }, 401);
-            if (visitor_id) {
-               user.visitor_id = visitor_id;
-               await env.USERS.put(uKey, JSON.stringify(user));
-               await env.USERS.put(`user_vid:${visitor_id.toLowerCase()}`, JSON.stringify(user));
-            }
-            return jsonRes({ success: true, user });
-          } else {
-            // Simulated login for testing
-            return jsonRes({ success: true, user: { username, visitor_id, total_points: 10, g_code: 'G-SIMULATED' } });
+          if (!env.USERS) return jsonRes({ success: false, error: "Database not available" }, 500);
+          
+          const uKey = `auth_user:${username.toLowerCase()}`;
+          const data = await env.USERS.get(uKey);
+          if (!data) return jsonRes({ success: false, error: "User not found" }, 404);
+          const user = JSON.parse(data);
+          if (user.password !== password) return jsonRes({ success: false, error: "Invalid password" }, 401);
+          if (visitor_id) {
+             user.visitor_id = visitor_id;
+             await env.USERS.put(uKey, JSON.stringify(user));
+             await env.USERS.put(`user_vid:${visitor_id.toLowerCase()}`, JSON.stringify(user));
           }
+          return jsonRes({ success: true, user });
         }
 
         if (path === "/api/init-user" && method === "POST") {

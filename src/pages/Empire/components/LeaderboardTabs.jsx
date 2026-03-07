@@ -108,38 +108,6 @@ const LeaderboardTabs = () => {
   }, []);
 
   const getTopUsers = (metricId, platformId) => {
-    // Real community data only - NO RANDOM DATA
-    const communityFallbacks = {
-      kick: [
-        { username: 'GHOST_GAMINGTV', weekly_points: 52450, tasks_completed: 85, chat_messages_count: 534900 },
-        { username: 'undercover', weekly_points: 48900, tasks_completed: 78, chat_messages_count: 9425 },
-        { username: 'Kick_Ninja', weekly_points: 35600, tasks_completed: 52, chat_messages_count: 8500 },
-        { username: 'Z_Ghost', weekly_points: 28400, tasks_completed: 45, chat_messages_count: 7200 },
-        { username: 'AKGS_Fan_99', weekly_points: 22100, tasks_completed: 42, chat_messages_count: 6100 }
-      ],
-      twitter: [
-        { username: 'GHOST_GAMINGTV', weekly_points: 15400, tasks_completed: 45 },
-        { username: 'undercover', weekly_points: 8300, tasks_completed: 32 },
-        { username: 'Kick_Ninja', weekly_points: 7200, tasks_completed: 28 },
-        { username: 'Z_Ghost', weekly_points: 6400, tasks_completed: 25 },
-        { username: 'AKGS_Fan_99', weekly_points: 5100, tasks_completed: 22 }
-      ],
-      threads: [
-        { username: 'GHOST_GAMINGTV', weekly_points: 12400, tasks_completed: 35 },
-        { username: 'undercover', weekly_points: 7300, tasks_completed: 28 },
-        { username: 'Kick_Ninja', weekly_points: 6200, tasks_completed: 24 },
-        { username: 'Z_Ghost', weekly_points: 5400, tasks_completed: 21 },
-        { username: 'AKGS_Fan_99', weekly_points: 4100, tasks_completed: 18 }
-      ],
-      instagram: [
-        { username: 'GHOST_GAMINGTV', weekly_points: 18450, tasks_completed: 55 },
-        { username: 'undercover', weekly_points: 10300, tasks_completed: 42 },
-        { username: 'Kick_Ninja', weekly_points: 9200, tasks_completed: 38 },
-        { username: 'Z_Ghost', weekly_points: 8400, tasks_completed: 35 },
-        { username: 'AKGS_Fan_99', weekly_points: 7100, tasks_completed: 32 }
-      ]
-    };
-
     let sourceData = [];
     if (metricId === 'points') {
         sourceData = platformPoints[platformId] || [];
@@ -156,42 +124,21 @@ const LeaderboardTabs = () => {
         return false;
     });
 
-    // If real data from API is empty, use community fallbacks to keep site look professional
-    let finalData = filtered.length > 0 ? filtered : (communityFallbacks[platformId] || []);
-    
-    // For Kick, if we have real data from API, don't use fallbacks
-    if (platformId === 'kick' && platformPoints.kick.length > 0) {
-        finalData = platformPoints.kick;
-    }
-
-    // FINAL SAFETY FILTER: Remove anything that looks like a random ID or placeholder
-    return finalData.filter(user => {
+    // STRICT: REAL DATA ONLY - NO FALLBACKS
+    return filtered.filter(user => {
         const name = (user.username || user.kick_username || user.nickname || '').toLowerCase();
         
-        // Block List: Patterns that indicate random/bot/placeholder names
-        const blockPatterns = [
-            'user_',
-            'loyal_',
-            'follower',
-            'visitor',
-            'anonymous',
-            'guest',
-            'bot',
-            'akgs_fan_',
-            'kick_ninja'
-        ];
+        // Block patterns for safety, but we don't use communityFallbacks anymore
+        const blockPatterns = ['user_', 'loyal_', 'follower', 'visitor', 'anonymous', 'guest', 'bot'];
 
         if (!name) return false;
         if (name.length < 3 || name.length > 25) return false;
-        if (name.includes('-')) return false; // Block names with dashes (often auto-generated)
+        if (name.includes('-')) return false; 
         
-        // Check against block patterns
         const isBlocked = blockPatterns.some(pattern => name.includes(pattern));
         if (isBlocked) return false;
 
-        // Allow only alphanumeric and underscores
-        const isValidFormat = /^[a-zA-Z0-9_]+$/.test(name);
-        return isValidFormat;
+        return /^[a-zA-Z0-9_]+$/.test(name);
     });
   };
 
