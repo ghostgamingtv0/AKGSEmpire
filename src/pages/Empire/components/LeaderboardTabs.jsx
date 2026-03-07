@@ -4,6 +4,39 @@ import { Trophy, MessageCircle, Users, Instagram, Twitter, Hash, MonitorPlay, Ex
 const API_BASE = ''; // Use relative path
 
 const LeaderboardTabs = () => {
+  const [timeLeft, setTimeLeft] = useState({ d: '00', h: '00', m: '00', s: '00' });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      // Reset is next Monday at 00:00:00
+      const nextMonday = new Date();
+      nextMonday.setDate(now.getDate() + ((1 + 7 - now.getDay()) % 7 || 7));
+      nextMonday.setHours(0, 0, 0, 0);
+
+      const diff = nextMonday - now;
+      if (diff > 0) {
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const m = Math.floor((diff / 1000 / 60) % 60);
+        const s = Math.floor((diff / 1000) % 60);
+        return {
+          d: d.toString().padStart(2, '0'),
+          h: h.toString().padStart(2, '0'),
+          m: m.toString().padStart(2, '0'),
+          s: s.toString().padStart(2, '0')
+        };
+      }
+      return { d: '00', h: '00', m: '00', s: '00' };
+    };
+
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+    setTimeLeft(calculateTimeLeft());
+    return () => clearInterval(timer);
+  }, []);
+
   const [dataCache, setDataCache] = useState({
     tasks: [],
     points: [], 
@@ -177,12 +210,26 @@ const LeaderboardTabs = () => {
         <div className="flex items-center gap-2 bg-black/60 border border-[#53FC18]/30 px-4 py-2 rounded-lg">
           <Clock size={14} className="text-[#53FC18]" />
           <span className="text-[10px] text-gray-400 font-bold uppercase">Resets in | ينتهي في :</span>
-          <div className="flex gap-1">
-             <span className="bg-[#53FC18]/10 px-2 py-0.5 rounded text-[#53FC18] font-black text-xs">00</span>
+          <div className="flex gap-1 items-center">
+             <div className="flex flex-col items-center">
+                <span className="bg-[#53FC18]/10 px-2 py-0.5 rounded text-[#53FC18] font-black text-xs">{timeLeft.d}</span>
+                <span className="text-[7px] text-gray-500 uppercase">Days</span>
+             </div>
              <span className="text-[#53FC18]">:</span>
-             <span className="bg-[#53FC18]/10 px-2 py-0.5 rounded text-[#53FC18] font-black text-xs">01</span>
+             <div className="flex flex-col items-center">
+                <span className="bg-[#53FC18]/10 px-2 py-0.5 rounded text-[#53FC18] font-black text-xs">{timeLeft.h}</span>
+                <span className="text-[7px] text-gray-500 uppercase">Hrs</span>
+             </div>
              <span className="text-[#53FC18]">:</span>
-             <span className="bg-[#53FC18]/10 px-2 py-0.5 rounded text-[#53FC18] font-black text-xs">14</span>
+             <div className="flex flex-col items-center">
+                <span className="bg-[#53FC18]/10 px-2 py-0.5 rounded text-[#53FC18] font-black text-xs">{timeLeft.m}</span>
+                <span className="text-[7px] text-gray-500 uppercase">Min</span>
+             </div>
+             <span className="text-[#53FC18]">:</span>
+             <div className="flex flex-col items-center">
+                <span className="bg-[#53FC18]/10 px-2 py-0.5 rounded text-[#53FC18] font-black text-xs">{timeLeft.s}</span>
+                <span className="text-[7px] text-gray-500 uppercase">Sec</span>
+             </div>
           </div>
         </div>
       </div>
