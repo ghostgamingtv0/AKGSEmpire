@@ -61,12 +61,21 @@ export default {
     }
 
     // 5. API DETECTION & HANDLING
-    const isApiRequest = path.startsWith("/api");
+    const isApiRequest = path.startsWith("/api/");
 
     try {
       if (isApiRequest) {
+        // Detailed binding check for the user
+        if (!env.USERS) {
+          return jsonRes({ 
+            error: "Cloudflare Configuration Error", 
+            message: "KV Namespace 'USERS' is not bound. Please check Pages Settings -> Functions -> KV Namespace Bindings.",
+            action: "Add a binding with Variable Name 'USERS'"
+          }, 500);
+        }
+
         // Ping route for debugging
-        if (path === "/api/ping") return jsonRes({ status: "ok", timestamp: Date.now(), path });
+        if (path === "/api/ping") return jsonRes({ status: "ok", timestamp: Date.now(), path, kv_status: !!env.USERS });
 
         // Defensive Body Parsing
         let body = {};
@@ -108,18 +117,17 @@ export default {
             return jsonRes({ success: false, error: "Missing nickname, password or visitor_id" }, 400);
           }
           
+          const uKey = `auth_user:${nickname.toLowerCase()}`;
+          const vKey = `user_vid:${visitor_id.toLowerCase()}`;
+          const existing = await env.USERS.get(uKey);
+          if (existing) return jsonRes({ success: false, error: "Username already exists" }, 400);
+
           const gCode = 'G-' + Math.random().toString(36).substring(2, 8).toUpperCase();
           const rank = Math.floor(Math.random() * 50) + 1;
           const newUser = { username: nickname, password, visitor_id, wallet_address: wallet || null, kick_username: nickname, total_points: 0, weekly_points: 0, g_code: gCode, referral_count: 0, created_at: Date.now(), rank };
 
-          if (env.USERS) {
-            const uKey = `auth_user:${nickname.toLowerCase()}`;
-            const vKey = `user_vid:${visitor_id.toLowerCase()}`;
-            const existing = await env.USERS.get(uKey);
-            if (existing) return jsonRes({ success: false, error: "Username already exists" }, 400);
-            await env.USERS.put(uKey, JSON.stringify(newUser));
-            await env.USERS.put(vKey, JSON.stringify(newUser));
-          }
+          await env.USERS.put(uKey, JSON.stringify(newUser));
+          await env.USERS.put(vKey, JSON.stringify(newUser));
           
           return jsonRes({ success: true, gCode, rank, spotsLeft: 49 });
         }
@@ -128,17 +136,16 @@ export default {
           const { username, password, visitor_id, wallet_address } = body;
           if (!username || !password || !visitor_id) return jsonRes({ success: false, error: "Missing required fields" }, 400);
           
+          const uKey = `auth_user:${username.toLowerCase()}`;
+          const vKey = `user_vid:${visitor_id.toLowerCase()}`;
+          const existing = await env.USERS.get(uKey);
+          if (existing) return jsonRes({ success: false, error: "Username already exists" }, 400);
+
           const gCode = 'G-' + Math.random().toString(36).substring(2, 8).toUpperCase();
           const newUser = { username, password, visitor_id, wallet_address: wallet_address || null, total_points: 0, g_code: gCode };
 
-          if (env.USERS) {
-            const uKey = `auth_user:${username.toLowerCase()}`;
-            const vKey = `user_vid:${visitor_id.toLowerCase()}`;
-            const existing = await env.USERS.get(uKey);
-            if (existing) return jsonRes({ success: false, error: "Username already exists" }, 400);
-            await env.USERS.put(uKey, JSON.stringify(newUser));
-            await env.USERS.put(vKey, JSON.stringify(newUser));
-          }
+          await env.USERS.put(uKey, JSON.stringify(newUser));
+          await env.USERS.put(vKey, JSON.stringify(newUser));
           
           return jsonRes({ success: true, user: newUser });
         }
@@ -147,23 +154,20 @@ export default {
           const { username, password, visitor_id } = body;
           if (!username || !password) return jsonRes({ success: false, error: "Missing username or password" }, 400);
           
-          if (env.USERS) {
-            const uKey = `auth_user:${username.toLowerCase()}`;
-            const data = await env.USERS.get(uKey);
-            if (data) {
-              const user = JSON.parse(data);
-              if (user.password === password) {
-                if (visitor_id) {
-                   user.visitor_id = visitor_id;
-                   await env.USERS.put(uKey, JSON.stringify(user));
-                   await env.USERS.put(`user_vid:${visitor_id.toLowerCase()}`, JSON.stringify(user));
-                }
-                return jsonRes({ success: true, user });
+          const uKey = `auth_user:${username.toLowerCase()}`;
+          const data = await env.USERS.get(uKey);
+          if (data) {
+            const user = JSON.parse(data);
+            if (user.password === password) {
+              if (visitor_id) {
+                 user.visitor_id = visitor_id;
+                 await env.USERS.put(uKey, JSON.stringify(user));
+                 await env.USERS.put(`user_vid:${visitor_id.toLowerCase()}`, JSON.stringify(user));
               }
-              return jsonRes({ success: false, error: "Invalid password" }, 401);
+              return jsonRes({ success: true, user });
             }
+            return jsonRes({ success: false, error: "Invalid password" }, 401);
           }
-          // Fallback if user not found or KV missing
           return jsonRes({ success: false, error: "User not found" }, 404);
         }
 
@@ -171,21 +175,19 @@ export default {
           const { visitor_id, wallet_address, kick_username } = body;
           if (!visitor_id) return jsonRes({ success: false, error: "Missing visitor_id" }, 400);
           
-          if (env.USERS) {
-            const vKey = `user_vid:${visitor_id.toLowerCase()}`;
-            const existing = await env.USERS.get(vKey);
-            if (existing) {
-              const user = JSON.parse(existing);
-              if (wallet_address) user.wallet_address = wallet_address;
-              if (kick_username) user.kick_username = kick_username;
-              await env.USERS.put(vKey, JSON.stringify(user));
-              if (user.username) await env.USERS.put(`auth_user:${user.username.toLowerCase()}`, JSON.stringify(user));
-              return jsonRes({ success: true, user });
-            }
+          const vKey = `user_vid:${visitor_id.toLowerCase()}`;
+          const existing = await env.USERS.get(vKey);
+          if (existing) {
+            const user = JSON.parse(existing);
+            if (wallet_address) user.wallet_address = wallet_address;
+            if (kick_username) user.kick_username = kick_username;
+            await env.USERS.put(vKey, JSON.stringify(user));
+            if (user.username) await env.USERS.put(`auth_user:${user.username.toLowerCase()}`, JSON.stringify(user));
+            return jsonRes({ success: true, user });
           }
           
           const newUser = { visitor_id, total_points: 0, g_code: 'G-' + Math.random().toString(36).substring(2, 8).toUpperCase() };
-          if (env.USERS) await env.USERS.put(`user_vid:${visitor_id.toLowerCase()}`, JSON.stringify(newUser));
+          await env.USERS.put(`user_vid:${visitor_id.toLowerCase()}`, JSON.stringify(newUser));
           return jsonRes({ success: true, user: newUser });
         }
 
