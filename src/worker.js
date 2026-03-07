@@ -6,12 +6,11 @@ import { handleInstagramRequest } from './api_social_media/instagram/router.js';
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    let path = url.pathname;
-
-    // Normalize path: Remove /empire prefix if it exists for API matching
-    if (path.startsWith("/empire/api/")) {
-      path = path.replace("/empire/api/", "/api/");
-    }
+    const originalPath = url.pathname;
+    
+    // Create a "clean" path for matching: remove /empire prefix and trailing slashes
+    let path = originalPath.replace(/^\/empire\//, "/");
+    if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
 
     // CRITICAL: Permanent redirect from old Render URL to the new Cloudflare domain
     if (url.hostname.includes('render.com')) {
@@ -61,19 +60,15 @@ export default {
       // =================================================================================
       // 1. API ROUTES (Internal Cloudflare Backend)
       // =================================================================================
-      if (path.startsWith("/api/")) {
+      // Any request containing /api/ should be treated as an API call and return JSON
+      if (path.includes("/api/")) {
         
-        // Normalize path to remove trailing slash for matching
-        const cleanPath = path.endsWith("/") ? path.slice(0, -1) : path;
-
         // --- Auth: Register ---
-        if (cleanPath === "/api/auth/register" && request.method === "POST") {
+        if (path === "/api/auth/register" && request.method === "POST") {
           try {
             const body = await request.json();
             const { username, password, visitor_id, wallet_address } = body;
-            
             if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500, headers: { "Content-Type": "application/json" } });
-            
             const existing = await env.USERS.get(`auth_user:${username.toLowerCase()}`);
             if (existing) return new Response(JSON.stringify({ success: false, error: "Username already exists" }), { status: 400, headers: { "Content-Type": "application/json" } });
             
@@ -85,56 +80,43 @@ export default {
             };
 
             const newUser = {
-              username,
-              password, // In a real app, hash this!
-              visitor_id,
-              wallet_address,
-              kick_username: username,
-              total_points: 0,
-              weekly_points: 0,
-              g_code: generateUniqueGCode(),
-              referral_count: 0,
-              created_at: Date.now()
+              username, password, visitor_id, wallet_address,
+              kick_username: username, total_points: 0, weekly_points: 0,
+              g_code: generateUniqueGCode(), referral_count: 0, created_at: Date.now()
             };
             
             await env.USERS.put(`auth_user:${username.toLowerCase()}`, JSON.stringify(newUser));
             await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
-            
             return new Response(JSON.stringify({ success: true, user: newUser }), { headers: { "Content-Type": "application/json" } });
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Registration Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
         // --- Auth: Login ---
-        if (cleanPath === "/api/auth/login" && request.method === "POST") {
+        if (path === "/api/auth/login" && request.method === "POST") {
           try {
             const body = await request.json();
             const { username, password, visitor_id } = body;
-            
             if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500, headers: { "Content-Type": "application/json" } });
-            
             const data = await env.USERS.get(`auth_user:${username.toLowerCase()}`);
             if (!data) return new Response(JSON.stringify({ success: false, error: "User not found" }), { status: 404, headers: { "Content-Type": "application/json" } });
-            
             const user = JSON.parse(data);
             if (user.password !== password) return new Response(JSON.stringify({ success: false, error: "Invalid password" }), { status: 401, headers: { "Content-Type": "application/json" } });
-            
             if (visitor_id && user.visitor_id !== visitor_id) {
                 user.visitor_id = visitor_id;
                 await env.USERS.put(`auth_user:${username.toLowerCase()}`, JSON.stringify(user));
                 await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(user));
             }
-            
             return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Login Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
         // --- Genesis: Stats ---
-        if (cleanPath === "/api/genesis/stats") {
+        if (path === "/api/genesis/stats") {
             return new Response(JSON.stringify({ success: true, spotsLeft: 50 }), { headers: { "Content-Type": "application/json" } });
         }
 
         // --- Genesis: Login ---
-        if (cleanPath === "/api/genesis/login" && request.method === "POST") {
+        if (path === "/api/genesis/login" && request.method === "POST") {
           try {
             const body = await request.json();
             const { username, password } = body;
@@ -148,12 +130,11 @@ export default {
         }
 
         // --- Genesis: Register ---
-        if (cleanPath === "/api/genesis/test-register" && request.method === "POST") {
+        if (path === "/api/genesis/test-register" && request.method === "POST") {
           try {
             const body = await request.json();
             const { nickname, password, visitor_id, wallet } = body;
             if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500, headers: { "Content-Type": "application/json" } });
-            
             const existing = await env.USERS.get(`auth_user:${nickname.toLowerCase()}`);
             if (existing) return new Response(JSON.stringify({ success: false, error: "Username already exists" }), { status: 400, headers: { "Content-Type": "application/json" } });
 
@@ -165,89 +146,65 @@ export default {
             };
 
             const newUser = {
-              username: nickname,
-              password,
-              visitor_id,
-              wallet_address: wallet,
-              kick_username: nickname,
-              total_points: 0,
-              weekly_points: 0,
-              g_code: generateUniqueGCode(),
-              referral_count: 0,
-              created_at: Date.now(),
+              username: nickname, password, visitor_id, wallet_address: wallet,
+              kick_username: nickname, total_points: 0, weekly_points: 0,
+              g_code: generateUniqueGCode(), referral_count: 0, created_at: Date.now(),
               rank: Math.floor(Math.random() * 50) + 1
             };
             
             await env.USERS.put(`auth_user:${nickname.toLowerCase()}`, JSON.stringify(newUser));
             await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
-            
             return new Response(JSON.stringify({ success: true, gCode: newUser.g_code, rank: newUser.rank, spotsLeft: 49 }), { headers: { "Content-Type": "application/json" } });
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Registration Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
         // --- Log API ---
-        if (cleanPath === "/api/log" && request.method === "POST") {
+        if (path === "/api/log" && request.method === "POST") {
             return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
         }
 
         // --- User Data API ---
-        if (cleanPath === "/api/user-data") {
+        if (path === "/api/user-data") {
           const visitor_id = url.searchParams.get("visitor_id");
           if (!visitor_id) return new Response(JSON.stringify({ success: false, error: "Missing visitor_id" }), { status: 400, headers: { "Content-Type": "application/json" } });
-          
           if (env.USERS) {
             const data = await env.USERS.get(`user_vId:${visitor_id}`);
             if (data) return new Response(JSON.stringify({ success: true, user: JSON.parse(data) }), { headers: { "Content-Type": "application/json" } });
           }
-          
-          return new Response(JSON.stringify({ 
-            success: true, 
-            user: { visitor_id, total_points: 0, weekly_points: 0, kick_username: null, wallet_address: null, g_code: null } 
-          }), { headers: { "Content-Type": "application/json" } });
+          return new Response(JSON.stringify({ success: true, user: { visitor_id, total_points: 0, weekly_points: 0, kick_username: null, wallet_address: null, g_code: null } }), { headers: { "Content-Type": "application/json" } });
         }
 
         // --- Init User API ---
-        if (cleanPath === "/api/init-user" && request.method === "POST") {
+        if (path === "/api/init-user" && request.method === "POST") {
           try {
             const body = await request.json();
             const { visitor_id, wallet_address, kick_username } = body;
-            
             if (!env.USERS) return new Response(JSON.stringify({ success: true, user: { visitor_id, total_points: 0, g_code: 'G-LOCAL' } }), { headers: { "Content-Type": "application/json" } });
-
             const existing = await env.USERS.get(`user_vId:${visitor_id}`);
             if (existing) {
               const existingUser = JSON.parse(existing);
               const updatedUser = { ...existingUser };
               if (wallet_address && !updatedUser.wallet_address) updatedUser.wallet_address = wallet_address;
               if (kick_username && !updatedUser.kick_username) updatedUser.kick_username = kick_username;
-              
               await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(updatedUser));
               if (updatedUser.username) await env.USERS.put(`auth_user:${updatedUser.username.toLowerCase()}`, JSON.stringify(updatedUser));
-              
               return new Response(JSON.stringify({ success: true, user: updatedUser }), { headers: { "Content-Type": "application/json" } });
             }
-
             const generateUniqueGCode = () => {
               const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
               let result = 'G-';
               for (let i = 0; i < 6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
               return result;
             };
-
-            let newUser = { 
-              visitor_id, total_points: 0, weekly_points: 0,
-              kick_username: kick_username || null, wallet_address: wallet_address || null,
-              g_code: generateUniqueGCode(), referral_count: 0
-            };
+            let newUser = { visitor_id, total_points: 0, weekly_points: 0, kick_username: kick_username || null, wallet_address: wallet_address || null, g_code: generateUniqueGCode(), referral_count: 0 };
             newUser.referral_code = newUser.g_code;
-
             await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
             return new Response(JSON.stringify({ success: true, user: newUser }), { headers: { "Content-Type": "application/json" } });
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Init Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
         // --- Update Profile API ---
-        if (cleanPath === "/api/update-profile" && request.method === "POST") {
+        if (path === "/api/update-profile" && request.method === "POST") {
           try {
             const body = await request.json();
             const { visitor_id, kick_username, wallet_address } = body;
@@ -263,7 +220,7 @@ export default {
         }
 
         // --- Claim Reward API ---
-        if (cleanPath === "/api/claim" && request.method === "POST") {
+        if (path === "/api/claim" && request.method === "POST") {
           try {
             const body = await request.json();
             const { visitor_id, points } = body;
@@ -279,7 +236,7 @@ export default {
         }
 
         // --- Stats API ---
-        if (cleanPath === "/api/stats") {
+        if (path === "/api/stats") {
           try {
             const kickApi = await fetch("https://kick.com/api/v1/channels/ghost_gamingtv", { headers: { "User-Agent": "Mozilla/5.0" } });
             const kickData = await kickApi.json();
@@ -297,7 +254,7 @@ export default {
         }
 
         // --- Leaderboards ---
-        if (cleanPath === "/api/leaderboard" || cleanPath === "/api/leaderboard/registered") {
+        if (path === "/api/leaderboard" || path === "/api/leaderboard/registered") {
           try {
             if (!env.USERS) return new Response(JSON.stringify({ success: true, leaderboard: [] }), { headers: { "Content-Type": "application/json" } });
             const { keys } = await env.USERS.list({ prefix: "user_vId:" });
@@ -307,7 +264,7 @@ export default {
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Leaderboard Error" }), { status: 500, headers: { "Content-Type": "application/json" } }); }
         }
 
-        if (cleanPath === "/api/leaderboard/kick") {
+        if (path === "/api/leaderboard/kick") {
           const leaderboardData = [
             { username: "GHOST_GAMINGTV", total_points: 52450, kick_username: "GHOST_GAMINGTV" },
             { username: "undercover", total_points: 48900, kick_username: "undercover" },
@@ -318,7 +275,7 @@ export default {
           return new Response(JSON.stringify({ success: true, leaderboard: leaderboardData }), { headers: { "Content-Type": "application/json" } });
         }
 
-        if (cleanPath.startsWith("/api/leaderboard/") || cleanPath.startsWith("/api/users/platform/")) {
+        if (path.startsWith("/api/leaderboard/") || path.startsWith("/api/users/platform/")) {
             const categoryData = [
               { username: "GHOST_GAMINGTV", value: 85, kick_username: "GHOST_GAMINGTV" },
               { username: "undercover", value: 78, kick_username: "undercover" },
@@ -329,7 +286,7 @@ export default {
             return new Response(JSON.stringify(categoryData), { headers: { "Content-Type": "application/json" } });
         }
 
-        return new Response(JSON.stringify({ error: "API Route Not Found", path: cleanPath }), { status: 404, headers: { "Content-Type": "application/json" } });
+        return new Response(JSON.stringify({ error: "API Route Not Found", path: path }), { status: 404, headers: { "Content-Type": "application/json" } });
       }
 
       // =================================================================================
