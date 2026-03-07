@@ -121,6 +121,68 @@ export default {
           } catch (e) { return new Response(JSON.stringify({ success: false, error: "Login Error" }), { status: 500 }); }
         }
 
+        // --- Genesis: Stats ---
+        if (url.pathname === "/api/genesis/stats") {
+            return new Response(JSON.stringify({ success: true, spotsLeft: 50 }), { headers: { "Content-Type": "application/json" } });
+        }
+
+        // --- Genesis: Login (Legacy support for GhostGate) ---
+        if (url.pathname === "/api/genesis/login" && request.method === "POST") {
+          try {
+            const body = await request.json();
+            const { username, password } = body;
+            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500 });
+            const data = await env.USERS.get(`auth_user:${username.toLowerCase()}`);
+            if (!data) return new Response(JSON.stringify({ success: false, error: "User not found" }), { status: 404 });
+            const user = JSON.parse(data);
+            if (user.password !== password) return new Response(JSON.stringify({ success: false, error: "Invalid password" }), { status: 401 });
+            return new Response(JSON.stringify({ success: true, user }), { headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Login Error" }), { status: 500 }); }
+        }
+
+        // --- Genesis: Register (Legacy support for GhostGate) ---
+        if (url.pathname === "/api/genesis/test-register" && request.method === "POST") {
+          try {
+            const body = await request.json();
+            const { nickname, password, visitor_id, wallet } = body;
+            if (!env.USERS) return new Response(JSON.stringify({ success: false, error: "Database not available" }), { status: 500 });
+            
+            const existing = await env.USERS.get(`auth_user:${nickname.toLowerCase()}`);
+            if (existing) return new Response(JSON.stringify({ success: false, error: "Username already exists" }), { status: 400 });
+
+            const generateUniqueGCode = () => {
+              const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+              let result = 'G-';
+              for (let i = 0; i < 6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+              return result;
+            };
+
+            const newUser = {
+              username: nickname,
+              password,
+              visitor_id,
+              wallet_address: wallet,
+              kick_username: nickname,
+              total_points: 0,
+              weekly_points: 0,
+              g_code: generateUniqueGCode(),
+              referral_count: 0,
+              created_at: Date.now(),
+              rank: Math.floor(Math.random() * 50) + 1
+            };
+            
+            await env.USERS.put(`auth_user:${nickname.toLowerCase()}`, JSON.stringify(newUser));
+            await env.USERS.put(`user_vId:${visitor_id}`, JSON.stringify(newUser));
+            
+            return new Response(JSON.stringify({ success: true, gCode: newUser.g_code, rank: newUser.rank, spotsLeft: 49 }), { headers: { "Content-Type": "application/json" } });
+          } catch (e) { return new Response(JSON.stringify({ success: false, error: "Registration Error" }), { status: 500 }); }
+        }
+
+        // --- Log API ---
+        if (url.pathname === "/api/log" && request.method === "POST") {
+            return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
+        }
+
         // --- User Data API ---
         if (url.pathname === "/api/user-data") {
           const visitor_id = url.searchParams.get("visitor_id");
