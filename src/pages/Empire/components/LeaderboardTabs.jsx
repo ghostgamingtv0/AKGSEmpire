@@ -128,8 +128,32 @@ const LeaderboardTabs = () => {
     
     // FINAL SAFETY FILTER: Remove anything that looks like a random ID or placeholder
     return finalData.filter(user => {
-        const name = user.username || user.kick_username || '';
-        return name && !name.startsWith('User_') && !name.includes('-') && name.length < 30;
+        const name = (user.username || user.kick_username || user.nickname || '').toLowerCase();
+        
+        // Block List: Patterns that indicate random/bot/placeholder names
+        const blockPatterns = [
+            'user_',
+            'loyal_',
+            'follower',
+            'visitor',
+            'anonymous',
+            'guest',
+            'bot',
+            'akgs_fan_',
+            'kick_ninja'
+        ];
+
+        if (!name) return false;
+        if (name.length < 3 || name.length > 25) return false;
+        if (name.includes('-')) return false; // Block names with dashes (often auto-generated)
+        
+        // Check against block patterns
+        const isBlocked = blockPatterns.some(pattern => name.includes(pattern));
+        if (isBlocked) return false;
+
+        // Allow only alphanumeric and underscores
+        const isValidFormat = /^[a-zA-Z0-9_]+$/.test(name);
+        return isValidFormat;
     });
   };
 
