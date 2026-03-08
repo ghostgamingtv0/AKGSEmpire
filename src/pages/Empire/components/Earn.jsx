@@ -963,12 +963,17 @@ const Earn = () => {
 
         const data = await response.json();
 
-        if (data.success) {
+        // Handle success OR "already claimed" as success for UI purposes
+        if (data.success || data.message?.includes('already')) {
           const newClaimed = [...claimedTasks, task.id];
           setClaimedTasks(newClaimed);
           localStorage.setItem('claimedTasks', JSON.stringify(newClaimed));
-          const rewardPoints = parseInt(task.reward) || 5;
-          setPoints(prev => prev + rewardPoints);
+          
+          if (data.success) {
+             const rewardPoints = parseInt(task.reward) || 5;
+             setPoints(prev => prev + rewardPoints);
+          }
+
           if (task.type === 'watch') {
             let platformKey = task.platform.toLowerCase();
             if (platformKey.includes('twitter')) platformKey = 'twitter';
@@ -979,13 +984,15 @@ const Earn = () => {
               localStorage.setItem('claimedContent', JSON.stringify(updated));
             }
           }
-          console.log('✅ Reward claimed via Backend:', data.message);
+          console.log('✅ Reward processed:', data.message);
         } else {
           console.error('❌ Claim failed:', data.message);
-          alert('Failed to claim reward: ' + data.message);
+          // Gracefully handle undefined errors by logging only, not alerting if possible
+          if (data.message) alert('Notice: ' + data.message);
         }
       } catch (error) {
         console.error('❌ Backend connection error:', error);
+        // Optimistic UI update even if backend fails (to unblock user)
         const newClaimed = [...claimedTasks, task.id];
         setClaimedTasks(newClaimed);
         localStorage.setItem('claimedTasks', JSON.stringify(newClaimed));

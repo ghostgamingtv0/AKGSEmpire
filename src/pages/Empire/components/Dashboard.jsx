@@ -278,6 +278,36 @@ const Dashboard = () => {
     return Math.min(100, Math.round(baseline + followersScore + growthScore + viewersScore));
   })();
 
+  // --- HARDCODED STREAMER STATS FOR RESTORED DESIGN ---
+  const CHANNEL_STATS = {
+    rank: '#14',
+    general: [
+      { label: 'Rank', value: '#14', change: '+2', icon: <Trophy size={20} /> },
+      { label: 'Hours Watched', value: '12.4K', change: '+18%', icon: <Clock size={20} /> },
+      { label: 'Peak Viewers', value: '842', change: '-5%', icon: <Users size={20} /> },
+      { label: 'Followers Gained', value: '+1,204', change: '+22%', icon: <TrendingUp size={20} /> },
+      { label: 'Avg Viewers', value: '615', change: '+8%', icon: <Activity size={20} /> }
+    ],
+    categories: [
+      { name: 'Just Chatting', av: '850', at: '42h', pv: '1.2k', color: '#f43f5e' },
+      { name: 'Grand Theft Auto V', av: '620', at: '18h', pv: '900', color: '#3b82f6' },
+      { name: 'Fortnite', av: '580', at: '12h', pv: '750', color: '#eab308' }
+    ],
+    topChatters: [
+      { name: 'Ghost_Fan_01', chats: '4.2k' },
+      { name: 'Empire_Loyalist', chats: '3.8k' },
+      { name: 'Kick_Master', chats: '3.1k' },
+      { name: 'Night_Rider', chats: '2.9k' },
+      { name: 'Green_Phantom', chats: '2.5k' },
+      { name: 'Stream_Sniper', chats: '2.1k' }
+    ],
+    overlap: [
+      { name: 'AdinRoss', shared: '65%', unique: '35%', unreached: '120k', color: '#f43f5e' },
+      { name: 'xQc', shared: '48%', unique: '52%', unreached: '95k', color: '#3b82f6' },
+      { name: 'KaiCenat', shared: '32%', unique: '68%', unreached: '210k', color: '#eab308' }
+    ]
+  };
+
   const stats = [
     { label: 'Empire Heat Index', value: `${heatScore}/100`, icon: <Activity className="text-[#53FC18]" />, change: isStreamLive ? 'Live Momentum' : 'Ambient Growth' },
     { label: 'Kick Followers', value: totalFollowers.toLocaleString(), icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
@@ -549,7 +579,7 @@ const Dashboard = () => {
             <div className="flex items-center justify-between mb-8">
                 <h2 className="text-3xl font-bold text-white flex items-center gap-3">
                     <Activity className="text-[#53FC18]" size={32} />
-                    إحصائيات القناة الشاملة | Channel Insights
+                    Channel Insights
                 </h2>
                 <div className="flex items-center gap-2 bg-[#53FC18] text-black px-4 py-1.5 rounded-lg font-bold shadow-[0_0_15px_rgba(83,252,24,0.4)]">
                     <FaRankingStar />
@@ -565,10 +595,110 @@ const Dashboard = () => {
                             <span className="text-[#53FC18]">{stat.icon}</span>
                             <span className="text-[10px] uppercase font-bold tracking-wider">{stat.label}</span>
                         </div>
-                        <p className="text-xl font-black text-white">{stat.value}</p>
+                        <div className="flex items-baseline gap-2">
+                            <p className="text-xl font-black text-white">{stat.value}</p>
+                            <span className={`text-xs font-bold ${stat.change.startsWith('+') ? 'text-[#53FC18]' : 'text-red-500'}`}>
+                                {stat.change}
+                            </span>
+                        </div>
                     </div>
                 ))}
             </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+                {/* Categories */}
+                <div className="bg-black/40 border border-white/10 p-6 rounded-2xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <Layout size={80} />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <Layout className="text-[#53FC18]" size={20} />
+                        Top Categories
+                    </h3>
+                    <div className="space-y-4">
+                        {CHANNEL_STATS.categories.map((cat, idx) => (
+                            <div key={idx} className="relative">
+                                <div className="flex justify-between items-center mb-1 text-sm">
+                                    <span className="font-bold text-gray-200">{cat.name}</span>
+                                    <span className="text-[#53FC18] font-mono">{cat.av} avg</span>
+                                </div>
+                                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                                    <div 
+                                        className="h-full rounded-full" 
+                                        style={{ width: `${(cat.av / 1000) * 100}%`, backgroundColor: cat.color }}
+                                    ></div>
+                                </div>
+                                <div className="flex justify-between mt-1 text-[10px] text-gray-500 font-mono">
+                                    <span>{cat.at} airtime</span>
+                                    <span>Peak: {cat.pv}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Top Chatters */}
+                <div className="bg-black/40 border border-white/10 p-6 rounded-2xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <MessageCircle size={80} />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <MessageCircle className="text-[#53FC18]" size={20} />
+                        Top Chatters
+                    </h3>
+                    <div className="space-y-3">
+                        {CHANNEL_STATS.topChatters.map((chatter, idx) => (
+                            <div key={idx} className="flex items-center justify-between p-2 hover:bg-white/5 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                <div className="flex items-center gap-3">
+                                    <span className={`font-mono font-bold text-sm ${idx < 3 ? 'text-[#53FC18]' : 'text-gray-500'}`}>
+                                        #{idx + 1}
+                                    </span>
+                                    <span className="font-bold text-gray-300">{chatter.name}</span>
+                                </div>
+                                <span className="text-xs bg-white/10 px-2 py-1 rounded text-gray-400 font-mono">
+                                    {chatter.chats} msgs
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Audience Overlap */}
+                <div className="bg-black/40 border border-white/10 p-6 rounded-2xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <Users size={80} />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <Users className="text-[#53FC18]" size={20} />
+                        Audience Overlap
+                    </h3>
+                    <div className="space-y-6">
+                        {CHANNEL_STATS.overlap.map((streamer, idx) => (
+                            <div key={idx}>
+                                <div className="flex justify-between mb-2">
+                                    <span className="font-bold text-white">{streamer.name}</span>
+                                    <span className="text-[#53FC18] font-bold text-sm">{streamer.shared} Shared</span>
+                                </div>
+                                <div className="flex h-3 rounded-full overflow-hidden bg-white/5">
+                                    <div 
+                                        className="h-full" 
+                                        style={{ width: streamer.shared, backgroundColor: streamer.color }}
+                                    ></div>
+                                    <div 
+                                        className="h-full bg-white/10" 
+                                        style={{ width: streamer.unique }}
+                                    ></div>
+                                </div>
+                                <div className="flex justify-between mt-1 text-[10px] text-gray-500 font-mono">
+                                    <span style={{ color: streamer.color }}>Shared Audience</span>
+                                    <span>Unique: {streamer.unique}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </motion.div>
 
             {/* Categories & Top Chatters Grid */}
             <div className="grid md:grid-cols-2 gap-8 mb-8">

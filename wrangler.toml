@@ -1,0 +1,10 @@
+name = "akgsempire"
+compatibility_date = "2024-03-01"
+
+[[kv_namespaces]]
+binding = "USERS"
+id = "55734aaba959409e9cc32030b05d2019"
+
+[pages_build_config]
+build_command = "npm run build"
+build_output_directory = "dist"
