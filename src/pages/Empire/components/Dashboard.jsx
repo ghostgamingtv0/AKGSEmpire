@@ -802,7 +802,7 @@ const Dashboard = () => {
                     <div className="mt-6 text-4xl font-black text-[#53FC18] drop-shadow-[0_0_10px_rgba(83,252,24,0.3)]">84.2%</div>
                 </div>
             </div>
-        </motion.div>
+        </div>
 
 
 
