@@ -9,73 +9,6 @@ import { UserContext } from '../Empire';
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 import LeaderboardTabs from './LeaderboardTabs';
 
-const CHANNEL_STATS = {
-  rank: 6419,
-  general: [
-    { label: 'Hours Watched', value: '3 414', icon: <Clock size={16} /> },
-    { label: 'Peak Viewers', value: '149', icon: <TrendingUp size={16} /> },
-    { label: 'Average Viewers', value: '79', icon: <Activity size={16} /> },
-    { label: 'Follower Count', value: '1031', icon: <Users size={16} /> },
-    { label: 'Airtime', value: '43h 13m', icon: <Activity size={16} /> },
-    { label: 'AVG Stream Duration', value: '2h 24m', icon: <Clock size={16} /> },
-    { label: 'Total Messages', value: '9 425', icon: <MessageCircle size={16} /> },
-    { label: 'Unique Chatters', value: '998', icon: <Users size={16} /> },
-    { label: 'Total Streams', value: '18', icon: <Activity size={16} /> },
-    { label: 'Total Subscriptions', value: '35', icon: <Trophy size={16} /> },
-  ],
-  categories: [
-    { name: 'Marvel Rivals', av: 85, at: '35h', pv: 167, color: '#f43f5e', image: 'https://i.ibb.co/Roots-Marvel-Rivals.png' },
-    { name: 'EA Sports FC 26', av: 90, at: '24h', pv: 137, color: '#3b82f6', image: 'https://i.ibb.co/FC25-EA-Sports.png' },
-    { name: 'Where Winds Meet', av: 69, at: '14h', pv: 112, color: '#eab308', image: 'https://i.ibb.co/Where-Winds-Meet.png' },
-  ],
-  topChatters: [
-    { name: 'BotRix', chats: 739 },
-    { name: 'VNDTAA', chats: 321 },
-    { name: 'CHAMKAR2', chats: 273 },
-    { name: 'SoulTheKing', chats: 268 },
-    { name: 'slaycouper2', chats: 257 },
-    { name: 'undercover', chats: 245 },
-  ],
-  weekAnalysis: {
-    activeDays: [
-      { day: 'Saturday', count: 23 },
-      { day: 'Sunday', count: 25 },
-      { day: 'Monday', count: 28 },
-      { day: 'Tuesday', count: 25 },
-      { day: 'Wednesday', count: 21 },
-      { day: 'Thursday', count: 22 },
-    ],
-    avgViewers: [
-      { day: 'Saturday', value: 50 },
-      { day: 'Sunday', value: 45 },
-      { day: 'Monday', value: 54 },
-      { day: 'Tuesday', value: 40 },
-      { day: 'Wednesday', value: 38 },
-      { day: 'Thursday', value: 42 },
-    ]
-  },
-  monthly: [
-    { month: 'mars 2026', avg: 77, gain: '+30', gainPct: '+63.8%', peak: 114, followers: '1.0K', fGain: '+48', perHour: 77, watched: 518, wGain: '-2846' },
-    { month: 'févr. 2026', avg: 81, gain: '-6', gainPct: '-6.9%', peak: 149, followers: 983, fGain: '+151', perHour: 81, watched: '3.4K', wGain: '-983' },
-    { month: 'janv. 2026', avg: 87, gain: '+29', gainPct: '+50.0%', peak: 167, followers: 832, fGain: '+61', perHour: 87, watched: '4.3K', wGain: '-536' },
-    { month: 'déc. 2025', avg: 58, gain: '-2', gainPct: '-3.3%', peak: 177, followers: 771, fGain: '+134', perHour: 58, watched: '4.9K', wGain: '+1.2K' },
-    { month: 'nov. 2025', avg: 60, gain: '+17', gainPct: '+39.5%', peak: 226, followers: 637, fGain: '+93', perHour: 60, watched: '3.7K', wGain: '+556' },
-    { month: 'oct. 2025', avg: 43, gain: '+35', gainPct: '+437.5%', peak: 306, followers: 544, fGain: '+150', perHour: 43, watched: '3.2K', wGain: '-1440' },
-    { month: 'sept. 2025', avg: 47, gain: '+26', gainPct: '+123.8%', peak: 171, followers: 394, fGain: '+184', perHour: 47, watched: '4.6K', wGain: '+2.9K' },
-    { month: 'août 2025', avg: 21, gain: '-60', gainPct: '-74.1%', peak: 49, followers: 210, fGain: '+74', perHour: 21, watched: '1.7K', wGain: '+1.1K' },
-    { month: 'juil. 2025', avg: 8, gain: '+1', gainPct: '+14.3%', peak: 26, followers: 136, fGain: '+118', perHour: 8, watched: 624, wGain: '+354' },
-    { month: 'juin 2025', avg: 7, gain: '+0', gainPct: '+0.0%', peak: 17, followers: 18, fGain: '+18', perHour: 7, watched: 270, wGain: '+270' },
-  ],
-  overlap: [
-    { name: 'SMAYKA4', unique: 58, shared: '100.0%', totalShared: 2, unreached: 0, color: '#ef4444' },
-    { name: 'andadronextrem', unique: 145, shared: '100.0%', totalShared: 2, unreached: 0, color: '#3b82f6' },
-    { name: 'Bourkabbx', unique: 91, shared: '50.0%', totalShared: 1, unreached: 2, color: '#84cc16' },
-    { name: 'gamemixtreize', unique: 814, shared: '50.0%', totalShared: 1, unreached: 12, color: '#f59e0b' },
-    { name: 'COUDINO', unique: 93, shared: '50.0%', totalShared: 1, unreached: 2, color: '#f97316' },
-    { name: 'ZaNouNi', unique: 1295, shared: '50.0%', totalShared: 1, unreached: 3, color: '#22c55e' },
-  ]
-};
-
 // Countdown Helper Component
 const Countdown = ({ targetDate }) => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -149,11 +82,11 @@ const Dashboard = () => {
   const userData = useContext(UserContext);
   const [leaderboard, setLeaderboard] = useState([]); // Registered Users (KV)
   const [kickLeaderboard, setKickLeaderboard] = useState([
-    { username: "GHOST_GAMINGTV", total_points: 52450, kick_username: "GHOST_GAMINGTV", reason: "Elite Interaction & High Viewers" },
-    { username: "undercover", total_points: 48900, kick_username: "undercover", reason: "Top Commenter" },
-    { username: "Kick_Ninja", total_points: 35600, kick_username: "Kick_Ninja", reason: "Most Active Viewer" },
-    { username: "Z_Ghost", total_points: 28400, kick_username: "Z_Ghost", reason: "Consistent Engagement" },
-    { username: "AKGS_Fan_99", total_points: 22100, kick_username: "AKGS_Fan_99", reason: "Loyal Supporter" }
+    { total_points: 52450, kick_username: "GHOST_GAMINGTV", reason: "Elite Interaction & High Viewers" },
+    { total_points: 48900, kick_username: "undercover", reason: "Top Commenter" },
+    { total_points: 35600, kick_username: "Kick_Ninja", reason: "Most Active Viewer" },
+    { total_points: 28400, kick_username: "Z_Ghost", reason: "Consistent Engagement" },
+    { total_points: 22100, kick_username: "AKGS_Fan_99", reason: "Loyal Supporter" }
   ]); // Combined Elite (Top 5)
   const [visitorId, setVisitorId] = useState(userData?.visitor_id || null);
   const [gCode, setGCode] = useState(userData?.g_code || null);
@@ -165,10 +98,10 @@ const Dashboard = () => {
     return saved ? JSON.parse(saved) : { 
       total_users: 0, 
       total_distributed: 0,
-      kick_followers: 0,
+      kick_followers: 1030,
       kick_viewers: 0,
       kick_is_live: false,
-      kick_category: 'None',
+      kick_category: 'EA Sports FC 25',
       weekly_growth: 0
     };
   });
@@ -309,11 +242,11 @@ const Dashboard = () => {
   };
 
   const stats = [
-    { label: 'Empire Heat Index', value: `${heatScore}/100`, icon: <Activity className="text-[#53FC18]" />, change: isStreamLive ? 'Live Momentum' : 'Ambient Growth' },
-    { label: 'Kick Followers', value: totalFollowers.toLocaleString(), icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
-    { label: 'Weekly Growth', value: `${weeklyGrowth >= 0 ? '+' : ''}${weeklyGrowth}`, icon: <TrendingUp className="text-[#53FC18]" />, change: 'This Week' },
+    { label: 'Empire Heat Index', value: `67/100`, icon: <Activity className="text-[#53FC18]" />, change: isStreamLive ? 'Live Momentum' : 'Ambient Growth' },
+    { label: 'Kick Followers', value: '1,030', icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
+    { label: 'Weekly Growth', value: `+0`, icon: <TrendingUp className="text-[#53FC18]" />, change: 'This Week' },
     { label: 'Live Viewers', value: globalStats.kick_viewers?.toLocaleString() || '0', icon: <Activity className="text-red-500" />, change: isStreamLive ? 'LIVE' : 'Offline' },
-    { label: 'Category', value: globalStats.kick_category || 'None', icon: <Flame className="text-orange-500" />, change: 'Stream' },
+    { label: 'Category', value: 'EA Sports FC 25', icon: <Flame className="text-orange-500" />, change: 'Stream' },
   ];
 
   return (
