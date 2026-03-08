@@ -807,9 +807,7 @@ const Dashboard = () => {
 
 
         {/* Global Monthly Leaderboard (Points) */}
-        <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+        <div 
             className="glass-panel p-6 mb-12 relative overflow-hidden border border-[#53FC18]/20 bg-black/40"
         >
             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
@@ -872,7 +870,7 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
-        </motion.div>
+        </div>
 
         {/* Weekly Leaderboard Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
