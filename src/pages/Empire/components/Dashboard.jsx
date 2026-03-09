@@ -153,51 +153,35 @@ const Dashboard = () => {
       } catch (e) {
         console.error('Failed to fetch /api/stats during sync', e);
       }
-
-      try {
-        const kickRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://kick.com/api/v1/channels/ghost_gamingtv')}`);
-        if (kickRes.ok) {
-          const kickData = await kickRes.json();
-          const followers =
-            kickData.followersCount ||
-            kickData.followers_count ||
-            0;
-          const isLive = !!kickData.livestream;
-          const viewers = isLive ? (kickData.livestream.viewer_count || 0) : 0;
-          const category =
-            (isLive && kickData.livestream && kickData.livestream.categories && kickData.livestream.categories[0]?.name) ||
-            (kickData.recent_categories && kickData.recent_categories[0]?.name) ||
-            'None';
-
-          setGlobalStats(prev => ({
-            ...prev,
-            kick_followers: followers,
-            kick_viewers: viewers,
-            kick_is_live: isLive,
-            kick_category: category
-          }));
-
-          try {
-            await fetch(`${API_BASE}/api/update-kick-stats`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                followers,
-                viewers,
-                is_live: isLive
-              })
-            });
-          } catch (e) {
-            console.error('Failed to sync Kick stats to backend during sync', e);
-          }
-        }
-      } catch (e) {
-        console.error('Direct Kick API fetch failed during sync', e);
-      }
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Auto-Fetch Stats on Mount and Interval
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/api/stats');
+        if (res.ok) {
+           const data = await res.json();
+           if (data.success || typeof data.kick_followers === 'number') {
+             setGlobalStats(prev => ({
+               ...prev,
+               kick_followers: data.kick_followers,
+               kick_viewers: data.kick_viewers,
+               kick_is_live: data.kick_is_live === true || data.kick_is_live === 'true',
+               kick_category: data.kick_category || 'None'
+             }));
+           }
+        }
+      } catch (e) { console.error('Stats fetch error:', e); }
+    };
+
+    fetchStats();
+    const interval = setInterval(fetchStats, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, []);
 
   const isStreamLive = globalStats.kick_is_live;
 
