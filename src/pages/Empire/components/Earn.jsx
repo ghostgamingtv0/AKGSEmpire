@@ -81,7 +81,7 @@ const ProjectNFTIcon = ({ color = "#53FC18", tier = "1", imageSrc = NFT_IMAGE_MA
 );
 
 const Earn = () => {
-  const userData = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext) || {};
   resetLocalStorageIfNeeded();
   const [activeTab, setActiveTab] = useState(() => {
     const saved = localStorage.getItem('earn_active_tab');
@@ -324,7 +324,18 @@ const Earn = () => {
                    ...prev,
                    [taskId]: { timeLeft: 0, status: 'verified', points: data.points_added }
                }));
-               if (typeof data.points_added === 'number') {
+               if (data.user) {
+                   setUserData(data.user);
+                   localStorage.setItem('user_session', JSON.stringify(data.user));
+                   localStorage.setItem('user_points', String(data.user.total_points || 0));
+                   localStorage.setItem('gCode', data.user.g_code || '');
+                   localStorage.setItem('kickUsername', data.user.kick_username || '');
+                   localStorage.setItem('walletAddress', data.user.wallet_address || '');
+                   setPoints(data.user.total_points || 0);
+               } else if (typeof data.new_total === 'number') {
+                   setPoints(data.new_total);
+                   localStorage.setItem('user_points', String(data.new_total));
+               } else if (typeof data.points_added === 'number') {
                    setPoints(prev => prev + data.points_added);
                }
           } else {
@@ -969,9 +980,17 @@ const Earn = () => {
           setClaimedTasks(newClaimed);
           localStorage.setItem('claimedTasks', JSON.stringify(newClaimed));
           
-          if (data.success) {
-             const rewardPoints = parseInt(task.reward) || 5;
-             setPoints(prev => prev + rewardPoints);
+          if (data.user) {
+            setUserData(data.user);
+            localStorage.setItem('user_session', JSON.stringify(data.user));
+            localStorage.setItem('user_points', String(data.user.total_points || 0));
+            localStorage.setItem('gCode', data.user.g_code || '');
+            localStorage.setItem('kickUsername', data.user.kick_username || '');
+            localStorage.setItem('walletAddress', data.user.wallet_address || '');
+            setPoints(data.user.total_points || 0);
+          } else if (data.success) {
+            const rewardPoints = parseInt(task.reward) || 5;
+            setPoints(prev => prev + rewardPoints);
           }
 
           if (task.type === 'watch') {

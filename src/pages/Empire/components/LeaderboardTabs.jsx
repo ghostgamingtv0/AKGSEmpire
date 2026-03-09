@@ -110,9 +110,9 @@ const LeaderboardTabs = () => {
     return list
       .map(user => ({
         ...user,
-        username: getPlatformUsername(user)
+        username: getPlatformUsername(user) || 'Anonymous User'
       }))
-      .filter(user => !!user.username);
+      .filter(user => !!user.visitor_id);
   };
 
   const getMetricDisplay = (user, metricId) => {
@@ -196,9 +196,9 @@ const LeaderboardTabs = () => {
                             ) : topUsers.length > 0 ? (
                                 <div className="flex flex-col gap-1.5 py-4">
                                     {topUsers.map((user, idx) => {
-                                        const displayName = user.username || user.kick_username;
-                                        // Skip users without a proper name (random/visitor IDs)
-                                        if (!displayName || displayName.startsWith('User_') || displayName.includes('-')) return null;
+                                        const displayName = user.username === 'Anonymous User'
+                                          ? `Anonymous User ${String(user.visitor_id).substring(0, 6)}`
+                                          : (user.username || user.kick_username);
                                         
                                         const isTop1 = idx === 0;
                                         

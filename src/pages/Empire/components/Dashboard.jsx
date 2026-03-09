@@ -79,7 +79,7 @@ const getNextWeeklyReset = () => {
 };
 
 const Dashboard = () => {
-  const userData = useContext(UserContext);
+  const { userData } = useContext(UserContext) || {};
   const [leaderboard, setLeaderboard] = useState([]); // Registered Users (KV)
   const [eliteLeaderboard, setEliteLeaderboard] = useState([]);
   const [visitorId, setVisitorId] = useState(userData?.visitor_id || null);

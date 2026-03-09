@@ -360,7 +360,7 @@ function Empire() {
   }
 
   return (
-    <UserContext.Provider value={userData}>
+    <UserContext.Provider value={{ userData, setUserData }}>
       <div className="min-h-screen flex flex-col font-sans selection:bg-[#53FC18] selection:text-black relative">
         <FacebookSDK />
         <BackgroundEffects />

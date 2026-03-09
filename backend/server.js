@@ -171,12 +171,16 @@ app.post('/api/verify-task', async (req, res) => {
         // 3. Award Points (e.g., 10 points per task)
         const REWARD_POINTS = 10;
         await pool.query('UPDATE users SET total_points = total_points + ?, weekly_points = weekly_points + ? WHERE id = ?', [REWARD_POINTS, REWARD_POINTS, user.id]);
+
+        const [updatedUsers] = await pool.query('SELECT * FROM users WHERE id = ?', [user.id]);
+        const updatedUser = updatedUsers[0] || user;
         
         res.json({ 
             success: true, 
             message: 'Task verified successfully', 
             points_added: REWARD_POINTS,
-            new_total: user.total_points + REWARD_POINTS 
+            new_total: (updatedUser.total_points ?? (user.total_points + REWARD_POINTS)),
+            user: updatedUser
         });
 
     } catch (e) {
@@ -1466,7 +1470,8 @@ app.post('/api/claim', async (req, res) => {
       [pointsToAdd, pointsToAdd, visitor_id]
     );
 
-    res.json({ success: true, message: 'Reward claimed' });
+    const [updatedUsers] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+    res.json({ success: true, message: 'Reward claimed', user: updatedUsers[0] });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Server Error' });
@@ -1825,7 +1830,7 @@ const sanitizeLeaderboardRows = (rows) => {
             tasks_completed: typeof row.tasks_completed === 'number' ? row.tasks_completed : (parseInt(row.tasks_completed, 10) || 0),
             referral_count: typeof row.referral_count === 'number' ? row.referral_count : (parseInt(row.referral_count, 10) || 0)
         }))
-        .filter((row) => row.kick_username || row.twitter_username || row.threads_username || row.instagram_username);
+        .filter((row) => !!row.visitor_id);
 };
 
 const queryLeaderboard = async (sql, limit = 200) => {

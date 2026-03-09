@@ -13,7 +13,7 @@ export default {
 
     // 2. API Proxy to Render Backend (Node.js + SQLite)
     // Cloudflare Workers cannot run SQLite, so we must proxy API requests to the Render backend.
-    if (path.startsWith('/api/')) {
+    if (path.startsWith('/api/') || path.startsWith('/empire/api/')) {
       // Default to the likely Render URL if env var is missing
       const BACKEND_URL = env.RENDER_BACKEND_URL || 'https://akgs-empire.onrender.com';
       
@@ -22,6 +22,9 @@ export default {
       targetUrl.protocol = backendBase.protocol;
       targetUrl.hostname = backendBase.hostname;
       targetUrl.port = backendBase.port;
+      if (path.startsWith('/empire/api/')) {
+        targetUrl.pathname = path.slice('/empire'.length);
+      }
       
       console.log(`Proxying API request: ${path} -> ${targetUrl.toString()}`);
 
