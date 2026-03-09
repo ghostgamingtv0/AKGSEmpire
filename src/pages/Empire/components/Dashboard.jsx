@@ -4,7 +4,7 @@ import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, Trendi
 import { FaPlay, FaPowerOff, FaRankingStar } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
-import { UserContext } from '../../UserContext';
+import { UserContext } from '../UserContext';
 
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 import LeaderboardTabs from './LeaderboardTabs';
@@ -517,8 +517,8 @@ const Dashboard = () => {
                         </div>
                         <div className="flex items-baseline gap-2">
                             <p className="text-xl font-black text-white">{stat.value}</p>
-                            <span className={`text-xs font-bold ${stat.change.startsWith('+') ? 'text-[#53FC18]' : 'text-red-500'}`}>
-                                {stat.change}
+                            <span className={`text-xs font-bold ${(stat.change || '').startsWith('+') ? 'text-[#53FC18]' : 'text-red-500'}`}>
+                                {stat.change || ''}
                             </span>
                         </div>
                     </div>

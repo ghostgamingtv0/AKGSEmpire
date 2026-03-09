@@ -18,22 +18,23 @@ export default {
       const BACKEND_URL = env.RENDER_BACKEND_URL || 'https://akgs-empire.onrender.com';
       
       const targetUrl = new URL(request.url);
-      targetUrl.protocol = new URL(BACKEND_URL).protocol;
-      targetUrl.hostname = new URL(BACKEND_URL).hostname;
-      targetUrl.port = new URL(BACKEND_URL).port;
+      const backendBase = new URL(BACKEND_URL);
+      targetUrl.protocol = backendBase.protocol;
+      targetUrl.hostname = backendBase.hostname;
+      targetUrl.port = backendBase.port;
       
       console.log(`Proxying API request: ${path} -> ${targetUrl.toString()}`);
 
       try {
+        const headers = new Headers(request.headers);
+        headers.set('X-Proxy-Source', 'Cloudflare-Worker');
+
         const newRequest = new Request(targetUrl, {
-          method: request.method,
-          headers: request.headers,
-          body: request.body,
+          method,
+          headers,
+          body: method === 'GET' || method === 'HEAD' ? undefined : request.body,
           redirect: 'follow'
         });
-
-        // Add internal header to prevent loops if backend calls frontend
-        newRequest.headers.set('X-Proxy-Source', 'Cloudflare-Worker');
 
         const response = await fetch(newRequest);
         
@@ -42,7 +43,7 @@ export default {
         return new Response(response.body, {
           status: response.status,
           statusText: response.statusText,
-          headers: response.headers
+          headers: new Headers(response.headers)
         });
 
       } catch (e) {
