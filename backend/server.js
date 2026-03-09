@@ -490,7 +490,6 @@ const updateGenesisSpots = (decrement = 1) => {
 };
 
 // --- File Logging (Detailed User Events) ---
-import { join, dirname } from 'path';
 const USER_EVENTS_FILE = join(__dirname, '../data/user_events.jsonl');
 const appendEventLog = (name, req, payload = {}) => {
     try {
