@@ -4,7 +4,7 @@ import { Users, Activity, ExternalLink, Trophy, Flame, Copy, CheckCircle, Trendi
 import { FaPlay, FaPowerOff, FaRankingStar } from 'react-icons/fa6';
 import { load } from '@fingerprintjs/fingerprintjs';
 import { SOCIAL_LINKS } from '../../../config/constants';
-import { UserContext } from '../Empire';
+import { UserContext } from '../../UserContext';
 
 import { generateRandomString, generateCodeChallenge } from '../../../pkce';
 import LeaderboardTabs from './LeaderboardTabs';

@@ -140,81 +140,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// --- Auth Routes ---
-app.post('/api/auth/register', async (req, res) => {
-    const { username, password, wallet_address, visitor_id } = req.body;
-    
-    // Validation
-    if (!username || !password || !wallet_address || !visitor_id) {
-        return res.status(400).json({ success: false, error: 'All fields are required' });
-    }
-    
-    // Validate Username Format (Letters, Numbers, Underscore only)
-    const usernameRegex = /^[a-zA-Z0-9_]+$/;
-    if (!usernameRegex.test(username)) {
-        return res.status(400).json({ success: false, error: 'Username must contain only letters, numbers, and underscores' });
-    }
+// --- Auth Routes (See below for implementation) ---
+// (Moved to unify logic with later definitions)
 
-    try {
-        // Check if username already exists
-        const [existing] = await pool.query('SELECT id FROM users WHERE username = ?', [username]);
-        if (existing.length > 0) {
-            return res.status(400).json({ success: false, error: 'Username already taken' });
-        }
-
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Check if user exists by visitor_id
-        const [user] = await pool.query('SELECT id FROM users WHERE visitor_id = ?', [visitor_id]);
-        
-        if (user.length > 0) {
-            // Update existing user
-            await pool.query('UPDATE users SET username = ?, password = ?, wallet_address = ? WHERE visitor_id = ?', 
-                [username, hashedPassword, wallet_address, visitor_id]);
-        } else {
-            // Create new user
-            await pool.query('INSERT INTO users (visitor_id, username, password, wallet_address) VALUES (?, ?, ?, ?)', 
-                [visitor_id, username, hashedPassword, wallet_address]);
-        }
-
-        res.json({ success: true, username });
-    } catch (e) {
-        console.error('Registration Error:', e);
-        res.status(500).json({ success: false, error: 'Registration failed' });
-    }
-});
-
-app.post('/api/auth/login', async (req, res) => {
-    const { username, password } = req.body;
-
-    try {
-        const [users] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
-        if (users.length === 0) {
-            return res.status(400).json({ success: false, error: 'User not found' });
-        }
-
-        const user = users[0];
-        const validPassword = await bcrypt.compare(password, user.password);
-
-        if (!validPassword) {
-            return res.status(400).json({ success: false, error: 'Invalid password' });
-        }
-
-        res.json({ 
-            success: true, 
-            user: {
-                username: user.username,
-                wallet_address: user.wallet_address,
-                visitor_id: user.visitor_id,
-                total_points: user.total_points
-            }
-        });
-    } catch (e) {
-        console.error('Login Error:', e);
-        res.status(500).json({ success: false, error: 'Login failed' });
-    }
-});
 
 // --- Task Verification Routes ---
 app.post('/api/verify-task', async (req, res) => {

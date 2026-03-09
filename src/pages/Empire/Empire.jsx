@@ -1,7 +1,8 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutDashboard, Wallet, Menu, X, Users, Coins, Zap, User } from 'lucide-react';
+import { UserContext } from './UserContext';
 import Hero from './components/Hero';
 import Dashboard from './components/Dashboard';
 import Earn from './components/Earn';
@@ -11,8 +12,6 @@ import Login from './components/Login';
 import BackgroundEffects from '../../components/BackgroundEffects';
 import FacebookSDK from './components/FacebookSDK';
 import { ASSETS, SOCIAL_LINKS } from '../../config/constants';
-
-export const UserContext = createContext(null);
 
 const Navbar = ({ onConnect, walletAddress }) => {
   const [isOpen, setIsOpen] = useState(false);
