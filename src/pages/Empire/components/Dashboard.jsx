@@ -227,10 +227,10 @@ const Dashboard = () => {
 
   const stats = [
     { label: 'Empire Heat Index', value: `67/100`, icon: <Activity className="text-[#53FC18]" />, change: isStreamLive ? 'Live Momentum' : 'Ambient Growth' },
-    { label: 'Kick Followers', value: '1,030', icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
-    { label: 'Weekly Growth', value: `+0`, icon: <TrendingUp className="text-[#53FC18]" />, change: 'This Week' },
+    { label: 'Kick Followers', value: totalFollowers.toLocaleString(), icon: <Users className="text-[#53FC18]" />, change: 'Kick.com' },
+    { label: 'Weekly Growth', value: `+${weeklyGrowth}`, icon: <TrendingUp className="text-[#53FC18]" />, change: 'This Week' },
     { label: 'Live Viewers', value: globalStats.kick_viewers?.toLocaleString() || '0', icon: <Activity className="text-red-500" />, change: isStreamLive ? 'LIVE' : 'Offline' },
-    { label: 'Category', value: 'EA Sports FC 25', icon: <Flame className="text-orange-500" />, change: 'Stream' },
+    { label: 'Category', value: globalStats.kick_category || 'None', icon: <Flame className="text-orange-500" />, change: 'Stream' },
   ];
 
   return (

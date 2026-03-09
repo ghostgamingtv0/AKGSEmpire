@@ -52,7 +52,7 @@ const LeaderboardTabs = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  // --- STATIC DATA FROM USER PROMPT (NO RANDOMNESS) ---
+  // --- STATIC ACCURATE DATA (EXACTLY AS PROVIDED BY USER) ---
   const STATIC_DATA = {
     tasks: [
       { username: "GHOST_GAMINGTV", tasks_completed: 42 },
@@ -62,11 +62,11 @@ const LeaderboardTabs = () => {
       { username: "AKGS_Fan_99", tasks_completed: 28 }
     ],
     points: [
-      { username: "GHOST_GAMINGTV", weekly_points: 52450 },
-      { username: "undercover", weekly_points: 48900 },
-      { username: "Kick_Ninja", weekly_points: 35600 },
-      { username: "Z_Ghost", weekly_points: 28400 },
-      { username: "AKGS_Fan_99", weekly_points: 22100 }
+      { username: "GHOST_GAMINGTV", weekly_points: "52450 Pts" },
+      { username: "undercover", weekly_points: "48900 Pts" },
+      { username: "Kick_Ninja", weekly_points: "35600 Pts" },
+      { username: "Z_Ghost", weekly_points: "28400 Pts" },
+      { username: "AKGS_Fan_99", weekly_points: "22100 Pts" }
     ],
     comments: [
       { username: "undercover", weekly_comments: 1240 },
@@ -106,20 +106,14 @@ const LeaderboardTabs = () => {
     { id: 'instagram', label: 'Instagram' },
   ];
 
-  // Bypass API fetching to ensure NO RANDOM NAMES
   useEffect(() => {
-    // We are using static data now
+    // No fetching needed, using accurate static data
     setLoading(false);
   }, []);
 
   const getTopUsers = (metricId, platformId) => {
-    // Only show data for 'Kick' platform primarily, or reuse same users for others to show dominance
-    // The user prompt data is platform-agnostic but implies Kick context.
-    // We will display the same "Elite" users across the board or filter if needed.
-    // For now, return the static list for all platforms to populate the matrix visually.
-    
-    let sourceData = STATIC_DATA[metricId] || [];
-    return sourceData; 
+    // The user provided the same list for all platforms in the prompt
+    return STATIC_DATA[metricId] || [];
   };
 
   const getMetricDisplay = (user, metricId) => {
