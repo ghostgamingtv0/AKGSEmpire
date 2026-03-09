@@ -258,8 +258,9 @@ app.post('/api/verify-task', async (req, res) => {
 });
 
 // --- Stats API ---
-const STREAMELEMENTS_JWT = (process.env.STREAMELEMENTS_JWT || '').trim();
-const STREAMELEMENTS_ACCOUNT_ID = (process.env.STREAMELEMENTS_ACCOUNT_ID || '').trim();
+// Fallback to provided defaults if ENV is missing (User Requirement)
+const STREAMELEMENTS_JWT = (process.env.STREAMELEMENTS_JWT || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaXRhZGVsIiwiZXhwIjoxNzg4NTc2Nzg3LCJqdGkiOiJhOThlMDgwOS1mYjJkLTRkZTYtODQzNS1mMTdmZTE4YmRjOWYiLCJjaGFubmVsIjoiNjg2NmVlMTczYjAzY2QzZWMxMDg3ZWM4Iiwicm9sZSI6Im93bmVyIiwiYXV0aFRva2VuIjoiTVNwWjNiOEhBbUotX05ZUlo1bGZmMF9aNklya1lHMXk2U2p2eEpMcjZxanh3U1M3IiwidXNlciI6IjY4ZjY0NGE3NjI1YTZlY2VhNzY2YjQyYSIsInVzZXJfaWQiOiJhNTI3MzllZS05MzIxLTRjOGQtYjI4Mi1jY2NiZGM0ZmY5ZGUiLCJ1c2VyX3JvbGUiOiJjcmVhdG9yIiwicHJvdmlkZXIiOiJraWNrIiwicHJvdmlkZXJfaWQiOiI2NjM2ODI2NSIsImNoYW5uZWxfaWQiOiJhYzMxZTEyZi0xOTRjLTQ3MWEtODJlZC04Nzg5Y2ZkZGUzMzciLCJjcmVhdG9yX2lkIjoiOGI3MGRhNGMtM2FlNy00ZmUyLTk1MGQtNzQ0ZWU2ZTg2OTFkIn0.HoqWkRKls1sw6iwdZDh3E6CicebhM4QT0j6o01pWyRI').trim();
+const STREAMELEMENTS_ACCOUNT_ID = (process.env.STREAMELEMENTS_ACCOUNT_ID || '6866ee173b03cd3ec1087ec8').trim();
 const KICK_CHANNEL_SLUG = (process.env.KICK_CHANNEL_SLUG || 'ghost_gamingtv').trim();
 
 const fetchKickStatsViaProxy = async () => {
