@@ -99,6 +99,7 @@ const Dashboard = () => {
       weekly_growth: 0
     };
   });
+  const [channelStats, setChannelStats] = useState(null);
 
   // Persist globalStats to localStorage
   useEffect(() => {
