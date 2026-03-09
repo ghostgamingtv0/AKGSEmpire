@@ -258,9 +258,8 @@ app.post('/api/verify-task', async (req, res) => {
 });
 
 // --- Stats API ---
-// Fallback to provided defaults if ENV is missing (User Requirement)
-const STREAMELEMENTS_JWT = (process.env.STREAMELEMENTS_JWT || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaXRhZGVsIiwiZXhwIjoxNzg4NTc2Nzg3LCJqdGkiOiJhOThlMDgwOS1mYjJkLTRkZTYtODQzNS1mMTdmZTE4YmRjOWYiLCJjaGFubmVsIjoiNjg2NmVlMTczYjAzY2QzZWMxMDg3ZWM4Iiwicm9sZSI6Im93bmVyIiwiYXV0aFRva2VuIjoiTVNwWjNiOEhBbUotX05ZUlo1bGZmMF9aNklya1lHMXk2U2p2eEpMcjZxanh3U1M3IiwidXNlciI6IjY4ZjY0NGE3NjI1YTZlY2VhNzY2YjQyYSIsInVzZXJfaWQiOiJhNTI3MzllZS05MzIxLTRjOGQtYjI4Mi1jY2NiZGM0ZmY5ZGUiLCJ1c2VyX3JvbGUiOiJjcmVhdG9yIiwicHJvdmlkZXIiOiJraWNrIiwicHJvdmlkZXJfaWQiOiI2NjM2ODI2NSIsImNoYW5uZWxfaWQiOiJhYzMxZTEyZi0xOTRjLTQ3MWEtODJlZC04Nzg5Y2ZkZGUzMzciLCJjcmVhdG9yX2lkIjoiOGI3MGRhNGMtM2FlNy00ZmUyLTk1MGQtNzQ0ZWU2ZTg2OTFkIn0.HoqWkRKls1sw6iwdZDh3E6CicebhM4QT0j6o01pWyRI').trim();
-const STREAMELEMENTS_ACCOUNT_ID = (process.env.STREAMELEMENTS_ACCOUNT_ID || '6866ee173b03cd3ec1087ec8').trim();
+const STREAMELEMENTS_JWT = (process.env.STREAMELEMENTS_JWT || '').trim();
+const STREAMELEMENTS_ACCOUNT_ID = (process.env.STREAMELEMENTS_ACCOUNT_ID || '').trim();
 const KICK_CHANNEL_SLUG = (process.env.KICK_CHANNEL_SLUG || 'ghost_gamingtv').trim();
 
 const fetchKickStatsViaProxy = async () => {
@@ -1778,45 +1777,124 @@ app.post('/api/user/link-threads', async (req, res) => {
 
 // --- Leaderboard Endpoints ---
 
-// 1. Top Referrers
+const normalizeUsername = (value) => (typeof value === 'string' ? value.trim() : '');
+
+const isValidUsername = (value) => {
+    const name = normalizeUsername(value);
+    if (!name) return false;
+    if (name.length < 3 || name.length > 25) return false;
+    if (!/^[a-zA-Z0-9_]+$/.test(name)) return false;
+    const lower = name.toLowerCase();
+    const blocked = ['user_', 'loyal_', 'follower', 'visitor', 'anonymous', 'guest', 'bot'];
+    if (blocked.some(p => lower.includes(p))) return false;
+    return true;
+};
+
+const sanitizeLeaderboardRows = (rows) => {
+    if (!Array.isArray(rows)) return [];
+    return rows
+        .map((row) => ({
+            visitor_id: row.visitor_id,
+            g_code: row.g_code,
+            wallet_address: row.wallet_address,
+            kick_username: isValidUsername(row.kick_username) ? normalizeUsername(row.kick_username) : '',
+            twitter_username: isValidUsername(row.twitter_username) ? normalizeUsername(row.twitter_username) : '',
+            threads_username: isValidUsername(row.threads_username) ? normalizeUsername(row.threads_username) : '',
+            instagram_username: isValidUsername(row.instagram_username) ? normalizeUsername(row.instagram_username) : '',
+            total_points: typeof row.total_points === 'number' ? row.total_points : (parseInt(row.total_points, 10) || 0),
+            weekly_points: typeof row.weekly_points === 'number' ? row.weekly_points : (parseInt(row.weekly_points, 10) || 0),
+            weekly_comments: typeof row.weekly_comments === 'number' ? row.weekly_comments : (parseInt(row.weekly_comments, 10) || 0),
+            chat_messages_count: typeof row.chat_messages_count === 'number' ? row.chat_messages_count : (parseInt(row.chat_messages_count, 10) || 0),
+            tasks_completed: typeof row.tasks_completed === 'number' ? row.tasks_completed : (parseInt(row.tasks_completed, 10) || 0),
+            referral_count: typeof row.referral_count === 'number' ? row.referral_count : (parseInt(row.referral_count, 10) || 0)
+        }))
+        .filter((row) => row.kick_username || row.twitter_username || row.threads_username || row.instagram_username);
+};
+
+const queryLeaderboard = async (sql, limit = 200) => {
+    const [rows] = await pool.query(sql, [limit]);
+    const sanitized = sanitizeLeaderboardRows(rows);
+    return sanitized.slice(0, 50);
+};
+
 app.get('/api/leaderboard/referrers', async (req, res) => {
     try {
-        const [rows] = await pool.query(`
-            SELECT kick_username, wallet_address, visitor_id, g_code, referral_count 
-            FROM users 
-            ORDER BY referral_count DESC 
-            LIMIT 50
-        `);
+        const rows = await queryLeaderboard(
+            `SELECT kick_username, twitter_username, threads_username, instagram_username, wallet_address, visitor_id, g_code, referral_count
+             FROM users
+             ORDER BY referral_count DESC
+             LIMIT ?`
+        );
         res.json(rows);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
 });
 
-// 2. Top Comments (Most Interactive) - Using weekly_comments or chat_messages_count
 app.get('/api/leaderboard/comments', async (req, res) => {
     try {
-        const [rows] = await pool.query(`
-            SELECT kick_username, wallet_address, visitor_id, g_code, weekly_comments, chat_messages_count
-            FROM users 
-            ORDER BY weekly_comments DESC 
-            LIMIT 50
-        `);
+        const rows = await queryLeaderboard(
+            `SELECT kick_username, twitter_username, threads_username, instagram_username, wallet_address, visitor_id, g_code, weekly_comments, chat_messages_count
+             FROM users
+             ORDER BY weekly_comments DESC
+             LIMIT ?`
+        );
         res.json(rows);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
 });
 
-// 3. Weekly Global Rankings (Points)
+app.get('/api/leaderboard/messages', async (req, res) => {
+    try {
+        const rows = await queryLeaderboard(
+            `SELECT kick_username, twitter_username, threads_username, instagram_username, wallet_address, visitor_id, g_code, chat_messages_count
+             FROM users
+             ORDER BY chat_messages_count DESC
+             LIMIT ?`
+        );
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/leaderboard/tasks', async (req, res) => {
+    try {
+        const rows = await queryLeaderboard(
+            `SELECT kick_username, twitter_username, threads_username, instagram_username, wallet_address, visitor_id, g_code, tasks_completed
+             FROM users
+             ORDER BY tasks_completed DESC
+             LIMIT ?`
+        );
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 app.get('/api/leaderboard/points', async (req, res) => {
     try {
-        const [rows] = await pool.query(`
-            SELECT kick_username, wallet_address, visitor_id, g_code, weekly_points 
-            FROM users 
-            ORDER BY weekly_points DESC 
-            LIMIT 50
-        `);
+        const rows = await queryLeaderboard(
+            `SELECT kick_username, twitter_username, threads_username, instagram_username, wallet_address, visitor_id, g_code, weekly_points
+             FROM users
+             ORDER BY weekly_points DESC
+             LIMIT ?`
+        );
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/leaderboard/total-points', async (req, res) => {
+    try {
+        const rows = await queryLeaderboard(
+            `SELECT kick_username, twitter_username, threads_username, instagram_username, wallet_address, visitor_id, g_code, total_points
+             FROM users
+             ORDER BY total_points DESC
+             LIMIT ?`
+        );
         res.json(rows);
     } catch (e) {
         res.status(500).json({ error: e.message });
@@ -1837,14 +1915,18 @@ app.get('/api/users/platform/:platform', async (req, res) => {
     }
 
     try {
-        const [rows] = await pool.query(`
-            SELECT ${column} as username, wallet_address, visitor_id, g_code 
-            FROM users 
-            WHERE ${column} IS NOT NULL AND ${column} != ''
-            ORDER BY created_at DESC
-            LIMIT 100
-        `);
-        res.json(rows);
+        const [rows] = await pool.query(
+            `SELECT ${column} as username, wallet_address, visitor_id, g_code
+             FROM users
+             WHERE ${column} IS NOT NULL AND ${column} != ''
+             ORDER BY created_at DESC
+             LIMIT 200`
+        );
+        const filtered = (Array.isArray(rows) ? rows : [])
+            .map(r => ({ ...r, username: normalizeUsername(r.username) }))
+            .filter(r => isValidUsername(r.username))
+            .slice(0, 100);
+        res.json(filtered);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }

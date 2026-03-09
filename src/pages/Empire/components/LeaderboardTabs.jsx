@@ -44,52 +44,7 @@ const LeaderboardTabs = () => {
     messages: [],
     referrers: []
   });
-  const [platformPoints, setPlatformPoints] = useState({
-    kick: [],
-    twitter: [],
-    threads: [],
-    instagram: []
-  });
   const [loading, setLoading] = useState(false);
-
-  // --- STATIC ACCURATE DATA (EXACTLY AS PROVIDED BY USER) ---
-  const STATIC_DATA = {
-    tasks: [
-      { username: "GHOST_GAMINGTV", tasks_completed: 42 },
-      { username: "undercover", tasks_completed: 38 },
-      { username: "Kick_Ninja", tasks_completed: 35 },
-      { username: "Z_Ghost", tasks_completed: 31 },
-      { username: "AKGS_Fan_99", tasks_completed: 28 }
-    ],
-    points: [
-      { username: "GHOST_GAMINGTV", weekly_points: "52450 Pts" },
-      { username: "undercover", weekly_points: "48900 Pts" },
-      { username: "Kick_Ninja", weekly_points: "35600 Pts" },
-      { username: "Z_Ghost", weekly_points: "28400 Pts" },
-      { username: "AKGS_Fan_99", weekly_points: "22100 Pts" }
-    ],
-    comments: [
-      { username: "undercover", weekly_comments: 1240 },
-      { username: "Ghost_Fan_01", weekly_comments: 980 },
-      { username: "Empire_Loyalist", weekly_comments: 850 },
-      { username: "Kick_Master", weekly_comments: 720 },
-      { username: "Night_Rider", weekly_comments: 640 }
-    ],
-    messages: [
-      { username: "Ghost_Fan_01", chat_messages_count: "4.2k" },
-      { username: "Empire_Loyalist", chat_messages_count: "3.8k" },
-      { username: "Kick_Master", chat_messages_count: "3.1k" },
-      { username: "Night_Rider", chat_messages_count: "2.9k" },
-      { username: "Green_Phantom", chat_messages_count: "2.5k" }
-    ],
-    referrers: [
-      { username: "GHOST_GAMINGTV", referral_count: 156 },
-      { username: "undercover", referral_count: 89 },
-      { username: "Kick_Ninja", referral_count: 64 },
-      { username: "Z_Ghost", referral_count: 42 },
-      { username: "AKGS_Fan_99", referral_count: 31 }
-    ]
-  };
 
   const metrics = [
     { id: 'tasks', label: 'Tasks Done' },
@@ -107,13 +62,57 @@ const LeaderboardTabs = () => {
   ];
 
   useEffect(() => {
-    // No fetching needed, using accurate static data
-    setLoading(false);
+    const fetchAllData = async () => {
+      setLoading(true);
+      try {
+        const [tasks, points, comments, messages, referrers] = await Promise.all([
+          fetch(`${API_BASE}/api/leaderboard/tasks`).then(r => r.json()),
+          fetch(`${API_BASE}/api/leaderboard/points`).then(r => r.json()),
+          fetch(`${API_BASE}/api/leaderboard/comments`).then(r => r.json()),
+          fetch(`${API_BASE}/api/leaderboard/messages`).then(r => r.json()),
+          fetch(`${API_BASE}/api/leaderboard/referrers`).then(r => r.json()),
+        ]);
+
+        setDataCache({
+          tasks: Array.isArray(tasks) ? tasks : [],
+          points: Array.isArray(points) ? points : [],
+          comments: Array.isArray(comments) ? comments : [],
+          messages: Array.isArray(messages) ? messages : [],
+          referrers: Array.isArray(referrers) ? referrers : []
+        });
+      } catch (e) {
+        setDataCache({
+          tasks: [],
+          points: [],
+          comments: [],
+          messages: [],
+          referrers: []
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
   }, []);
 
   const getTopUsers = (metricId, platformId) => {
-    // The user provided the same list for all platforms in the prompt
-    return STATIC_DATA[metricId] || [];
+    const list = dataCache[metricId] || [];
+
+    const getPlatformUsername = (user) => {
+      if (platformId === 'kick') return user.kick_username;
+      if (platformId === 'twitter') return user.twitter_username;
+      if (platformId === 'threads') return user.threads_username;
+      if (platformId === 'instagram') return user.instagram_username;
+      return '';
+    };
+
+    return list
+      .map(user => ({
+        ...user,
+        username: getPlatformUsername(user)
+      }))
+      .filter(user => !!user.username);
   };
 
   const getMetricDisplay = (user, metricId) => {
