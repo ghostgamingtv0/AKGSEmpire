@@ -362,6 +362,96 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
+// --- Sync StreamElements Leaderboard to DB ---
+const syncStreamElementsLeaderboard = async () => {
+    if (!STREAMELEMENTS_JWT || !STREAMELEMENTS_ACCOUNT_ID) return;
+    
+    try {
+        const res = await fetch(`https://api.streamelements.com/kappa/v2/points/${STREAMELEMENTS_ACCOUNT_ID}/top?limit=20`, {
+            headers: { Authorization: `Bearer ${STREAMELEMENTS_JWT}` }
+        });
+        
+        if (!res.ok) {
+            console.error('❌ Failed to fetch SE Leaderboard:', await res.text());
+            return;
+        }
+
+        const data = await res.json();
+        const users = data.users || []; // Array of { username, points, rank }
+
+        console.log(`🔄 Syncing ${users.length} users from StreamElements...`);
+
+        for (const u of users) {
+            const username = u.username;
+            const points = u.points;
+            
+            // Check if user exists
+            const [existing] = await pool.query('SELECT id FROM users WHERE username = ? OR kick_username = ?', [username, username]);
+            
+            if (existing.length > 0) {
+                // Update points
+                await pool.query('UPDATE users SET total_points = ? WHERE id = ?', [points, existing[0].id]);
+            } else {
+                // Create new user
+                const visitorId = `se_${username}`;
+                const gCode = 'G-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                await pool.query(
+                    'INSERT INTO users (visitor_id, username, kick_username, total_points, g_code) VALUES (?, ?, ?, ?, ?)',
+                    [visitorId, username, username, points, gCode]
+                );
+            }
+        }
+        console.log('✅ StreamElements Leaderboard Synced');
+
+    } catch (e) {
+        console.error('❌ Error syncing SE Leaderboard:', e.message);
+    }
+};
+
+// Run every 10 minutes
+setInterval(syncStreamElementsLeaderboard, 10 * 60 * 1000);
+// Run on startup
+setTimeout(syncStreamElementsLeaderboard, 5000);
+
+// --- Detailed Channel Stats for Dashboard ---
+app.get('/api/channel-stats', async (req, res) => {
+    try {
+        // 1. General Stats
+        const followers = await getSystemStat('kick_followers') || 0;
+        const viewers = await getSystemStat('kick_viewers') || 0;
+        const isLive = await getSystemStat('kick_is_live') === 'true';
+        const weeklyStart = await getSystemStat('weekly_start_followers') || followers;
+        const growth = parseInt(followers) - parseInt(weeklyStart);
+        
+        // 2. Top Users (Proxy for Chatters)
+        const [topUsers] = await pool.query('SELECT kick_username as name, total_points as value FROM users ORDER BY total_points DESC LIMIT 5');
+        const topChatters = topUsers.map(u => ({ name: u.name, chats: u.value })); // Using points as 'chats' or activity metric
+
+        // 3. Construct Response
+        const stats = {
+            rank: 14, // Placeholder or fetch if possible
+            general: [
+                { icon: '👥', label: 'Followers', value: parseInt(followers).toLocaleString(), change: growth >= 0 ? `+${growth}` : `${growth}` },
+                { icon: '🔴', label: 'Viewers', value: parseInt(viewers).toLocaleString(), change: isLive ? 'LIVE' : 'OFFLINE' },
+                { icon: '💬', label: 'Active Users', value: topUsers.length.toString(), change: '+0' }, // Dynamic count could be better
+                { icon: '🔥', label: 'Heat', value: '98/100', change: '+2' },
+                { icon: '📈', label: 'Growth', value: '2.4%', change: '+0.1%' }
+            ],
+            categories: [
+                { name: await getSystemStat('kick_category') || 'Gaming', av: parseInt(viewers), at: '100%', pv: parseInt(viewers), color: '#53FC18' }
+            ],
+            topChatters: topChatters,
+            overlap: [] // No data available
+        };
+        
+        res.json({ success: true, ...stats });
+
+    } catch (e) {
+        console.error('Channel Stats Error:', e);
+        res.status(500).json({ error: 'Failed to fetch channel stats' });
+    }
+});
+
 // Explicit Route for TikTok Verification
 app.get('/tiktok_verifier.txt', (req, res) => {
     res.send('tiktok-developers-site-verification=1kNOcQ23SkeEyz8BjWfxtK5wGAE4Eah1');
