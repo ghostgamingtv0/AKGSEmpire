@@ -9,7 +9,9 @@ import bcrypt from 'bcryptjs';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 
-import { initDB, pool, getSystemStat } from './db.js';
+import Parser from 'rss-parser';
+import { initDB, pool, getSystemStat, setSystemStat } from './db.js';
+import { handleKickOAuth } from './kickOAuthHandler.js';
 import { updateKickStats, getKickStats } from './services/kickService.js';
 import { getDiscordStats } from './services/discordService.js';
 import { getTelegramStats } from './services/telegramService.js';
@@ -81,11 +83,15 @@ const allowedOrigins = [
     'https://akgs-empire.pages.dev'
 ];
 
+const isLocalDevOrigin = (origin) =>
+    /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(String(origin || ''));
+
 app.use(cors({
     origin: (origin, callback) => {
-        // Disallow localhost and null origins in production
-        // If origin is null (e.g. mobile apps or direct server-to-server), allow for now to prevent lockout
+        // Allow null origin (mobile / server tools). In non-production, allow localhost for Vite dev.
         if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else if (process.env.NODE_ENV !== 'production' && isLocalDevOrigin(origin)) {
             callback(null, true);
         } else {
             console.warn(`Blocked Unauthorized Access: ${origin}`);
@@ -109,6 +115,46 @@ app.use(express.json());
 
 // Initialize DB
 initDB();
+
+// --- RSS feed cache (Social2Earn “new post” links) — same sources as legacy server.js ---
+const rssParser = new Parser();
+const rssFeeds = {
+    instagram: 'https://rss.app/feeds/TI0LGIRM3exwbPIT.xml',
+    tiktok: 'https://rss.app/feeds/zCraR8juic5yl9sT.xml',
+    threads: 'https://rss.app/feeds/lWdvL5EjEU3wODIt.xml',
+    twitter: 'https://rss.app/feeds/x7YxHPY0B5j4Pyqq.xml'
+};
+
+let feedCache = {
+    instagram: { isNew: false, date: null, link: null },
+    tiktok: { isNew: false, date: null, link: null },
+    threads: { isNew: false, date: null, link: null },
+    twitter: { isNew: false, date: null, link: null }
+};
+
+const checkNewContent = async () => {
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    for (const [platform, url] of Object.entries(rssFeeds)) {
+        try {
+            const feed = await rssParser.parseURL(url);
+            if (feed.items.length > 0) {
+                const latestItem = feed.items[0];
+                const pubDate = new Date(latestItem.pubDate || latestItem.isoDate);
+                const isNew = pubDate > twentyFourHoursAgo;
+                feedCache[platform] = {
+                    isNew,
+                    date: pubDate,
+                    link: latestItem.link
+                };
+            }
+        } catch (error) {
+            console.error(`❌ Error fetching ${platform} RSS:`, error.message);
+        }
+    }
+};
+
+setInterval(checkNewContent, 15 * 60 * 1000);
+setTimeout(checkNewContent, 5000);
 
 // --- HEALTH CHECK / KEEP ALIVE ---
 app.get('/api/ping', (req, res) => {
@@ -412,6 +458,152 @@ app.get('/api/kick/mining/status', async (req, res) => {
     } catch (e) {
         console.error('Kick mining status error:', e);
         return res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// --- Kick OAuth (token exchange; used by Hero + Earn) ---
+app.post('/api/kick/token', handleKickOAuth);
+app.post('/api/kick/exchange-token', handleKickOAuth);
+
+// --- RSS feed status for Earn.jsx ---
+app.get('/api/feed-status', (req, res) => {
+    res.json(feedCache);
+});
+
+// --- Task click analytics (Earn.jsx) ---
+app.post('/api/track-click', (req, res) => {
+    try {
+        const { visitor_id, wallet_address, task_url } = req.body || {};
+        appendEventLog('task_click', req, { visitor_id, wallet_address, task_url });
+        return res.json({ success: true });
+    } catch (e) {
+        return res.status(500).json({ success: false, error: 'Log failed' });
+    }
+});
+
+// --- Watch-to-earn mining ping (Earn.jsx, every ~3 min while live) ---
+app.post('/api/mining/ping', async (req, res) => {
+    try {
+        const { visitor_id } = req.body || {};
+        if (!visitor_id) {
+            return res.status(400).json({ success: false, message: 'Missing visitor_id' });
+        }
+        const [users] = await pool.query(
+            'SELECT id, mining_unlocked, total_points FROM users WHERE visitor_id = ?',
+            [visitor_id]
+        );
+        if (users.length === 0) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        const u = users[0];
+        if (!u.mining_unlocked) {
+            return res.json({ success: false, message: 'Mining not unlocked' });
+        }
+        const POINTS = 5;
+        await pool.query(
+            'UPDATE users SET total_points = total_points + ?, weekly_points = weekly_points + ? WHERE id = ?',
+            [POINTS, POINTS, u.id]
+        );
+        return res.json({ success: true, points_added: POINTS });
+    } catch (e) {
+        console.error('Mining ping error:', e);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// --- Profile sync (kick username + wallet) ---
+app.post('/api/update-profile', async (req, res) => {
+    const { visitor_id, kick_username, wallet_address } = req.body || {};
+    if (!visitor_id) {
+        return res.status(400).json({ success: false, error: 'visitor_id required' });
+    }
+    try {
+        const [existing] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+        if (existing.length === 0) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+        }
+
+        await pool.query(
+            'UPDATE users SET kick_username = COALESCE(?, kick_username), wallet_address = COALESCE(?, wallet_address) WHERE visitor_id = ?',
+            [kick_username || null, wallet_address || null, visitor_id]
+        );
+
+        const [rows] = await pool.query('SELECT * FROM users WHERE visitor_id = ?', [visitor_id]);
+        const user = rows[0];
+        return res.json({ success: true, user, recovered: false });
+    } catch (e) {
+        console.error('update-profile error:', e);
+        return res.status(500).json({ success: false, error: e.message });
+    }
+});
+
+// --- Dashboard: detailed channel-style stats ---
+app.get('/api/channel-stats', async (req, res) => {
+    try {
+        const followers = (await getSystemStat('kick_followers')) || 0;
+        const viewers = (await getSystemStat('kick_viewers')) || 0;
+        const isLive = (await getSystemStat('kick_is_live')) === 'true';
+        const weeklyStart = (await getSystemStat('weekly_start_followers')) || followers;
+        const growth = parseInt(followers, 10) - parseInt(weeklyStart, 10);
+
+        const [topUsers] = await pool.query(
+            'SELECT kick_username as name, total_points as value FROM users ORDER BY total_points DESC LIMIT 5'
+        );
+        const topChatters = topUsers.map((u) => ({ name: u.name, chats: u.value }));
+
+        const stats = {
+            rank: 14,
+            general: [
+                {
+                    icon: '👥',
+                    label: 'Followers',
+                    value: parseInt(followers, 10).toLocaleString(),
+                    change: growth >= 0 ? `+${growth}` : `${growth}`
+                },
+                {
+                    icon: '🔴',
+                    label: 'Viewers',
+                    value: parseInt(viewers, 10).toLocaleString(),
+                    change: isLive ? 'LIVE' : 'OFFLINE'
+                },
+                {
+                    icon: '💬',
+                    label: 'Active Users',
+                    value: String(topUsers.length),
+                    change: '+0'
+                },
+                { icon: '🔥', label: 'Heat', value: '98/100', change: '+2' },
+                { icon: '📈', label: 'Growth', value: '2.4%', change: '+0.1%' }
+            ],
+            categories: [
+                {
+                    name: (await getSystemStat('kick_category')) || 'Gaming',
+                    av: parseInt(viewers, 10),
+                    at: '100%',
+                    pv: parseInt(viewers, 10),
+                    color: '#53FC18'
+                }
+            ],
+            topChatters,
+            overlap: []
+        };
+
+        return res.json({ success: true, ...stats });
+    } catch (e) {
+        console.error('Channel Stats Error:', e);
+        return res.status(500).json({ success: false, error: 'Failed to fetch channel stats' });
+    }
+});
+
+// --- Leaderboard: total points (Dashboard elite tab) ---
+app.get('/api/leaderboard/total-points', async (req, res) => {
+    try {
+        const [rows] = await pool.query(
+            'SELECT username, kick_username, total_points as points FROM users ORDER BY total_points DESC LIMIT 10'
+        );
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
     }
 });
 
