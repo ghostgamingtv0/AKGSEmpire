@@ -1,9 +1,9 @@
 const https = require('https');
 
-const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
-const token = process.env.CLOUDFLARE_API_TOKEN;
-const projectName = process.env.CLOUDFLARE_PAGES_PROJECT || 'akgsempire';
-const zoneName = process.env.CLOUDFLARE_ZONE_NAME || 'ghostempire.org';
+const accountId = String(process.env.CLOUDFLARE_ACCOUNT_ID || '').trim();
+const token = String(process.env.CLOUDFLARE_API_TOKEN || '').trim();
+const projectName = String(process.env.CLOUDFLARE_PAGES_PROJECT || 'akgsempire').trim();
+const zoneName = String(process.env.CLOUDFLARE_ZONE_NAME || 'ghostempire.org').trim();
 const apexDomain = zoneName;
 const wwwDomain = `www.${zoneName}`;
 
@@ -63,7 +63,7 @@ const getZoneId = async () => {
 const addPagesDomain = async (domain) => {
   const res = await cfRequest({
     method: 'POST',
-    path: `/client/v4/accounts/${accountId}/pages/projects/${projectName}/domains`,
+    path: `/client/v4/accounts/${encodeURIComponent(accountId)}/pages/projects/${encodeURIComponent(projectName)}/domains`,
     body: { name: domain }
   });
   if (res.json?.success) return true;
@@ -77,7 +77,7 @@ const addPagesDomain = async (domain) => {
 const upsertWwwCname = async (zoneId) => {
   const list = await cfRequest({
     method: 'GET',
-    path: `/client/v4/zones/${zoneId}/dns_records?type=CNAME&name=${encodeURIComponent(wwwDomain)}`
+    path: `/client/v4/zones/${encodeURIComponent(zoneId)}/dns_records?type=CNAME&name=${encodeURIComponent(wwwDomain)}`
   });
   if (!list.json?.success) throw Object.assign(new Error('List DNS records failed'), { details: list.json });
 
@@ -93,7 +93,7 @@ const upsertWwwCname = async (zoneId) => {
   if (existing?.id) {
     const update = await cfRequest({
       method: 'PUT',
-      path: `/client/v4/zones/${zoneId}/dns_records/${existing.id}`,
+      path: `/client/v4/zones/${encodeURIComponent(zoneId)}/dns_records/${encodeURIComponent(existing.id)}`,
       body
     });
     ensureOk('Update DNS CNAME', update);
@@ -102,7 +102,7 @@ const upsertWwwCname = async (zoneId) => {
 
   const create = await cfRequest({
     method: 'POST',
-    path: `/client/v4/zones/${zoneId}/dns_records`,
+    path: `/client/v4/zones/${encodeURIComponent(zoneId)}/dns_records`,
     body
   });
   ensureOk('Create DNS CNAME', create);
@@ -132,4 +132,3 @@ const upsertWwwCname = async (zoneId) => {
     process.exit(1);
   }
 })();
-
