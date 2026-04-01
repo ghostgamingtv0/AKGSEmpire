@@ -56,10 +56,17 @@ const LeaderboardTabs = () => {
 
   const platforms = [
     { id: 'kick', label: 'Kick Users' },
-    { id: 'twitter', label: 'Twitter' },
-    { id: 'threads', label: 'Threads' },
-    { id: 'instagram', label: 'Instagram' },
   ];
+
+  const isValidKickUsername = (value) => {
+    if (typeof value !== 'string') return false;
+    const name = value.trim();
+    if (name.length < 3 || name.length > 25) return false;
+    if (!/^[a-zA-Z0-9_]+$/.test(name)) return false;
+    const lower = name.toLowerCase();
+    if (lower.startsWith('anonymous') || lower.startsWith('user_') || lower.includes('guest')) return false;
+    return true;
+  };
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -101,18 +108,15 @@ const LeaderboardTabs = () => {
 
     const getPlatformUsername = (user) => {
       if (platformId === 'kick') return user.kick_username;
-      if (platformId === 'twitter') return user.twitter_username;
-      if (platformId === 'threads') return user.threads_username;
-      if (platformId === 'instagram') return user.instagram_username;
       return '';
     };
 
     return list
       .map(user => ({
         ...user,
-        username: getPlatformUsername(user) || 'Anonymous User'
+        username: getPlatformUsername(user)
       }))
-      .filter(user => !!user.visitor_id);
+      .filter(user => isValidKickUsername(user.username));
   };
 
   const getMetricDisplay = (user, metricId) => {
@@ -196,9 +200,7 @@ const LeaderboardTabs = () => {
                             ) : topUsers.length > 0 ? (
                                 <div className="flex flex-col gap-1.5 py-4">
                                     {topUsers.map((user, idx) => {
-                                        const displayName = user.username === 'Anonymous User'
-                                          ? `Anonymous User ${String(user.visitor_id).substring(0, 6)}`
-                                          : (user.username || user.kick_username);
+                                        const displayName = user.username;
                                         
                                         const isTop1 = idx === 0;
                                         
