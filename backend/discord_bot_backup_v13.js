@@ -29,7 +29,7 @@ process.on('uncaughtException', error => {
 const THEME = {
     COLOR: '#53FC18', // Neon Green
     BG_COLOR: '#050505', // Dark Background
-    LOGO: 'https://akgsempire.org/logo.png', // Placeholder, verify if real
+    LOGO: 'https://ghostempire.org/logo.png', // Placeholder, verify if real
     FOOTER: 'AKGS Empire • The Future of Digital Interaction',
     THUMBNAIL_VERIFY: 'https://i.imgur.com/8QZqZ9N.png', // Need a valid lock icon or logo
     THUMBNAIL_RULES: 'https://i.imgur.com/8QZqZ9N.png'
@@ -226,7 +226,7 @@ To access the **AKGS EMPIRE**, you must verify your identity using your unique *
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **📋 INSTRUCTIONS | التعليمات**
-1️⃣ Go to **[akgsempire.org](https://akgsempire.org)** and link your Kick account.
+1️⃣ Go to **[ghostempire.org](https://ghostempire.org)** and link your Kick account.
 2️⃣ Copy your **G-Code** from the dashboard.
 3️⃣ Type your code below in this chat.
 *(Example: \`!verify G-123456\`)*
@@ -265,7 +265,7 @@ async function sendLinksEmbed(channel) {
         .setColor(THEME.COLOR)
         .setTitle('🌍 OFFICIAL NEXUS | الروابط الرسمية')
         .addFields(
-            { name: '🌐 Website', value: '[akgsempire.org](https://akgsempire.org)', inline: true },
+            { name: '🌐 Website', value: '[ghostempire.org](https://ghostempire.org)', inline: true },
             { name: '🟢 Kick Stream', value: '[ghost_gamingtv](https://kick.com/ghost_gamingtv)', inline: true },
             { name: '🐦 Twitter (X)', value: '[@AKGS_Empire](https://twitter.com/AKGS_Empire)', inline: true },
             { name: '📸 Instagram', value: '[@ghost.gamingtv](https://instagram.com/ghost.gamingtv)', inline: true },

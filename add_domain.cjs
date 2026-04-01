@@ -2,7 +2,7 @@ const https = require('https');
 
 const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
 const projectName = 'akgsempire';
-const domain = 'akgsempire.org';
+const domain = 'ghostempire.org';
 const token = process.env.CLOUDFLARE_API_TOKEN;
 
 if (!accountId || !token) {

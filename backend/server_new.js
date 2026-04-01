@@ -78,8 +78,8 @@ app.use('/api/auth/', authLimiter);
 
 // 3. CORS Configuration
 const allowedOrigins = [
-    'https://akgsempire.org',
-    'https://www.akgsempire.org',
+    'https://ghostempire.org',
+    'https://www.ghostempire.org',
     'https://akgs-empire.pages.dev'
 ];
 

@@ -35,7 +35,7 @@ Welcome to the future of Web3 Gaming & Streaming.
 
 ### 🔗 **OFFICIAL LINKS | الروابط الرسمية**
 
-🌐 **Website:** [https://akgsempire.org](https://akgsempire.org)
+🌐 **Website:** [https://ghostempire.org](https://ghostempire.org)
 🐦 **Twitter (X):** [Your Twitter Link]
 🎮 **Discord:** [Your Discord Link]
 📊 **Chart:** [GeckoTerminal Link]
@@ -73,7 +73,7 @@ Welcome to the future of Web3 Gaming & Streaming.
 > 🟢 Earn Rewards
 > 🟢 Dominate the Leaderboard
 >
-> 👉 Join the revolution: https://akgsempire.org
+> 👉 Join the revolution: https://ghostempire.org
 >
 > $AKGS is not just a token. It's a movement. 🚀
 >
@@ -87,7 +87,7 @@ Welcome to the future of Web3 Gaming & Streaming.
 >
 > Simple as that.
 >
-> 🔗 https://akgsempire.org
+> 🔗 https://ghostempire.org
 >
 > #PassiveIncome #Kick #Streaming #CryptoCommunity
 
@@ -108,7 +108,7 @@ This is a massive milestone for our community. The platform allows you to:
 2️⃣ Track your engagement and rewards.
 3️⃣ Access exclusive "Hall of Fame" content.
 
-👉 **Visit now:** https://akgsempire.org
+👉 **Visit now:** https://ghostempire.org
 
 **💡 WHAT'S NEXT?**
 - First "Watch Party" Event coming soon.

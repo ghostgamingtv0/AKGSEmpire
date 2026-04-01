@@ -132,7 +132,7 @@ const initDB = async () => {
 
 // Middleware
 const corsOptions = {
-  origin: ['https://akgsempire.org', 'https://www.akgsempire.org', 'https://akgs-empire.pages.dev', 'http://130.61.129.195:3001', 'http://130.61.129.195:3000'],
+  origin: ['https://ghostempire.org', 'https://www.ghostempire.org', 'https://akgs-empire.pages.dev', 'http://130.61.129.195:3001', 'http://130.61.129.195:3000'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204
@@ -808,7 +808,7 @@ app.post('/api/instagram/delete', (req, res) => {
     console.log('Instagram Data Deletion Request:', req.body);
     // Return the confirmation code URL as required by Meta
     const confirmationCode = 'AKGS_DELETE_' + Math.random().toString(36).substring(7);
-    const url = `https://akgsempire.org/empire/earn/api/instagram/delete/status?code=${confirmationCode}`;
+    const url = `https://ghostempire.org/empire/earn/api/instagram/delete/status?code=${confirmationCode}`;
     res.json({ url: url, confirmation_code: confirmationCode });
 });
 
@@ -1131,7 +1131,7 @@ app.post('/api/kick/token', async (req, res) => {
         params.append('grant_type', 'authorization_code');
         params.append('client_id', clientId);
         params.append('client_secret', clientSecret);
-        params.append('redirect_uri', redirect_uri || 'https://akgsempire.org/');
+        params.append('redirect_uri', redirect_uri || 'https://ghostempire.org/');
         params.append('code', code);
         
         // Add PKCE verifier if provided (Required by Kick now)

@@ -24,7 +24,7 @@ export async function handleKickOAuth(req, res) {
         params.append('grant_type', 'authorization_code');
         params.append('client_id', clientId);
         params.append('client_secret', clientSecret);
-        params.append('redirect_uri', redirect_uri || 'https://akgsempire.org/');
+        params.append('redirect_uri', redirect_uri || 'https://ghostempire.org/');
         params.append('code', code);
 
         if (code_verifier) {

@@ -17,7 +17,7 @@ const KICK_CHANNEL_SLUG = 'ghost_gamingtv';
 const CHATROOM_ID = 64930060; 
 const PUSHER_KEY = 'eb1d5f283081a78b932c'; // Public Key for listening
 const API_BASE_URL = 'https://api.kick.com/public/v1';
-const CF_BASE_URL = process.env.CF_BASE_URL || process.env.PUBLIC_BASE_URL || 'https://akgsempire.org';
+const CF_BASE_URL = process.env.CF_BASE_URL || process.env.PUBLIC_BASE_URL || 'https://ghostempire.org';
 
 // OAUTH CREDENTIALS (Load from .env or file)
 const CLIENT_ID = process.env.KICK_CLIENT_ID || '01KH3T8WNDZ269403HKC17JN7X';
@@ -81,7 +81,7 @@ async function startKickListener() {
 
     // Periodic Announcement (Every 10 minutes)
     setInterval(async () => {
-        await sendOfficialReply(`🤖 **AKGS SYSTEM:**\n🇬🇧 To earn points, type your **G-Code** below! (Found on Dashboard)\n🇸🇦 لربح النقاط، اكتب كود **G-Code** الخاص بك هنا! (تجده في لوحة التحكم)\n🔗 akgsempire.org`);
+        await sendOfficialReply(`🤖 **AKGS SYSTEM:**\n🇬🇧 To earn points, type your **G-Code** below! (Found on Dashboard)\n🇸🇦 لربح النقاط، اكتب كود **G-Code** الخاص بك هنا! (تجده في لوحة التحكم)\n🔗 ghostempire.org`);
     }, 10 * 60 * 1000);
     
     // Try US2 cluster as fallback if default fails
@@ -144,7 +144,7 @@ async function handleCommand(sender, content) {
     if (cmd === '!gcode') {
         await handleGCode(sender);
     } else if (cmd === '!socials') {
-        await sendOfficialReply(`🌍 **AKGS OFFICIAL LINKS | الروابط الرسمية:**\n🐦 **X (Twitter):** @AKGS_Empire\n📸 **Instagram:** @ghost.gamingtv\n🌐 **Website:** akgsempire.org`);
+        await sendOfficialReply(`🌍 **AKGS OFFICIAL LINKS | الروابط الرسمية:**\n🐦 **X (Twitter):** @AKGS_Empire\n📸 **Instagram:** @ghost.gamingtv\n🌐 **Website:** ghostempire.org`);
     } else if (cmd === '!help') {
         await sendOfficialReply(`🤖 **COMMANDS | الأوامر:**\n!gcode - Check Status (التحقق من الحالة)\n!socials - Official Links (الروابط الرسمية)\nJust type your **G-Code** to verify! (فقط اكتب الكود للتحقق)`);
     }
@@ -157,7 +157,7 @@ async function handleGCode(username) {
         if (user && user.g_code) {
             await sendOfficialReply(`🔐 **VERIFIED | تم التحقق**\n👤 User: @${username}\n🆔 G-CODE: || ${user.g_code} ||\n✅ Access Granted.`);
         } else {
-            await sendOfficialReply(`🚫 **ACCESS DENIED | خطأ**\n⚠️ Account Not Linked / غير مرتبط\n🔗 Link now at: akgsempire.org`);
+            await sendOfficialReply(`🚫 **ACCESS DENIED | خطأ**\n⚠️ Account Not Linked / غير مرتبط\n🔗 Link now at: ghostempire.org`);
         }
     } catch (e) {
         console.error('DB Error:', e.message);

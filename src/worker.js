@@ -4,9 +4,23 @@ export default {
     const path = url.pathname;
     const method = request.method;
 
+    if (url.hostname === 'akgsempire.org' || url.hostname === 'www.akgsempire.org') {
+      const newUrl = new URL(request.url);
+      newUrl.hostname = 'ghostempire.org';
+      newUrl.protocol = 'https:';
+      return Response.redirect(newUrl.toString(), 301);
+    }
+
+    if (url.hostname === 'www.ghostempire.org') {
+      const newUrl = new URL(request.url);
+      newUrl.hostname = 'ghostempire.org';
+      newUrl.protocol = 'https:';
+      return Response.redirect(newUrl.toString(), 301);
+    }
+
     if (url.hostname.includes('render.com')) {
       const newUrl = new URL(request.url);
-      newUrl.hostname = 'akgsempire.org';
+      newUrl.hostname = 'ghostempire.org';
       return Response.redirect(newUrl.toString(), 301);
     }
 
