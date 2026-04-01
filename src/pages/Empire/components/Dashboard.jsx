@@ -199,13 +199,30 @@ const Dashboard = () => {
         if (res.ok) {
           const data = await res.json();
           if (data.success) {
-            setChannelStats({
+            const nextStats = {
               rank: data.rank,
               general: data.general,
               categories: data.categories,
               topChatters: data.topChatters,
               overlap: data.overlap
-            });
+            };
+            // Fallback: if no topChatters, use weekly points leaderboard
+            if (!nextStats.topChatters || nextStats.topChatters.length === 0) {
+              try {
+                const lbRes = await fetch('/api/leaderboard/points');
+                if (lbRes.ok) {
+                  const lbData = await lbRes.json();
+                  if (Array.isArray(lbData) && lbData.length > 0) {
+                    nextStats.topChatters = lbData.slice(0, 6).map(u => ({
+                      name: (u.kick_username || u.twitter_username || u.threads_username || u.instagram_username) 
+                             || `Anonymous User ${String(u.visitor_id || '').substring(0, 6)}`,
+                      chats: u.weekly_points || 0
+                    }));
+                  }
+                }
+              } catch (e) {}
+            }
+            setChannelStats(nextStats);
           }
         }
       } catch (e) { console.error('Channel stats fetch error:', e); }
@@ -235,6 +252,11 @@ const Dashboard = () => {
     { label: 'Live Viewers', value: globalStats.kick_viewers?.toLocaleString() || '0', icon: <Activity className="text-red-500" />, change: isStreamLive ? 'LIVE' : 'Offline' },
     { label: 'Category', value: globalStats.kick_category || 'None', icon: <Flame className="text-orange-500" />, change: 'Stream' },
   ];
+
+  const displayTotalPoints = (() => {
+    const stored = (() => { try { return JSON.parse(localStorage.getItem('user_session')); } catch { return null; } })();
+    return (stored?.total_points ?? userData?.total_points ?? 0);
+  })();
 
   return (
     <div className="min-h-screen text-white pt-24 pb-12 px-4 relative overflow-hidden empire-gradient-page">
@@ -312,7 +334,7 @@ const Dashboard = () => {
                 <div className="flex gap-12 md:border-l md:border-white/10 md:pl-12">
                     <div className="text-center">
                         <p className="text-gray-400 text-base mb-2">Total Points</p>
-                        <p className="text-4xl font-black text-[#53FC18] drop-shadow-[0_0_10px_rgba(83,252,24,0.3)]">{userData.total_points || 0}</p>
+                        <p className="text-4xl font-black text-[#53FC18] drop-shadow-[0_0_10px_rgba(83,252,24,0.3)]">{displayTotalPoints}</p>
                     </div>
                     <div className="text-center">
                         <p className="text-gray-400 text-base mb-2">Weekly Points</p>
