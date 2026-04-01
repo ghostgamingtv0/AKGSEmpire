@@ -84,7 +84,15 @@ const Login = () => {
                 wallet_address: walletAddress
             })
         });
-        const data = await res.json();
+        const text = await res.text();
+        let data = null;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            setError(text || 'Registration failed');
+            setLoading(false);
+            return;
+        }
         if (data.success) {
              // Auto login
              handleLogin(e); 
@@ -110,7 +118,15 @@ const Login = () => {
                 visitor_id: visitorId
             })
         });
-        const data = await res.json();
+        const text = await res.text();
+        let data = null;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            setError(text || 'Login failed');
+            setLoading(false);
+            return;
+        }
         if (data.success) {
             localStorage.setItem('user_session', JSON.stringify(data.user));
             setCookie('user_session', JSON.stringify(data.user), 30);
