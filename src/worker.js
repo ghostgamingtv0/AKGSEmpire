@@ -286,6 +286,111 @@ export default {
           return json({ success: true, user: sanitizeUser(user) });
         }
 
+        if (apiPath === '/api/genesis/stats' && method === 'GET') {
+          const raw = await kv.get('genesis_spots_left');
+          const spotsLeft = Number(raw || 50);
+          return json({ success: true, spotsLeft });
+        }
+
+        if (apiPath === '/api/genesis/test-register' && method === 'POST') {
+          const body = await getJsonBody();
+          const {
+            visitor_id,
+            platform,
+            platformUsername,
+            nickname,
+            password,
+            wallet,
+            ref
+          } = body;
+
+          if (!visitor_id || !nickname || !password || !wallet) {
+            return json({ success: false, error: 'Missing required fields' }, 400);
+          }
+          if (!/^[a-zA-Z0-9_]+$/.test(nickname)) {
+            return json({ success: false, error: 'Username must contain only letters, numbers, and underscores' }, 400);
+          }
+
+          const existing = await kv.get(userUnKey(nickname));
+          if (existing) return json({ success: false, error: 'Username already taken' }, 400);
+
+          const existingByVidRaw = await kv.get(userVidKey(visitor_id));
+          let user = null;
+          if (existingByVidRaw) {
+            try { user = JSON.parse(existingByVidRaw); } catch {}
+          }
+
+          const now = Date.now();
+          const salt = randomHex(16);
+          const passHash = await pbkdf2(password, salt);
+
+          if (!user) {
+            const referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            user = {
+              visitor_id,
+              referral_code: referralCode,
+              referred_by: null,
+              created_at: now,
+              total_points: 0,
+              weekly_points: 0,
+              weekly_comments: 0,
+              chat_messages_count: 0,
+              tasks_completed: 0,
+              referral_count: 0,
+              g_code: 'G-' + Math.random().toString(36).substring(2, 8).toUpperCase()
+            };
+          }
+
+          user.username = nickname;
+          user.wallet_address = wallet;
+          user.password_salt = salt;
+          user.password_hash = passHash;
+
+          const p = String(platform || '').toLowerCase();
+          if (p.includes('kick')) user.kick_username = platformUsername || user.kick_username || '';
+          if (p.includes('twitter')) user.twitter_username = platformUsername || user.twitter_username || '';
+          if (p.includes('threads')) user.threads_username = platformUsername || user.threads_username || '';
+          if (p.includes('instagram')) user.instagram_username = platformUsername || user.instagram_username || '';
+          if (p.includes('tiktok')) user.tiktok_username = platformUsername || user.tiktok_username || '';
+          if (p.includes('facebook')) user.facebook_username = platformUsername || user.facebook_username || '';
+
+          if (ref) {
+            const referrerVid = await kv.get(refKey(ref));
+            if (referrerVid) {
+              const refRaw = await kv.get(userVidKey(referrerVid));
+              if (refRaw) {
+                try {
+                  const refUser = JSON.parse(refRaw);
+                  refUser.referral_count = (refUser.referral_count || 0) + 1;
+                  refUser.total_points = (refUser.total_points || 0) + 100;
+                  refUser.weekly_points = (refUser.weekly_points || 0) + 100;
+                  await saveUser(kv, refUser);
+                  user.referred_by = referrerVid;
+                } catch {}
+              }
+            }
+          }
+
+          const spotsRaw = await kv.get('genesis_spots_left');
+          let spotsLeft = Number(spotsRaw || 50);
+          if (spotsLeft > 0) {
+            spotsLeft -= 1;
+            await kv.put('genesis_spots_left', String(spotsLeft));
+          }
+
+          await saveUser(kv, user);
+
+          const countRaw = await kv.get('genesis_registered_count');
+          const nextCount = Number(countRaw || 0) + 1;
+          await kv.put('genesis_registered_count', String(nextCount));
+
+          return json({ success: true, gCode: user.g_code, rank: nextCount, spotsLeft });
+        }
+
+        if (apiPath === '/api/log' && method === 'POST') {
+          return json({ success: true });
+        }
+
         if ((apiPath === '/api/claim' || apiPath === '/api/tasks/claim') && method === 'POST') {
           const body = await getJsonBody();
           const { visitor_id, points } = body;
