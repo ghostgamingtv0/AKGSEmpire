@@ -6,21 +6,21 @@ export default {
 
     if (url.hostname === 'akgsempire.org' || url.hostname === 'www.akgsempire.org') {
       const newUrl = new URL(request.url);
-      newUrl.hostname = 'ghostempire.org';
+      newUrl.hostname = 'www.ghostempire.org';
       newUrl.protocol = 'https:';
       return Response.redirect(newUrl.toString(), 301);
     }
 
-    if (url.hostname === 'www.ghostempire.org') {
+    if (url.hostname === 'ghostempire.org') {
       const newUrl = new URL(request.url);
-      newUrl.hostname = 'ghostempire.org';
+      newUrl.hostname = 'www.ghostempire.org';
       newUrl.protocol = 'https:';
       return Response.redirect(newUrl.toString(), 301);
     }
 
     if (url.hostname.includes('render.com')) {
       const newUrl = new URL(request.url);
-      newUrl.hostname = 'ghostempire.org';
+      newUrl.hostname = 'www.ghostempire.org';
       return Response.redirect(newUrl.toString(), 301);
     }
 
