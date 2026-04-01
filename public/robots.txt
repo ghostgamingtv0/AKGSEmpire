@@ -23,4 +23,4 @@ Disallow: /
 User-agent: FacebookBot
 Disallow: /
 
-Sitemap: https://www.ghostempire.org/sitemap.xml
+Sitemap: https://akgsempire.org/sitemap.xml
